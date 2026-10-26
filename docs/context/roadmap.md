@@ -14,8 +14,8 @@ Last updated: 2026-10-27
 - [ ] App name (working codename: Cadence)
 - [x] Logo concepts (3) and palette drafted -> pick one
 - [x] UI direction + tokens drafted (`design.md`, `design/preview.html`) -> needs sign-off
-- [ ] Wireframes for remaining screens (Calendar, History, Log sheet, Settings)
-- [ ] Lock design (tokens + logo + name) before building
+- [x] Wireframes for all screens (Today, empty Today, Calendar, History, Log sheet, Settings) -> `design/wireframes.html`
+- [ ] Sign-off on wireframes and palette (Tirth + Drashti), then lock design before building screens
 - [ ] GitHub remote connected and pushed
 - [x] Dev environment: JDK 17 + Android SDK installed on D:; phone detected (needs USB-debugging authorization)
 - [x] First run on Tirth's phone (Samsung SM-S721B, Android 16): debug build via `npx expo run:android` installed and launched, 2026-10-27

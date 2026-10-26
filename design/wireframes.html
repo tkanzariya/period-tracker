@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadence wireframes</title>
+<style>
+:root{
+  --bg:#FBF6F2;--surface:#FFFFFF;--surface2:#F4EAE5;--line:#E6D8D1;
+  --text:#2B1B20;--text2:#6B5A60;--primary:#C9265F;--on-primary:#FFFFFF;--primary-soft:#F9DDE6;
+  --menstrual:#C9265F;--follicular:#8A5A00;--ovulation:#0B6E6E;--luteal:#6B4A8F;
+  --menstrual-bg:#F9DDE6;--follicular-bg:#F7E8C8;--ovulation-bg:#D3EEEC;--luteal-bg:#E6DDF2;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1C1417;--surface:#2A1F23;--surface2:#33262B;--line:#4A3A40;--text:#F5ECEE;--text2:#B9A8AE;
+  --primary:#F2708F;--on-primary:#1C1417;--primary-soft:#4A2330;
+  --menstrual:#F2708F;--follicular:#E0A93B;--ovulation:#4FC3C3;--luteal:#B79AE0;
+  --menstrual-bg:#4A2330;--follicular-bg:#44361A;--ovulation-bg:#1B3F40;--luteal-bg:#3A2D50;}}
+*{box-sizing:border-box}body{margin:0;background:var(--surface2);color:var(--text);padding:16px;line-height:1.35}
+h1{font-size:26px;margin:4px 0}p.note{color:var(--text2);font-size:14px;margin:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:28px;max-width:1500px;margin:20px auto}
+.col h2{font-size:17px;margin:0 0 4px}.col .spec{font-size:13px;color:var(--text2);margin:0 0 10px}
+.phone{width:320px;min-height:620px;border:2px solid var(--line);border-radius:30px;padding:18px 14px 0;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.body{flex:1}.sm{font-size:13px;color:var(--text2)}.t1{font-size:30px;font-weight:700;margin:2px 0 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.btn{display:block;width:100%;min-height:48px;border:0;border-radius:14px;background:var(--primary);color:var(--on-primary);font-size:16px;font-weight:600}
+.btn.ghost{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}
+.nav{display:flex;justify-content:space-around;border-top:1px solid var(--line);margin:10px -14px 0;padding:9px 0 12px;font-size:12px;color:var(--text2)}
+.nav b{color:var(--primary)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-weight:600;font-size:13px}
+.c-m{background:var(--menstrual-bg);color:var(--menstrual)}.c-f{background:var(--follicular-bg);color:var(--follicular)}
+.c-o{background:var(--ovulation-bg);color:var(--ovulation)}.c-l{background:var(--luteal-bg);color:var(--luteal)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:14px}
+.cal .h{font-size:11px;color:var(--text2);padding:4px 0}
+.cal .d{position:relative;height:38px;display:grid;place-items:center;border-radius:10px}
+.cal .d.m{background:var(--menstrual-bg);color:var(--menstrual);font-weight:700}
+.cal .d.f{background:var(--follicular-bg)}.cal .d.o{background:var(--ovulation-bg);color:var(--ovulation);font-weight:700}.cal .d.l{background:var(--luteal-bg)}
+.cal .d.pred{border:1.5px dashed var(--menstrual);color:var(--menstrual)}
+.cal .d.today{outline:2px solid var(--text);outline-offset:-2px}
+.cal .d.fw::after{content:"";position:absolute;left:8px;right:8px;bottom:3px;height:3px;border-radius:2px;background:var(--ovulation)}
+.cal .d.ov::before{content:"✦";position:absolute;top:0;right:3px;font-size:9px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);min-height:52px}
+.row:last-child{border:0}.row b{font-weight:600}
+.bars{display:flex;align-items:end;gap:6px;height:70px;margin-top:8px}.bars i{flex:1;background:var(--primary);border-radius:5px 5px 0 0;opacity:.85}
+.band{position:relative}.band::after{content:"";position:absolute;left:0;right:0;top:35%;height:30%;border-top:1px dashed var(--text2);border-bottom:1px dashed var(--text2)}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 16px 18px;border-top:1px solid var(--line)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 12px}
+.flow div{border:1.5px solid var(--line);border-radius:12px;min-height:64px;display:grid;place-items:center;text-align:center;font-size:11px;padding:6px 2px;background:var(--bg)}
+.flow div.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary);font-weight:700}
+.flow span{font-size:18px;line-height:1}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;margin:8px 0}.seg div{flex:1;text-align:center;padding:10px 0;border-radius:10px;font-size:14px;min-height:44px}.seg .on{background:var(--surface);font-weight:600}
+.field{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;color:var(--text2);background:var(--bg);min-height:48px}
+.empty{text-align:center;padding:28px 8px}.empty .ring{width:96px;height:96px;margin:0 auto 14px;border-radius:50%;border:12px solid var(--surface2);border-top-color:var(--primary)}
+.warn{border-left:4px solid var(--luteal);}.tag{font-size:11px;color:var(--text2);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 12px;font-size:12px;color:var(--text2);margin-top:8px}
+</style></head><body>
+<h1>Cadence — wireframes</h1>
+<p class="note">Low-fidelity layouts using the locked tokens. Every phase = colour + shape + word. All tap targets ≥ 48dp. Switch OS to dark mode to check the dark theme. Sample data is made up.</p>
+<div class="grid">
+
+<!-- 1 TODAY -->
+<div class="col"><h2>1 · Today (with data)</h2><p class="spec">Home. Answers "where am I, what's next?" and has one primary action.</p>
+<div class="phone"><div class="body">
+ <div class="sm">Tuesday, 27 October</div><div class="t1">Today</div>
+ <div class="card" style="text-align:center"><div class="sm">Cycle day</div><div style="font-size:40px;font-weight:700">12</div>
+  <span class="chip c-f">◐ Follicular</span><div class="sm" style="margin-top:8px">Ovulation likely in 3–5 days (estimate)</div></div>
+ <div class="card"><div class="sm">Next period expected</div><div style="font-size:22px;font-weight:600">Nov 10 – 14</div><div class="sm">Based on your last 4 cycles</div></div>
+ <div class="card warn"><b style="font-size:14px">Worth mentioning to a doctor</b><div class="sm">Your last cycle was 38 days, longer than the usual 21–35.</div></div>
+ <button class="btn">Log period start</button>
+ <button class="btn ghost" style="margin-top:8px">Log today</button>
+</div><div class="nav"><b>● Today</b><span>Calendar</span><span>History</span><span>Settings</span></div></div></div>
+
+<!-- 2 TODAY empty -->
+<div class="col"><h2>2 · Today (first run / empty)</h2><p class="spec">No guessing: explains what it needs. First-run shows a 1-screen welcome with the disclaimer, then this.</p>
+<div class="phone"><div class="body">
+ <div class="sm">Tuesday, 27 October</div><div class="t1">Today</div>
+ <div class="empty"><div class="ring"></div><b style="font-size:18px">Let's start with your last period</b><p class="sm">Add the date it started. After 2–3 cycles I can estimate your next one.</p></div>
+ <button class="btn">Add last period start</button>
+ <button class="btn ghost" style="margin-top:8px">Restore from a backup</button>
+</div><div class="nav"><b>● Today</b><span>Calendar</span><span>History</span><span>Settings</span></div></div></div>
+
+<!-- 3 CALENDAR -->
+<div class="col"><h2>3 · Calendar</h2><p class="spec">Month grid. Tap a day → Log sheet. Swipe or arrows change month. Fertile window = bar under day; ovulation day = ✦; predicted period = dashed outline.</p>
+<div class="phone"><div class="body">
+ <div style="display:flex;justify-content:space-between;align-items:center"><div class="t1" style="font-size:24px">October 2026</div><span class="sm">‹ &nbsp; ›</span></div>
+ <div class="cal" id="cal"></div>
+ <div class="legend"><span class="chip c-m">● Menstrual</span><span class="chip c-f">◐ Follicular</span><span class="chip c-o">✦ Ovulation</span><span class="chip c-l">☾ Luteal</span><span>▁ Fertile window</span><span>┈ Predicted period</span></div>
+ <div class="card" style="margin-top:10px"><b>Thu 15 Oct</b> <span class="chip c-o" style="margin-left:6px">✦ Ovulation (estimate)</span><div class="sm">Fertile window · Cycle day 14</div></div>
+</div><div class="nav"><span>Today</span><b>● Calendar</b><span>History</span><span>Settings</span></div></div></div>
+
+<!-- 4 HISTORY -->
+<div class="col"><h2>4 · History</h2><p class="spec">Doctor-friendly record. Summary on top, bar chart of cycle lengths (dashed band = usual range), then each cycle. Tap a cycle to edit. Report export arrives in Phase 3.</p>
+<div class="phone"><div class="body">
+ <div class="t1">History</div>
+ <div class="card"><div style="display:flex;justify-content:space-between"><div><div class="sm">Average cycle</div><b style="font-size:22px">29 days</b></div><div><div class="sm">Usual range</div><b style="font-size:22px">27–38</b></div><div><div class="sm">Period</div><b style="font-size:22px">5 days</b></div></div>
+  <div class="bars band"><i style="height:62%"></i><i style="height:58%"></i><i style="height:60%"></i><i style="height:92%"></i><i style="height:57%"></i><i style="height:63%"></i></div><div class="sm">Last 6 cycles (days)</div></div>
+ <div class="card" style="padding:4px 14px">
+  <div class="row"><div><b>Oct 2 – 6</b><div class="sm">Period 5 days</div></div><div style="text-align:right"><b>38 days</b><br><span class="tag">Longer than usual</span></div></div>
+  <div class="row"><div><b>Aug 26 – 30</b><div class="sm">Period 5 days</div></div><div style="text-align:right"><b>28 days</b></div></div>
+  <div class="row"><div><b>Jul 29 – Aug 2</b><div class="sm">Period 5 days</div></div><div style="text-align:right"><b>28 days</b></div></div>
+  <div class="row"><div><b>Jul 1 – 5</b><div class="sm">Period 5 days</div></div><div style="text-align:right"><b>29 days</b></div></div>
+ </div>
+</div><div class="nav"><span>Today</span><span>Calendar</span><b>● History</b><span>Settings</span></div></div></div>
+
+<!-- 5 LOG SHEET -->
+<div class="col"><h2>5 · Log sheet</h2><p class="spec">Bottom sheet over Today/Calendar. Opens on tapped day (default today). Fastest path: one tap on flow + Save. Edit/Delete appear when the day already has an entry; delete asks to confirm and offers Undo.</p>
+<div class="phone"><div class="body" style="opacity:.55">
+ <div class="sm">Tuesday, 27 October</div><div class="t1">Today</div><div class="card" style="height:150px"></div><div class="card" style="height:90px"></div>
+</div><div class="scrim"></div>
+ <div class="sheet"><div class="grab"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:20px">Log · Tue 27 Oct</b><span class="sm">Change date ▾</span></div>
+  <div class="seg"><div class="on">Period started</div><div>Period ended</div><div>Just flow</div></div>
+  <div class="sm">Flow</div>
+  <div class="flow"><div><span>○</span>None</div><div><span>·</span>Spotting</div><div class="on"><span>💧</span>Light</div><div><span>💧💧</span>Medium</div><div><span>💧💧💧</span>Heavy</div></div>
+  <div class="sm">Note (optional)</div><div class="field">Add a note…</div>
+  <button class="btn" style="margin-top:12px">Save</button>
+  <div style="text-align:center;margin-top:10px;color:var(--primary);font-size:14px;min-height:32px">Delete this entry</div>
+ </div></div></div>
+
+<!-- 6 SETTINGS -->
+<div class="col"><h2>6 · Settings</h2><p class="spec">Backup and restore are first-class (portability requirement). Cycle rules are advanced and tucked away. Disclaimer always reachable.</p>
+<div class="phone"><div class="body">
+ <div class="t1">Settings</div>
+ <div class="sm" style="margin:6px 0">Your data</div>
+ <div class="card" style="padding:4px 14px"><div class="row"><b>Export backup (JSON)</b><span class="sm">›</span></div><div class="row"><b>Export spreadsheet (CSV)</b><span class="sm">›</span></div><div class="row"><b>Restore from backup</b><span class="sm">›</span></div></div>
+ <div class="sm" style="margin:6px 0">Display</div>
+ <div class="card" style="padding:4px 14px"><div class="row"><b>Theme</b><span class="sm">System ›</span></div><div class="row"><b>Week starts on</b><span class="sm">Monday ›</span></div><div class="row"><div><b>Show lower-fertility days</b><div class="sm">Estimate only. Not contraception.</div></div><span class="chip c-o">Off</span></div></div>
+ <div class="sm" style="margin:6px 0">Advanced</div>
+ <div class="card" style="padding:4px 14px"><div class="row"><b>Cycle rules</b><span class="sm">Defaults ›</span></div><div class="row"><b>About &amp; disclaimer</b><span class="sm">v0.1 ›</span></div></div>
+</div><div class="nav"><span>Today</span><span>Calendar</span><span>History</span><b>● Settings</b></div></div></div>
+
+</div>
+<script>
+const c=document.getElementById('cal');
+['M','T','W','T','F','S','S'].forEach(x=>c.insertAdjacentHTML('beforeend',`<div class="h">${x}</div>`));
+// Oct 2026 starts Thursday; Monday-first -> 3 blanks
+for(let i=0;i<3;i++)c.insertAdjacentHTML('beforeend','<div></div>');
+for(let d=1;d<=31;d++){
+ let k='d';
+ if(d>=2&&d<=6)k+=' m';else if(d>=7&&d<=14)k+=' f';else if(d>=15&&d<=17)k+=' o';else if(d>=18&&d<=29)k+=' l';
+ if(d>=30)k+=' pred';
+ if(d>=11&&d<=17)k+=' fw';
+ if(d===16)k+=' ov';
+ if(d===27)k+=' today';
+ c.insertAdjacentHTML('beforeend',`<div class="${k}">${d}</div>`);
+}
+</script>
+</body></html>

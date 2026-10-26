@@ -56,6 +56,22 @@ Large title 34 bold · Title 22 semibold · Headline 17 semibold · Body 17 · S
 ## Navigation
 Bottom bar, 4 tabs: **Today, Calendar, History, Settings**. Logging happens in a bottom sheet from Today or the calendar.
 
+## Screens (wireframes: `design/wireframes.html`)
+Status: drafted 2026-10-27, awaiting sign-off from Tirth + Drashti. Once signed off, treat as locked; new screens extend, not replace.
+
+| Screen | Purpose and key rules |
+|---|---|
+| **Today** | Cycle day, current phase chip (colour+icon+word), "next period expected" range, optional "worth mentioning to a doctor" card (calm, never alarming), primary button "Log period start", secondary "Log today". |
+| **Today (empty/first run)** | Explains what it needs ("add your last period"); offers "Restore from a backup". No predictions until 2+ completed cycles. First launch shows a one-screen welcome with the disclaimer. |
+| **Calendar** | Month grid, Monday-first (configurable). Phase tint + non-colour markers: fertile window = bar under the day, ovulation day = ✦, predicted period = dashed outline, today = outline ring. Legend always visible. Tap a day → Log sheet; selected-day card shows phase and cycle day. Lower-fertility days are NOT drawn on the calendar unless enabled in Settings. |
+| **History** | Summary (average cycle, usual range, period length) + bar chart of last 6 cycles with the usual range band; list of cycles (dates, period length, cycle length, "longer/shorter than usual" tag). Tap a cycle to edit. |
+| **Log sheet** | Bottom sheet over Today/Calendar for a chosen date. Mode: Period started / Period ended / Just flow. Flow: None, Spotting, Light, Medium, Heavy (icons are drops in `primary`, plus a word). Optional note. Save. When the day already has an entry: Delete (confirm + Undo). Phase 2 adds symptoms/mood/pain here. |
+| **Settings** | Your data: Export backup (JSON), Export spreadsheet (CSV), Restore from backup. Display: Theme (System/Light/Dark), Week start, Show lower-fertility days (off by default; estimate-only note). Advanced: Cycle rules (edits `cycleRules.ts` values later), About & disclaimer. |
+
+Navigation: 4-tab bottom bar (Today, Calendar, History, Settings). Log is a sheet, not a tab.
+Interaction rules: one primary button per screen; every delete confirmable and undoable; empty states explain the next step; sample/placeholder numbers never shown as real predictions.
+Wireframe caveat: flow icons in the mock are emoji; in the app use vector drops in the `primary` token.
+
 ## Logo — LOCKED: Concept A "Ring" (Tirth, 2026-10-27)
 Open white ring with a marker dot on a rose (`primary`) background: a cycle with "today" marked. Source: `design/logo/concept-a-ring.svg`. Rejected: B (drop in ring), C (four phases; busy at small sizes), kept in `design/logo/` for reference.
 Icon rules (HIG): one idea, few shapes, no text, no gradients/shadows/glows, content centred inside the adaptive-icon safe zone, designed so a monochrome (themed) Android icon also works.
