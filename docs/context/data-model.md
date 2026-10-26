@@ -47,4 +47,6 @@ Reminders, lock, display preferences. Stays on device; included in backup.
 One file, containing a format version number, the export date, the app version, and every record above. Restoring it twice never creates duplicates. A spreadsheet-friendly (CSV) version is also produced.
 
 ## Technical mapping (for Tirth)
-Tables: `periods`, `daily_logs`, `symptoms`, `daily_log_symptoms`, `medications`, `daily_log_medications`, `settings`, `schema_migrations`. All PKs UUID text. Columns `created_at`, `updated_at`, `deleted_at` on every entity table. Postgres-compatible types only.
+Implemented (migration v1): `periods` (id, start_date, end_date, note), `daily_logs` (id, date, flow, note), `settings` (key, value). All PKs UUID text; `created_at`, `updated_at`, `deleted_at` on entity tables; partial unique indexes on `periods.start_date` and `daily_logs.date` where not deleted. Schema version is stored in SQLite `PRAGMA user_version` (no separate migrations table). Postgres-compatible types only.
+Planned (Phase 2): `symptoms`, `daily_log_symptoms`, `medications`, `daily_log_medications`.
+Code: `app/src/db/migrations.ts`, `app/src/db/repository.ts`.

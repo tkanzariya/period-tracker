@@ -7,7 +7,17 @@ Last updated: 2026-10-27
 - **expo-sqlite** for on-device storage (installed).
 - Android package id `dev.cadence.app` (placeholder; changing it later means a fresh install, fine while Drashti is the only user).
 - The scaffold's `app/.claude/settings.json` enables the official `expo@claude-plugins-official` plugin (Expo's skills).
-- Navigation (Expo Router vs plain) not yet chosen; decide at start of Phase 1.
+- **Navigation: Expo Router** (file-based, `app/src/app/`), bottom tabs (Today, Calendar, History, Settings) + a modal `log` route. Chosen 2026-10-27.
+- Tests: **Vitest** for pure logic (`npm test`). Installed with `--legacy-peer-deps` because `react-dom` (pulled by router) wants React 19.3.1 while Expo pins 19.3.0; `vite` added explicitly for the same reason.
+- Icons: `@expo/vector-icons` (Ionicons) + `expo-font`. IDs: `expo-crypto` `randomUUID()`.
+
+## Code layout (`app/src/`)
+- `config/cycleRules.ts`: every tunable number.
+- `domain/`: pure TypeScript, no React or DB imports, fully unit-tested: `dates` (timezone-safe YYYY-MM-DD math), `cycles` (lengths, stats, regularity), `prediction` (next-period range, ovulation estimate), `phases` (`getDayInfo`: phase, fertile window, lower-fertility, predicted period, days late), `flags` (irregularity flags), `logging` (validation).
+- `db/`: `migrations.ts` (append-only, version in `PRAGMA user_version`), `repository.ts` (soft deletes, UUIDs).
+- `state/data.tsx`: React context loading periods/logs and exposing log actions.
+- `theme/tokens.ts`, `ui/` (components, copy, formatting), `app/` (routes).
+- Rule: screens contain no cycle maths; they call `domain/`. Wording lives in `ui/copy.ts`.
 - **APK builds**: local Gradle build (free, needs Android Studio/SDK) or EAS Build free tier (limited, queued). Prefer local to guarantee zero cost.
 - Alternative considered: native Kotlin + Room + Compose. Rejected for now: RN keeps iOS/web possible later and is faster solo.
 

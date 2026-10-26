@@ -22,6 +22,18 @@ Last updated: 2026-10-27
 - [ ] Runs on Drashti's phone (release APK, later)
 - [ ] First git commit (waiting for Tirth's go-ahead)
 
+## Phase 1 build progress (started 2026-10-27)
+- [x] Cycle logic (dates, cycles, prediction, phases, irregularity flags, log validation) with 36 unit tests
+- [x] SQLite schema v1 + repository (soft delete, UUIDs)
+- [x] Expo Router shell: 4 tabs + Log modal; design tokens with light/dark
+- [x] Today screen (empty state, cycle day, phase chip, next-period range, flags, log buttons)
+- [x] Log screen (start / end / flow, note, date stepper, delete flow entry)
+- [ ] Calendar screen
+- [ ] History screen (+ edit/delete periods)
+- [ ] Settings: backup export/import (JSON, CSV)
+- [ ] App icon from logo A + splash
+- [ ] Release APK for Drashti
+
 ## Phase 1 — MVP basic tracking
 Log period start/end and flow, calendar + history, derived cycle stats, next-cycle range prediction, cycle phases (ovulation/fertile window estimates), irregularity flags, edit/delete, JSON/CSV export + import.
 

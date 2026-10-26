@@ -27,6 +27,8 @@ export interface CycleRules {
     cyclesToAverage: number;
     /** No prediction is shown below this many completed cycles. */
     minCyclesForPrediction: number;
+    /** The predicted range is never narrower than expected date ± this many days. */
+    minRangeHalfWidthDays: number;
   };
   ovulation: {
     /** Ovulation is estimated this many days before the next period starts. */
@@ -52,7 +54,7 @@ export interface CycleRules {
 export const DEFAULT_CYCLE_RULES: CycleRules = {
   cycle: { normalMinDays: 21, normalMaxDays: 35, maxVariationDays: 7 },
   period: { assumedLengthDays: 5, normalMaxDays: 7 },
-  prediction: { cyclesToAverage: 6, minCyclesForPrediction: 2 },
+  prediction: { cyclesToAverage: 6, minCyclesForPrediction: 2, minRangeHalfWidthDays: 1 },
   ovulation: { lutealPhaseDays: 14, phaseDaysBefore: 1, phaseDaysAfter: 1 },
   fertileWindow: { daysBeforeOvulation: 5, daysAfterOvulation: 1 },
   lowerFertility: { bufferDays: 2, requireRegularCycles: true },
