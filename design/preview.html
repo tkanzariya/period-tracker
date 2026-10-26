@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadence design preview</title>
+<style>
+:root{
+  --bg:#FBF6F2;--surface:#FFFFFF;--surface2:#F4EAE5;--line:#E6D8D1;
+  --text:#2B1B20;--text2:#6B5A60;
+  --primary:#C9265F;--on-primary:#FFFFFF;--primary-soft:#F9DDE6;
+  --menstrual:#C9265F;--follicular:#8A5A00;--fertile:#0B6E6E;--luteal:#6B4A8F;
+  --menstrual-bg:#F9DDE6;--follicular-bg:#F7E8C8;--fertile-bg:#D3EEEC;--luteal-bg:#E6DDF2;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1C1417;--surface:#2A1F23;--surface2:#33262B;--line:#4A3A40;
+  --text:#F5ECEE;--text2:#B9A8AE;
+  --primary:#F2708F;--on-primary:#1C1417;--primary-soft:#4A2330;
+  --menstrual:#F2708F;--follicular:#E0A93B;--fertile:#4FC3C3;--luteal:#B79AE0;
+  --menstrual-bg:#4A2330;--follicular-bg:#44361A;--fertile-bg:#1B3F40;--luteal-bg:#3A2D50;}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);padding:16px;line-height:1.4}
+main{max-width:920px;margin:0 auto}h1{font-size:28px;margin:8px 0}h2{font-size:20px;margin:32px 0 12px}
+p.note{color:var(--text2);font-size:15px;margin:4px 0 12px}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.logo{width:120px;height:120px;border-radius:27px;overflow:hidden;display:block}
+.logo.s{width:56px;height:56px;border-radius:13px}.logo.c{border-radius:50%}
+.logos figure{margin:0;text-align:center;font-size:14px;color:var(--text2)}
+.logos .set{display:flex;gap:12px;align-items:end;justify-content:center;margin-bottom:8px}
+.sw{width:132px;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:12px;background:var(--surface)}
+.sw i{display:block;height:48px}.sw span{display:block;padding:6px 8px;color:var(--text2)}.sw b{color:var(--text);font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-weight:600;font-size:15px;min-height:44px}
+.phone{width:320px;border:1px solid var(--line);border-radius:32px;padding:20px 16px;background:var(--bg)}
+.btn{display:block;width:100%;min-height:48px;border:0;border-radius:14px;background:var(--primary);color:var(--on-primary);font-size:17px;font-weight:600;margin-top:16px}
+.ring{width:176px;height:176px;margin:12px auto;position:relative}
+.ring svg{width:100%;height:100%}.ring div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .d{font-size:34px;font-weight:700;line-height:1.1}.ring .l{font-size:15px;color:var(--text2)}
+.type div{margin:6px 0}
+.nav{display:flex;justify-content:space-around;border-top:1px solid var(--line);margin:20px -16px -20px;padding:10px 0;font-size:12px;color:var(--text2)}
+.nav b{color:var(--primary)}
+</style></head><body><main>
+<h1>Cadence — design preview</h1>
+<p class="note">Working name. Follows Apple HIG principles (clarity, deference, depth), adapted for Android. Switch your OS to dark mode to see the dark theme.</p>
+
+<h2>Logo concepts</h2>
+<div class="row logos">
+ <figure class="card"><div class="set"><img class="logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48cGF0aCBkPSJNNzM0LjIgMzI1LjYgQTI5MCAyOTAgMCAxIDEgNDg2LjcgMjIzLjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjU3LjAiIGN5PSIyNjAuOSIgcj0iNzgiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""><img class="logo s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48cGF0aCBkPSJNNzM0LjIgMzI1LjYgQTI5MCAyOTAgMCAxIDEgNDg2LjcgMjIzLjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjU3LjAiIGN5PSIyNjAuOSIgcj0iNzgiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""><img class="logo c s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48cGF0aCBkPSJNNzM0LjIgMzI1LjYgQTI5MCAyOTAgMCAxIDEgNDg2LjcgMjIzLjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjU3LjAiIGN5PSIyNjAuOSIgcj0iNzgiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""></div><b style="color:var(--text)">A · Ring</b><br>A cycle, with "today" marked on it. Simplest.</figure>
+ <figure class="card"><div class="set"><img class="logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48Y2lyY2xlIGN4PSI1MTIiIGN5PSI1MTIiIHI9IjM2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utb3BhY2l0eT0iLjU1IiBzdHJva2Utd2lkdGg9IjQ0Ii8+PHBhdGggZD0iTTUxMiAyNzBDNTEyIDI3MCAzNzIgNDUwIDM3MiA1ODBhMTQwIDE0MCAwIDAgMCAyODAgMEM2NTIgNDUwIDUxMiAyNzAgNTEyIDI3MFoiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""><img class="logo s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48Y2lyY2xlIGN4PSI1MTIiIGN5PSI1MTIiIHI9IjM2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utb3BhY2l0eT0iLjU1IiBzdHJva2Utd2lkdGg9IjQ0Ii8+PHBhdGggZD0iTTUxMiAyNzBDNTEyIDI3MCAzNzIgNDUwIDM3MiA1ODBhMTQwIDE0MCAwIDAgMCAyODAgMEM2NTIgNDUwIDUxMiAyNzAgNTEyIDI3MFoiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""><img class="logo c s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNDOTI2NUYiLz48Y2lyY2xlIGN4PSI1MTIiIGN5PSI1MTIiIHI9IjM2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utb3BhY2l0eT0iLjU1IiBzdHJva2Utd2lkdGg9IjQ0Ii8+PHBhdGggZD0iTTUxMiAyNzBDNTEyIDI3MCAzNzIgNDUwIDM3MiA1ODBhMTQwIDE0MCAwIDAgMCAyODAgMEM2NTIgNDUwIDUxMiAyNzAgNTEyIDI3MFoiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4K" alt=""></div><b style="color:var(--text)">B · Drop in ring</b><br>Most recognisable as a period app.</figure>
+ <figure class="card"><div class="set"><img class="logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNGQkY2RjIiLz48cGF0aCBkPSJNNTUzLjggMjE0LjkgQTMwMCAzMDAgMCAwIDEgODA5LjEgNDcwLjIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5MjY1RiIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTgwOS4xIDU1My44IEEzMDAgMzAwIDAgMCAxIDU1My44IDgwOS4xIiBmaWxsPSJub25lIiBzdHJva2U9IiNEOTk2MkIiIHN0cm9rZS13aWR0aD0iODQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik00NzAuMiA4MDkuMSBBMzAwIDMwMCAwIDAgMSAyMTQuOSA1NTMuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc4OTdGIiBzdHJva2Utd2lkdGg9Ijg0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjE0LjkgNDcwLjIgQTMwMCAzMDAgMCAwIDEgNDcwLjIgMjE0LjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdBNTdBOCIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTUxMiA0MDBDNTEyIDQwMCA0NDAgNDkwIDQ0MCA1NTBhNzIgNzIgMCAwIDAgMTQ0IDBDNTg0IDQ5MCA1MTIgNDAwIDUxMiA0MDBaIiBmaWxsPSIjQzkyNjVGIi8+PC9zdmc+Cg==" alt=""><img class="logo s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNGQkY2RjIiLz48cGF0aCBkPSJNNTUzLjggMjE0LjkgQTMwMCAzMDAgMCAwIDEgODA5LjEgNDcwLjIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5MjY1RiIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTgwOS4xIDU1My44IEEzMDAgMzAwIDAgMCAxIDU1My44IDgwOS4xIiBmaWxsPSJub25lIiBzdHJva2U9IiNEOTk2MkIiIHN0cm9rZS13aWR0aD0iODQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik00NzAuMiA4MDkuMSBBMzAwIDMwMCAwIDAgMSAyMTQuOSA1NTMuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc4OTdGIiBzdHJva2Utd2lkdGg9Ijg0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjE0LjkgNDcwLjIgQTMwMCAzMDAgMCAwIDEgNDcwLjIgMjE0LjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdBNTdBOCIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTUxMiA0MDBDNTEyIDQwMCA0NDAgNDkwIDQ0MCA1NTBhNzIgNzIgMCAwIDAgMTQ0IDBDNTg0IDQ5MCA1MTIgNDAwIDUxMiA0MDBaIiBmaWxsPSIjQzkyNjVGIi8+PC9zdmc+Cg==" alt=""><img class="logo c s" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjxyZWN0IHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIGZpbGw9IiNGQkY2RjIiLz48cGF0aCBkPSJNNTUzLjggMjE0LjkgQTMwMCAzMDAgMCAwIDEgODA5LjEgNDcwLjIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5MjY1RiIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTgwOS4xIDU1My44IEEzMDAgMzAwIDAgMCAxIDU1My44IDgwOS4xIiBmaWxsPSJub25lIiBzdHJva2U9IiNEOTk2MkIiIHN0cm9rZS13aWR0aD0iODQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik00NzAuMiA4MDkuMSBBMzAwIDMwMCAwIDAgMSAyMTQuOSA1NTMuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTc4OTdGIiBzdHJva2Utd2lkdGg9Ijg0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjE0LjkgNDcwLjIgQTMwMCAzMDAgMCAwIDEgNDcwLjIgMjE0LjkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdBNTdBOCIgc3Ryb2tlLXdpZHRoPSI4NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTUxMiA0MDBDNTEyIDQwMCA0NDAgNDkwIDQ0MCA1NTBhNzIgNzIgMCAwIDAgMTQ0IDBDNTg0IDQ5MCA1MTIgNDAwIDUxMiA0MDBaIiBmaWxsPSIjQzkyNjVGIi8+PC9zdmc+Cg==" alt=""></div><b style="color:var(--text)">C · Four phases</b><br>Shows the four phases; most distinctive.</figure>
+</div>
+
+<h2>Colour</h2>
+<p class="note">Every text/background pair below passes WCAG AA (4.5:1). Light values shown; dark values switch automatically.</p>
+<div class="row">
+ <div class="sw"><i style="background:var(--primary)"></i><span><b>Primary</b><br>#C9265F / #F2708F</span></div>
+ <div class="sw"><i style="background:var(--bg)"></i><span><b>Background</b><br>#FBF6F2 / #1C1417</span></div>
+ <div class="sw"><i style="background:var(--surface)"></i><span><b>Surface</b><br>#FFFFFF / #2A1F23</span></div>
+ <div class="sw"><i style="background:var(--text)"></i><span><b>Text</b><br>#2B1B20 / #F5ECEE</span></div>
+ <div class="sw"><i style="background:var(--text2)"></i><span><b>Text 2</b><br>#6B5A60 / #B9A8AE</span></div>
+</div>
+
+<h2>Cycle phases (always colour + icon + word)</h2>
+<div class="row">
+ <span class="chip" style="background:var(--menstrual-bg);color:var(--menstrual)">● Period</span>
+ <span class="chip" style="background:var(--follicular-bg);color:var(--follicular)">◐ Follicular</span>
+ <span class="chip" style="background:var(--fertile-bg);color:var(--fertile)">✦ Fertile window</span>
+ <span class="chip" style="background:var(--luteal-bg);color:var(--luteal)">☾ Luteal</span>
+</div>
+
+<h2>Type scale (sp, system font)</h2>
+<div class="card type">
+ <div style="font-size:34px;font-weight:700">Large title 34</div>
+ <div style="font-size:22px;font-weight:600">Title 22</div>
+ <div style="font-size:17px;font-weight:600">Headline 17 semibold</div>
+ <div style="font-size:17px">Body 17 regular</div>
+ <div style="font-size:15px;color:var(--text2)">Subhead 15 · secondary</div>
+ <div style="font-size:13px;color:var(--text2)">Footnote 13 · minimum for essential text</div>
+</div>
+
+<h2>Today screen sketch</h2>
+<div class="phone">
+ <div style="font-size:13px;color:var(--text2)">Tuesday, 27 October</div>
+ <div style="font-size:34px;font-weight:700">Today</div>
+ <div class="ring">
+  <svg viewBox="0 0 176 176"><circle cx="88" cy="88" r="74" fill="none" stroke="var(--surface2)" stroke-width="16"/>
+   <circle cx="88" cy="88" r="74" fill="none" stroke="var(--fertile)" stroke-width="16" stroke-linecap="round" stroke-dasharray="70 400" transform="rotate(-20 88 88)"/></svg>
+  <div><span class="d">Day 12</span><span class="l">of ~28</span></div>
+ </div>
+ <div style="text-align:center"><span class="chip" style="background:var(--fertile-bg);color:var(--fertile)">✦ Fertile window (estimate)</span></div>
+ <div class="card" style="margin-top:14px"><div style="font-size:13px;color:var(--text2)">Next period expected</div><div style="font-size:22px;font-weight:600">Nov 10 – 14</div><div style="font-size:13px;color:var(--text2)">Based on your last 4 cycles</div></div>
+ <button class="btn">Log period start</button>
+ <div class="nav"><b>Today</b><span>Calendar</span><span>History</span><span>Settings</span></div>
+</div>
+</main></body></html>
