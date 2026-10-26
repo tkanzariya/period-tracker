@@ -17,7 +17,7 @@ Last updated: 2026-10-27
 - [ ] Wireframes for remaining screens (Calendar, History, Log sheet, Settings)
 - [ ] Lock design (tokens + logo + name) before building
 - [ ] GitHub remote connected and pushed
-- [ ] Dev environment ready (Android Studio/SDK, emulator or phone with USB debugging)
+- [x] Dev environment: JDK 17 + Android SDK installed on D:; phone detected (needs USB-debugging authorization)
 - [ ] Runs on Drashti's phone (first test)
 - [ ] First git commit (waiting for Tirth's go-ahead)
 

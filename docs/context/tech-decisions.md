@@ -16,7 +16,10 @@ Last updated: 2026-10-27
 - Never commit: keystores, `.env`, APKs, exported cycle data (see `.gitignore`).
 
 ## Dev environment
-- Windows 10, Node v26, Git 2.55. `gh` CLI and `adb` not installed/on PATH yet. Test device: Tirth's Android phone, USB debugging on.
+- Windows 10, Node v26, Git 2.55. `gh` CLI not installed.
+- JDK 17 (Temurin) at `C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot`; `JAVA_HOME` set (user env).
+- Android SDK at `D:\Android\Sdk` (C: is nearly full): cmdline-tools, platform-tools (adb), platform android-36, build-tools 36.0.0. `ANDROID_HOME` set and platform-tools on user PATH (open a new terminal to pick up). Licenses accepted.
+- Test device: Tirth's Android phone (serial RZCY90LRNLA), USB debugging on. Must tap "Allow" on the phone's RSA prompt for adb to authorize.
 
 ## Data portability rules (hard requirement)
 So that moving to a cloud DB later is a script, not a rewrite:

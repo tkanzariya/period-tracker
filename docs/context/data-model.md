@@ -34,7 +34,7 @@ Reminders, lock, display preferences. Stays on device; included in backup.
 - Period length = start to end
 - Average and spread (variability) over the last 3-6 cycles
 - Predicted next start (a range)
-- Cycle phases per day (period, follicular, fertile window, ovulation estimate, luteal) and lower-fertility days; see `features.md`
+- Cycle phases per day (menstrual, follicular, ovulation, luteal), fertile window and lower-fertility days; rules and numbers in `app/src/config/cycleRules.ts`, explained in `features.md`
 - Irregularity flags (rules from Drashti)
 
 ## Rules every record follows

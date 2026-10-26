@@ -30,19 +30,26 @@ Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
 Not enough data yet? The app says "I need 2-3 cycles to predict" instead of guessing.
 
 ## Cycle phases (added 2026-10-27, in Phase 1)
-Everything below is **calculated from her own period start dates and predicted next start**, never stored. Always labelled "estimate". `NEEDS DRASHTI REVIEW` for the exact day counts.
+Four phases (confirmed by Tirth): **Menstrual, Follicular, Ovulation, Luteal**. Everything is **calculated from her own period start dates and the predicted next start**, never stored. Always labelled "estimate".
 
-| Phase | How it's worked out |
+**All day counts live in one editable file: `app/src/config/cycleRules.ts`** (source of truth; change numbers there, no logic changes). Defaults, from published ranges, all `NEEDS DRASHTI REVIEW`:
+
+| Phase | How it's worked out (default) |
 |---|---|
-| Period | Day 1 to her logged end date (assume ~5 days if no end logged) |
-| Follicular | After the period ends, until the fertile window begins |
-| Fertile window | About 5 days before ovulation up to 1 day after |
-| Ovulation (estimated day) | About **14 days before the next predicted period** (not "day 14"; works for longer/shorter cycles) |
-| Luteal | After ovulation until the next period |
+| Menstrual | Day 1 to her logged end date (assume 5 days if none logged) |
+| Follicular | After the period ends until the Ovulation phase begins |
+| Ovulation | Estimated ovulation day ±1 day. Ovulation day = **14 days before the next predicted period** (luteal length, not "day 14") |
+| Luteal | After the Ovulation phase until the next period |
 
-- Ovulation and fertile window shown as a **range** that widens when her cycles vary; if cycles are very irregular the app says it can't estimate reliably.
+Overlays (not phases):
+- **Fertile window**: 5 days before ovulation to 1 day after (sperm survive up to ~5 days; egg ~12-24 hours).
+- **Lower-fertility days (estimate)**: days outside the fertile window plus a 2-day margin, shown only when her cycles are regular. Always with "not a method of contraception".
+
+Other rules:
+- Estimates are shown as a **range** that widens when cycles vary; very irregular cycles → the app says it can't estimate reliably.
 - Today screen shows the current phase (colour + icon + word); Calendar tints the days.
-- **"Safe period" is deliberately not used.** Calendar-based estimates are unreliable (especially for irregular cycles) and the wording invites relying on it as contraception. Proposed name: **"Lower-fertility days (estimate)"**, always with "not a method of contraception". Awaiting Drashti's confirmation (see open questions).
+- **"Safe period" is not used** (confirmed: "Lower-fertility days" is acceptable). Calendar estimates are unreliable and the wording invites contraception use.
+- Why the luteal length is the anchor: the luteal phase is fairly constant (about 12-14 days) while the follicular phase causes most of the cycle-length variation.
 
 ## Phase 2 — Richer picture (Should)
 - Symptoms (cramps, headache, bloating, etc. — list from Drashti)

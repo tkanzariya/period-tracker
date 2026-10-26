@@ -2,7 +2,7 @@
 
 Last updated: 2026-10-27
 
-Status: **direction drafted, awaiting Tirth + Drashti pick of logo and sign-off.** Live preview: `design/preview.html` (open in a browser; respects dark mode). Logo concepts: `design/logo/`.
+Status: **logo locked (A); colours/tokens drafted, awaiting Drashti's sign-off.** Live preview: `design/preview.html` (open in a browser; respects dark mode). Logo concepts: `design/logo/`.
 
 ## Design principles (from Apple's HIG, via dickwu/apple-design-skill, adapted for Android)
 1. **Clarity**: one primary action per screen; text legible at every size; nothing decorative that carries no meaning.
@@ -38,10 +38,12 @@ Android adaptations: system font (Roboto) instead of SF; bottom navigation bar; 
 Phase colours (always with icon + label):
 | Phase | Icon | Light text / bg | Dark text / bg |
 |---|---|---|---|
-| Period | ● | #C9265F / #F9DDE6 | #F2708F / #4A2330 |
+| Menstrual | ● | #C9265F / #F9DDE6 | #F2708F / #4A2330 |
 | Follicular | ◐ | #8A5A00 / #F7E8C8 | #E0A93B / #44361A |
-| Fertile window | ✦ | #0B6E6E / #D3EEEC | #4FC3C3 / #1B3F40 |
+| Ovulation | ✦ | #0B6E6E / #D3EEEC | #4FC3C3 / #1B3F40 |
 | Luteal | ☾ | #6B4A8F / #E6DDF2 | #B79AE0 / #3A2D50 |
+
+The fertile window and lower-fertility days are overlays (e.g. a subtle outline/dot pattern on the calendar), not extra phase colours.
 
 Verified contrast (light): primary on background 4.98, white on primary 5.35, text 15.3, text2 6.0, phase texts 5.5-6.5. Dark: all 6.4-15.6. Red and green are deliberately not paired.
 
@@ -54,10 +56,8 @@ Large title 34 bold · Title 22 semibold · Headline 17 semibold · Body 17 · S
 ## Navigation
 Bottom bar, 4 tabs: **Today, Calendar, History, Settings**. Logging happens in a bottom sheet from Today or the calendar.
 
-## Logo (3 concepts, pick one)
-- **A Ring**: open ring with a marker dot (a cycle, "today" marked). Simplest.
-- **B Drop in ring**: most recognisable.
-- **C Four phases**: ring of the four phase colours + rose drop. Most distinctive, but busiest at small sizes.
+## Logo — LOCKED: Concept A "Ring" (Tirth, 2026-10-27)
+Open white ring with a marker dot on a rose (`primary`) background: a cycle with "today" marked. Source: `design/logo/concept-a-ring.svg`. Rejected: B (drop in ring), C (four phases; busy at small sizes), kept in `design/logo/` for reference.
 Icon rules (HIG): one idea, few shapes, no text, no gradients/shadows/glows, content centred inside the adaptive-icon safe zone, designed so a monochrome (themed) Android icon also works.
 Final logo depends on the final name; concepts are name-independent.
 

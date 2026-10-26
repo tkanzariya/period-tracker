@@ -4,11 +4,10 @@ Last updated: 2026-10-27
 
 | # | Question | Owner |
 |---|---|---|
-| 1 | Drashti's feedback on cycle phases: please paste it (not found in repo). Confirm day counts (ovulation ≈ 14 days before next period; fertile window -5/+1) and the "Lower-fertility days" naming instead of "safe period". Her symptom list still needed. | Drashti |
-| 1b | Pick a logo concept (A ring, B drop, C four phases) and sign off colours | Tirth + Drashti |
-| 1c | Android SDK/adb setup on this PC (adb not found); is Android Studio installed? | Tirth |
-| 1d | Git commit identity is `kyrithbuilds` but repo owner is `tkanzariya`: which should commits use? | Tirth |
-| 2 | Is Android Studio/SDK installed? Does Drashti's phone allow sideloading + USB debugging? | Tirth |
+| 1 | Drashti to review the default numbers in `app/src/config/cycleRules.ts` (cycle 21-35d, luteal 14d, fertile window -5/+1, variation 7d, period 7d). Her own feedback on phases was never found in the repo. Her symptom list still needed. | Drashti |
+| 1b | Drashti to sign off the colour palette (logo already locked as A) | Drashti |
+| 1d | First pushed commit is authored as `kyrithbuilds`. Rewrite it to `tkanzariya` (needs a force-push of a 1-commit repo) or leave it? | Tirth |
+| 2 | Tap "Allow" on the phone's USB debugging prompt so adb is authorized. (Build uses Tirth's phone; Drashti's phone for sideloading later.) | Tirth |
 | 3 | App name? | Tirth + Drashti |
 | 4 | Clinical thresholds for irregularity (cycle length, period length, variability) | Drashti |
 | 5 | What must a doctor-ready report contain? | Drashti |
