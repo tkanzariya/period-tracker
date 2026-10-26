@@ -1,7 +1,7 @@
 import { randomUUID } from 'expo-crypto';
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { DateStr } from '../domain/dates';
-import type { DailyLog, FlowLevel, Period } from '../domain/types';
+import type { DailyLog, Period } from '../domain/types';
 
 const now = () => new Date().toISOString();
 
@@ -15,12 +15,11 @@ interface PeriodRow {
 interface DailyLogRow {
   id: string;
   date: string;
-  flow: string | null;
   note: string | null;
 }
 
 const toPeriod = (r: PeriodRow): Period => ({ id: r.id, startDate: r.start_date, endDate: r.end_date, note: r.note });
-const toDailyLog = (r: DailyLogRow): DailyLog => ({ id: r.id, date: r.date, flow: r.flow as FlowLevel | null, note: r.note });
+const toDailyLog = (r: DailyLogRow): DailyLog => ({ id: r.id, date: r.date, note: r.note });
 
 // ---- periods ----
 
@@ -81,42 +80,53 @@ export async function restorePeriod(db: SQLiteDatabase, id: string): Promise<voi
   await db.runAsync('UPDATE periods SET deleted_at = NULL, updated_at = ? WHERE id = ?', now(), id);
 }
 
-// ---- daily logs ----
+// ---- daily notes ----
 
 export async function listDailyLogs(db: SQLiteDatabase): Promise<DailyLog[]> {
   const rows = await db.getAllAsync<DailyLogRow>(
-    'SELECT id, date, flow, note FROM daily_logs WHERE deleted_at IS NULL ORDER BY date',
+    'SELECT id, date, note FROM daily_logs WHERE deleted_at IS NULL ORDER BY date',
   );
   return rows.map(toDailyLog);
 }
 
-/** One entry per day: creates it, or updates the existing one. */
-export async function saveDailyLog(
-  db: SQLiteDatabase,
-  date: DateStr,
-  values: { flow: FlowLevel | null; note: string | null },
-): Promise<void> {
+/** One note per day: creates it, or updates the existing one. */
+export async function saveDailyNote(db: SQLiteDatabase, date: DateStr, note: string | null): Promise<void> {
   const ts = now();
   const existing = await db.getFirstAsync<{ id: string }>(
     'SELECT id FROM daily_logs WHERE date = ? AND deleted_at IS NULL',
     date,
   );
   if (existing) {
-    await db.runAsync('UPDATE daily_logs SET flow = ?, note = ?, updated_at = ? WHERE id = ?', values.flow, values.note, ts, existing.id);
+    await db.runAsync('UPDATE daily_logs SET note = ?, updated_at = ? WHERE id = ?', note, ts, existing.id);
   } else {
     await db.runAsync(
-      'INSERT INTO daily_logs (id, date, flow, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO daily_logs (id, date, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
       randomUUID(),
       date,
-      values.flow,
-      values.note,
+      note,
       ts,
       ts,
     );
   }
 }
 
-export async function deleteDailyLog(db: SQLiteDatabase, date: DateStr): Promise<void> {
+export async function deleteDailyNote(db: SQLiteDatabase, date: DateStr): Promise<void> {
   const ts = now();
   await db.runAsync('UPDATE daily_logs SET deleted_at = ?, updated_at = ? WHERE date = ? AND deleted_at IS NULL', ts, ts, date);
+}
+
+// ---- settings ----
+
+export async function getSetting(db: SQLiteDatabase, key: string): Promise<string | null> {
+  const row = await db.getFirstAsync<{ value: string }>('SELECT value FROM settings WHERE key = ?', key);
+  return row ? row.value : null;
+}
+
+export async function setSetting(db: SQLiteDatabase, key: string, value: string): Promise<void> {
+  await db.runAsync(
+    'INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at',
+    key,
+    value,
+    now(),
+  );
 }

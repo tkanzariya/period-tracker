@@ -16,10 +16,10 @@ One bleeding episode.
 - note (optional)
 
 ### 2. Daily log
-One entry per day she records anything. Phase 1 uses only flow; later phases add the rest.
+One entry per day she records anything. Phase 1 holds only a note. (Flow level was removed 2026-10-27.)
 - date
-- flow: none / spotting / light / medium / heavy
-- Phase 2: pain level, mood, free-text note
+- note
+- Phase 2: pain level, mood
 - Phase 2: symptoms (many per day, chosen from a list)
 - Phase 2: medications taken (many per day)
 
@@ -27,7 +27,7 @@ One entry per day she records anything. Phase 1 uses only flow; later phases add
 Reference lists she can extend. Starting contents come from Drashti.
 
 ### 4. Settings
-Reminders, lock, display preferences. Stays on device; included in backup.
+What she likes to be called (`display_name`), reminders, lock, display preferences. Stays on device; included in backup.
 
 ## Things we calculate (never stored)
 - Cycle length = days from one period start to the next
@@ -47,6 +47,6 @@ Reminders, lock, display preferences. Stays on device; included in backup.
 One file, containing a format version number, the export date, the app version, and every record above. Restoring it twice never creates duplicates. A spreadsheet-friendly (CSV) version is also produced.
 
 ## Technical mapping (for Tirth)
-Implemented (migration v1): `periods` (id, start_date, end_date, note), `daily_logs` (id, date, flow, note), `settings` (key, value). All PKs UUID text; `created_at`, `updated_at`, `deleted_at` on entity tables; partial unique indexes on `periods.start_date` and `daily_logs.date` where not deleted. Schema version is stored in SQLite `PRAGMA user_version` (no separate migrations table). Postgres-compatible types only.
+Implemented (migrations v1-v2): `periods` (id, start_date, end_date, note), `daily_logs` (id, date, note; the `flow` column was dropped in v2), `settings` (key, value). All PKs UUID text; `created_at`, `updated_at`, `deleted_at` on entity tables; partial unique indexes on `periods.start_date` and `daily_logs.date` where not deleted. Schema version is stored in SQLite `PRAGMA user_version` (no separate migrations table). Postgres-compatible types only.
 Planned (Phase 2): `symptoms`, `daily_log_symptoms`, `medications`, `daily_log_medications`.
 Code: `app/src/db/migrations.ts`, `app/src/db/repository.ts`.

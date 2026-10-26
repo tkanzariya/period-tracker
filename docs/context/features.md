@@ -5,6 +5,13 @@ Last updated: 2026-10-27
 Plain-language feature plan. Priorities: **Must** = MVP can't ship without it. **Should** = right after. **Later** = parked.
 Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
 
+## Feedback that applies to EVERYTHING (Tirth, 2026-10-27)
+1. **Wording must be plain and personal.** Someone with basic English should understand every screen. No technical words ("log", "cycle day", "phase" as headings). Short sentences. Friendly, warm, instructive: the app should say what to do and why.
+2. **A friendly guide character** (an illustrated lady) talks to her in speech bubbles, uses her name, and makes the app feel alive, not dull. More graphics wherever they help (e.g. the cycle ring on Today).
+3. **No "flow" feature at all** (no none/spotting/light/medium/heavy). Parked: if Drashti wants bleeding heaviness for doctors later, revisit then.
+4. **Drashti must be able to review every calculation and every message without reading code.** Done via the generated review sheet `docs/review/cycle-review.html` (rebuild with `npm run review-sheet` in `app/` after any rule or wording change). Her answers come back as copied text.
+All wording lives in `app/src/ui/copy.ts`.
+
 ## The core loop (what the app is really for)
 1. She logs what happens (period starts, ends, how heavy, how she feels).
 2. The app learns her pattern from those logs.
@@ -15,10 +22,10 @@ Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
 ## Phase 1 — MVP (Must)
 | Feature | In plain words |
 |---|---|
-| Log period start | "My period started today" (or any past date) |
-| Log period end | "It ended" |
-| Daily flow level | None / spotting / light / medium / heavy, per day |
-| Today screen | Where she is in the cycle ("Day 12") and what's next |
+| "My period started" | Tell the app the day it started (today or an earlier day) |
+| "My period ended" | Tell the app the day it ended |
+| "Just a note" | Write a note for any day |
+| Today screen | Greets her by name; guide's message; cycle ring with today's marker; current phase in plain words; next period range |
 | Calendar | See past periods and predicted ones at a glance |
 | History list | Every past cycle with its length |
 | Edit / delete | Fix mistakes in any entry |

@@ -31,7 +31,9 @@ Last updated: 2026-10-27
 - [ ] Calendar screen
 - [ ] History screen (+ edit/delete periods)
 - [ ] Settings: backup export/import (JSON, CSV)
-- [ ] App icon from logo A + splash
+- [x] App icon from logo A (adaptive + themed); splash uses the same mark
+- [x] Plain-language rewrite, guide character, cycle ring, name on first run, flow removed (2026-10-27)
+- [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)
 - [ ] Release APK for Drashti
 
 ## Phase 1 — MVP basic tracking

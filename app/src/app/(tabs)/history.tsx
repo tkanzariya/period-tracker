@@ -8,7 +8,7 @@ export default function HistoryScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: t.background }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <Placeholder title="History" note="Every cycle with its length, plus averages and the usual range." />
+        <Placeholder title="My cycles" note="Soon you will see every cycle here, how long each one was, and what is usual for you. You can show this to your doctor." />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,20 +1,25 @@
 import { router } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { addDays, todayLocal } from '../../domain/dates';
+import { completedCycleLengths, sortPeriods } from '../../domain/cycles';
+import { todayLocal } from '../../domain/dates';
 import { getIrregularityFlags } from '../../domain/flags';
 import { getDayInfo } from '../../domain/phases';
 import { estimateOvulationDay, predictNextPeriod } from '../../domain/prediction';
-import { completedCycleLengths, sortPeriods } from '../../domain/cycles';
+import { currentCycleRing } from '../../domain/ring';
 import { useData } from '../../state/data';
-import { spacing, typeScale, useTokens } from '../../theme/tokens';
+import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../../theme/tokens';
 import { Body, Button, Card, Heading, PhaseChip } from '../../ui/components';
-import { DISCLAIMER, flagMessage } from '../../ui/copy';
+import { CycleRingView } from '../../ui/CycleRing';
+import { DISCLAIMER, PHASE_MEANING, STR, TELL_DOCTOR_TITLE, flagMessage, guideMessage, type GuideSituation } from '../../ui/copy';
+import { GuideMessage } from '../../ui/Guide';
 import { formatLong, formatRange, formatShort } from '../../ui/format';
 
 export default function TodayScreen() {
   const t = useTokens();
-  const { periods, rules, loading } = useData();
+  const { periods, rules, loading, name, saveName } = useData();
+  const [draftName, setDraftName] = useState('');
   const today = todayLocal();
 
   const sorted = sortPeriods(periods);
@@ -22,85 +27,115 @@ export default function TodayScreen() {
   const info = getDayInfo(today, periods, rules);
   const prediction = predictNextPeriod(periods, rules);
   const ovulation = estimateOvulationDay(periods, rules);
+  const ring = currentCycleRing(periods, rules);
   const flags = getIrregularityFlags(periods, today, rules);
   const completed = completedCycleLengths(periods).length;
 
-  // A period with no end logged is treated as in progress for a few days past the normal maximum.
-  const inProgress = !!latest && latest.endDate === null && (info.cycleDay ?? 99) <= rules.period.normalMaxDays + 3;
+  // A period with no end told yet counts as going on for a few days past the usual maximum.
+  const periodGoingOn = !!latest && latest.endDate === null && (info.cycleDay ?? 99) <= rules.period.normalMaxDays + 3;
+  const lateDays = flags.find((f) => f.code === 'period_late')?.value ?? 0;
 
-  const openLog = (mode: 'start' | 'end' | 'flow') => router.push({ pathname: '/log', params: { mode, date: today } });
+  const openTell = (mode: 'start' | 'end' | 'note') => router.push({ pathname: '/log', params: { mode, date: today } });
+
+  let situation: GuideSituation;
+  if (name === null) situation = { kind: 'ask_name' };
+  else if (!latest) situation = { kind: 'ask_first_period' };
+  else if (periodGoingOn) situation = { kind: 'period_going_on' };
+  else if (lateDays > 0) situation = { kind: 'late', days: lateDays };
+  else if (info.phase) situation = { kind: 'phase', phase: info.phase };
+  else situation = { kind: 'still_learning' };
+
+  const moreCyclesNeeded = Math.max(1, rules.prediction.minCyclesForPrediction - completed);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: t.background }} edges={['top']}>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }} keyboardShouldPersistTaps="handled">
         <View>
           <Body secondary>{formatLong(today)}</Body>
-          <Heading>Today</Heading>
+          <Heading>{STR.hiName(name)}</Heading>
         </View>
 
-        {loading ? null : !latest ? (
+        {loading ? null : (
           <>
-            <Card style={{ alignItems: 'center', paddingVertical: spacing.xxl, gap: spacing.sm }}>
-              <Text style={[typeScale.headline, { color: t.text, textAlign: 'center' }]}>Let's start with your last period</Text>
-              <Body secondary style={{ textAlign: 'center' }}>
-                Add the date it started. After 2–3 cycles I can estimate when your next one is due.
-              </Body>
-            </Card>
-            <Button label="Add last period start" onPress={() => openLog('start')} />
-          </>
-        ) : (
-          <>
-            <Card style={{ alignItems: 'center', gap: spacing.sm }}>
-              <Body secondary>Cycle day</Body>
-              <Text style={[typeScale.largeTitle, { fontSize: 44, lineHeight: 52, color: t.text }]}>{info.cycleDay}</Text>
-              {info.phase ? (
-                <PhaseChip phase={info.phase} />
-              ) : (
-                <Body secondary>Phase appears once I have enough cycles to estimate</Body>
-              )}
-              {info.phase === 'follicular' && ovulation && today < ovulation ? (
-                <Body secondary>Ovulation likely around {formatShort(ovulation)} (estimate)</Body>
-              ) : null}
-              {info.phase === 'ovulation' ? <Body secondary>Around your estimated ovulation (estimate)</Body> : null}
-            </Card>
+            <GuideMessage text={guideMessage(situation, name)} mood={situation.kind === 'ask_name' ? 'wave' : situation.kind === 'late' ? 'caring' : 'happy'} />
 
-            {prediction ? (
-              <Card>
-                <Body secondary>Next period expected</Body>
-                <Text style={[typeScale.title, { color: t.text }]}>{formatRange(prediction.earliestStart, prediction.latestStart)}</Text>
-                <Body secondary>
-                  Based on your last {prediction.basedOnCycles} {prediction.basedOnCycles === 1 ? 'cycle' : 'cycles'} (about {Math.round(prediction.averageLength)} days)
-                </Body>
+            {name === null ? (
+              <Card style={{ gap: spacing.md }}>
+                <Body secondary>{STR.yourName}</Body>
+                <TextInput
+                  value={draftName}
+                  onChangeText={setDraftName}
+                  placeholder={STR.nameHint}
+                  placeholderTextColor={t.text2}
+                  autoCapitalize="words"
+                  style={[
+                    typeScale.body,
+                    { minHeight: MIN_TARGET, borderWidth: 1, borderColor: t.line, borderRadius: radius.button, paddingHorizontal: spacing.md, color: t.text, backgroundColor: t.background },
+                  ]}
+                />
+                <Button label={STR.continue} disabled={!draftName.trim()} onPress={() => saveName(draftName)} />
               </Card>
+            ) : !latest ? (
+              <Button label={STR.tellLastPeriod} onPress={() => openTell('start')} />
             ) : (
-              <Card>
-                <Text style={[typeScale.headline, { color: t.text }]}>Keep logging</Text>
-                <Body secondary>
-                  I need {Math.max(1, rules.prediction.minCyclesForPrediction - completed)} more completed{' '}
-                  {rules.prediction.minCyclesForPrediction - completed <= 1 ? 'cycle' : 'cycles'} before I can estimate your next period.
-                </Body>
-              </Card>
+              <>
+                <Card style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xl }}>
+                  <CycleRingView ring={ring} day={info.cycleDay}>
+                    <Text style={[typeScale.largeTitle, { fontSize: 40, lineHeight: 46, color: t.text }]}>{STR.dayOfCycle(info.cycleDay ?? 1)}</Text>
+                    <Body secondary>{STR.ofYourCycle}</Body>
+                  </CycleRingView>
+                  {info.phase ? (
+                    <View style={{ alignItems: 'center', gap: spacing.sm }}>
+                      <PhaseChip phase={info.phase} />
+                      <Body secondary style={{ textAlign: 'center' }}>
+                        {PHASE_MEANING[info.phase]}
+                      </Body>
+                    </View>
+                  ) : null}
+                  {info.phase === 'follicular' && ovulation && today < ovulation ? (
+                    <Body secondary>{STR.ovulationAround(formatShort(ovulation))}</Body>
+                  ) : null}
+                  <Body secondary style={{ textAlign: 'center' }}>
+                    {STR.dayOfCycleSub}
+                  </Body>
+                </Card>
+
+                {prediction ? (
+                  <Card>
+                    <Body secondary>{STR.nextPeriodTitle}</Body>
+                    <Text style={[typeScale.title, { color: t.text }]}>{STR.nextPeriodRange(formatRange(prediction.earliestStart, prediction.latestStart))}</Text>
+                    <Body secondary>{STR.nextPeriodBasis(prediction.basedOnCycles, Math.round(prediction.averageLength))}</Body>
+                  </Card>
+                ) : (
+                  <Card>
+                    <Text style={[typeScale.headline, { color: t.text }]}>{STR.stillLearningTitle}</Text>
+                    <Body secondary>{STR.stillLearningBody(moreCyclesNeeded)}</Body>
+                  </Card>
+                )}
+
+                {flags.map((flag) => (
+                  <Card key={flag.code} accent={t.phase.luteal.fg}>
+                    <Text style={[typeScale.subhead, { color: t.text, fontWeight: '600' }]}>{TELL_DOCTOR_TITLE}</Text>
+                    <Body secondary>{flagMessage(flag, rules)}</Body>
+                  </Card>
+                ))}
+
+                <View style={{ gap: spacing.sm }}>
+                  {periodGoingOn ? (
+                    <Button label={STR.periodEnded} onPress={() => openTell('end')} />
+                  ) : (
+                    <Button label={STR.periodStarted} onPress={() => openTell('start')} />
+                  )}
+                  <Button label={STR.addNote} variant="secondary" onPress={() => openTell('note')} />
+                </View>
+              </>
             )}
 
-            {flags.map((flag) => (
-              <Card key={flag.code} accent={t.phase.luteal.fg}>
-                <Text style={[typeScale.subhead, { color: t.text, fontWeight: '600' }]}>Worth mentioning to a doctor</Text>
-                <Body secondary>{flagMessage(flag)}</Body>
-              </Card>
-            ))}
-
-            <View style={{ gap: spacing.sm, marginTop: spacing.xs }}>
-              {inProgress ? (
-                <Button label="Log period end" onPress={() => openLog('end')} />
-              ) : (
-                <Button label="Log period start" onPress={() => openLog('start')} />
-              )}
-              <Button label="Log today" variant="secondary" onPress={() => openLog('flow')} />
-            </View>
+            <Body secondary style={{ textAlign: 'center' }}>
+              {DISCLAIMER}
+            </Body>
           </>
         )}
-
-        <Body secondary style={{ textAlign: 'center', marginTop: spacing.md }}>{DISCLAIMER}</Body>
       </ScrollView>
     </SafeAreaView>
   );

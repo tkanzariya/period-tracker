@@ -32,10 +32,19 @@ Last updated: 2026-10-27
 - Test device: Tirth's Android phone (serial RZCY90LRNLA), USB debugging on. Must tap "Allow" on the phone's RSA prompt for adb to authorize.
 
 ## Build and run (verified 2026-10-27)
-- From `app/`, with `JAVA_HOME`/`ANDROID_HOME` set: `npx expo run:android` builds a debug APK, installs it and starts Metro. First build is slow (Gradle, NDK, C++ compile); later builds are fast and code edits hot-reload.
+- **Use `scripts/android-run.ps1`** (it sets env vars incl. `ANDROID_CXX_STAGING_DIR=D:\cx`, then runs `npx expo run:android`, which builds a debug APK, installs it and starts Metro).
+- Why: Windows' 260-character path limit broke the C++ build for `react-native-screens` once Expo Router was added; the build mirrors the long project path (`D:\Period Tracker\app\...`) inside its output folder. Fix: config plugin `app/plugins/withShortCxxDir.js` moves only the C++ build output to a short folder when that env var is set. Symptom if it recurs: ninja "No such file or directory" in a `.cxx` path.
+- Tried and rejected: mapping the repo to a short drive letter with `subst`. Windows resolves it back to the real path for some tools (Gradle) but not others (Node codegen), giving "different roots" errors. Another fix: enable Windows long paths (system setting; Tirth would have to do it himself). First build is slow (Gradle, NDK, C++ compile); later builds are fast and code edits hot-reload.
 - `app/android/` is generated (gitignored); the source of truth is `app.json` and config plugins.
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
+
+### Dev loop lessons (2026-10-27)
+- After the first install, edit code and it reloads on the phone only if the dev server is a normal one: `npx expo start --dev-client` from `app/` (NOT with `CI=1`, which stops file watching). Reopen the app with `adb shell am start -a android.intent.action.VIEW -d "cadence://?__expo_url=http%3A%2F%2F<PC-IP>%3A8081" dev.cadence.app`.
+- Only rebuild (`android-run.ps1`) after adding native modules, changing `app.json`, or changing icons (then run `npx expo prebuild --platform android --clean --no-install` first so the generated `android/` is regenerated).
+- A "completed" background task does not mean the build worked; read the log for `BUILD SUCCESSFUL` and check the phone. Old dev servers can lock `build.log`; stop them first.
+- If `adb devices` is empty/hangs: `taskkill /F /IM adb.exe`, restart `adb start-server`, unlock the phone and replug USB.
+- Google Play Protect may show "Send app for a security check?" on install. "Don't send" is fine.
 
 ## Data portability rules (hard requirement)
 So that moving to a cloud DB later is a script, not a rewrite:

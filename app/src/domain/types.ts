@@ -8,13 +8,10 @@ export interface Period {
   note: string | null;
 }
 
-export type FlowLevel = 'none' | 'spotting' | 'light' | 'medium' | 'heavy';
-export const FLOW_LEVELS: FlowLevel[] = ['none', 'spotting', 'light', 'medium', 'heavy'];
-
+/** A note she wrote for one day. (Symptoms, mood etc. join this in Phase 2.) */
 export interface DailyLog {
   id: string;
   date: DateStr;
-  flow: FlowLevel | null;
   note: string | null;
 }
 

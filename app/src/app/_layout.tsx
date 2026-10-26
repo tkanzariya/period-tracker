@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { migrateDatabase } from '../db/migrations';
 import { DataProvider } from '../state/data';
 import { useTokens } from '../theme/tokens';
+import { STR } from '../ui/copy';
 
 function Loading() {
   const t = useTokens();
@@ -32,7 +33,7 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="log" options={{ presentation: 'modal', title: 'Log' }} />
+            <Stack.Screen name="log" options={{ presentation: 'modal', title: STR.logTitle }} />
           </Stack>
         </DataProvider>
       </SQLiteProvider>

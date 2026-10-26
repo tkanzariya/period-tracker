@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cycle app: review sheet for Drashti</title>
+<style>
+:root{--bg:#FBF6F2;--card:#fff;--line:#E6D8D1;--text:#2B1B20;--text2:#6B5A60;--rose:#C9265F;--soft:#F9DDE6;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-size:18px;line-height:1.5;padding:16px}
+main{max-width:760px;margin:0 auto}h1{font-size:28px;margin:8px 0}h2{font-size:22px;margin:36px 0 6px;color:var(--rose)}h3{font-size:18px;margin:0 0 6px}
+p{margin:6px 0}.intro,.why{color:var(--text2);font-size:16px}.says{background:var(--soft);padding:10px 12px;border-radius:12px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:12px 0;break-inside:avoid}
+.answer{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:10px}
+.answer label{display:flex;align-items:center;gap:8px;min-height:44px}.answer input[type=radio]{width:22px;height:22px;accent-color:var(--rose)}
+.change{flex:1 1 100%;min-height:44px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:16px}
+.top{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+table{width:100%;border-collapse:collapse;font-size:16px;background:var(--card);border-radius:12px;overflow:hidden}
+td{padding:6px 10px;border-bottom:1px solid var(--line)}
+.ph-menstrual td{background:#F9DDE6}.ph-follicular td{background:#F7E8C8}.ph-ovulation td{background:#D3EEEC}.ph-luteal td{background:#E6DDF2}
+.btn{min-height:48px;border:0;border-radius:14px;background:var(--rose);color:#fff;font-size:18px;font-weight:600;padding:0 22px;margin:6px 8px 6px 0;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--rose);border:2px solid var(--rose)}
+textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:15px;margin-top:10px}
+@media print{.noprint{display:none}body{font-size:14px}.item{padding:8px 12px}}
+</style></head><body><main>
+<h1>Review sheet: how the app thinks</h1>
+<div class="top">
+  <p>Hi Drashti! This sheet shows every number and every sentence the app uses. Nothing here is final until you say so.</p>
+  <p>For each box, tick <b>Looks right</b> or <b>Needs a change</b>. If something needs a change, write what it should be. At the end, press <b>Copy my answers</b> and send them to Tirth.</p>
+  <p class="intro">You do not need to know anything about computers. Just check it as a nurse.</p>
+</div>
+<h2>1. How the app guesses your next period</h2><p class="intro">A "cycle" is counted from the first day of one period to the first day of the next period.</p><div class="item" data-id="avg" data-title="Which past cycles it looks at">
+  <h3>Which past cycles it looks at</h3>
+  <p class="says"><b>The app says / does:</b> It uses your last 6 cycles and takes the average length.</p>
+  <p class="why">Why: Newer cycles tell more about you than very old ones.</p>
+  <div class="answer">
+    <label><input type="radio" name="avg" value="ok"> Looks right</label>
+    <label><input type="radio" name="avg" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="min" data-title="When it starts guessing">
+  <h3>When it starts guessing</h3>
+  <p class="says"><b>The app says / does:</b> It waits until you have 2 finished cycles (that means 3 period start dates). Before that it says "I am still learning".</p>
+  <p class="why">Why: One cycle is not enough to see a pattern.</p>
+  <div class="answer">
+    <label><input type="radio" name="min" value="ok"> Looks right</label>
+    <label><input type="radio" name="min" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="range" data-title="The guess is a range, not one day">
+  <h3>The guess is a range, not one day</h3>
+  <p class="says"><b>The app says / does:</b> It shows a range, at least 1 day before and after the best guess. If your cycles change a lot, the range gets wider.</p>
+  <p class="why">Why: A single exact day would look more sure than it really is.</p>
+  <div class="answer">
+    <label><input type="radio" name="range" value="ok"> Looks right</label>
+    <label><input type="radio" name="range" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>2. What the app calls "usual"</h2><p class="intro">When something is outside these numbers, the app says: "You may want to tell your doctor". It never says something is wrong.</p><div class="item" data-id="cycle" data-title="Usual cycle length">
+  <h3>Usual cycle length</h3>
+  <p class="says"><b>The app says / does:</b> 21 to 35 days.</p>
+  <p class="why">Why: A shorter or longer cycle is mentioned in a calm message.</p>
+  <div class="answer">
+    <label><input type="radio" name="cycle" value="ok"> Looks right</label>
+    <label><input type="radio" name="cycle" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="period" data-title="Usual period length">
+  <h3>Usual period length</h3>
+  <p class="says"><b>The app says / does:</b> Up to 7 days.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="period" value="ok"> Looks right</label>
+    <label><input type="radio" name="period" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="assumed" data-title="If she forgets to say when the period ended">
+  <h3>If she forgets to say when the period ended</h3>
+  <p class="says"><b>The app says / does:</b> The app guesses the period lasted 5 days.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="assumed" value="ok"> Looks right</label>
+    <label><input type="radio" name="assumed" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="variation" data-title="Cycles that change a lot">
+  <h3>Cycles that change a lot</h3>
+  <p class="says"><b>The app says / does:</b> If her longest cycle is more than 7 days longer than her shortest cycle (out of the last 6), the app mentions it.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="variation" value="ok"> Looks right</label>
+    <label><input type="radio" name="variation" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>3. Ovulation and fertile days</h2><p class="intro">All of these are guesses made from period dates only. The app says so every time.</p><div class="item" data-id="ovulation" data-title="When ovulation happens">
+  <h3>When ovulation happens</h3>
+  <p class="says"><b>The app says / does:</b> 14 days before the next period starts.</p>
+  <p class="why">Why: The time from ovulation to the next period stays fairly steady (about 12 to 14 days) even when cycles are longer or shorter.</p>
+  <div class="answer">
+    <label><input type="radio" name="ovulation" value="ok"> Looks right</label>
+    <label><input type="radio" name="ovulation" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="ovulationPhase" data-title="The "Ovulation" part of the cycle">
+  <h3>The "Ovulation" part of the cycle</h3>
+  <p class="says"><b>The app says / does:</b> The ovulation day, plus 1 day before and 1 day after (so 3 days in total).</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="ovulationPhase" value="ok"> Looks right</label>
+    <label><input type="radio" name="ovulationPhase" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="fertile" data-title="Fertile days (best chance of pregnancy)">
+  <h3>Fertile days (best chance of pregnancy)</h3>
+  <p class="says"><b>The app says / does:</b> From 5 days before ovulation to 1 day after it.</p>
+  <p class="why">Why: Sperm can live up to about 5 days. The egg lives about 12 to 24 hours.</p>
+  <div class="answer">
+    <label><input type="radio" name="fertile" value="ok"> Looks right</label>
+    <label><input type="radio" name="fertile" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="lower" data-title=""Lower-fertility days" (hidden unless she turns it on)">
+  <h3>"Lower-fertility days" (hidden unless she turns it on)</h3>
+  <p class="says"><b>The app says / does:</b> Days outside the fertile days, with 2 days extra on each side to be careful. Only shown when her cycles are regular. Always with the words "not a way to prevent pregnancy".</p>
+  <p class="why">Why: We do not use the words "safe period" because these guesses can be wrong.</p>
+  <div class="answer">
+    <label><input type="radio" name="lower" value="ok"> Looks right</label>
+    <label><input type="radio" name="lower" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>4. The four parts of the cycle and the words we use</h2><p class="intro">Please check that each sentence is correct, kind, and easy to understand.</p><div class="item" data-id="meaning-menstrual" data-title="Menstrual: the short line">
+  <h3>Menstrual: the short line</h3>
+  <p class="says"><b>The app says / does:</b> Your period days</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="meaning-menstrual" value="ok"> Looks right</label>
+    <label><input type="radio" name="meaning-menstrual" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="guide-menstrual" data-title="Menstrual: what the guide says">
+  <h3>Menstrual: what the guide says</h3>
+  <p class="says"><b>The app says / does:</b> Your period is here. Be kind to yourself today.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="guide-menstrual" value="ok"> Looks right</label>
+    <label><input type="radio" name="guide-menstrual" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="meaning-follicular" data-title="Follicular: the short line">
+  <h3>Follicular: the short line</h3>
+  <p class="says"><b>The app says / does:</b> Your body is getting ready to release an egg</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="meaning-follicular" value="ok"> Looks right</label>
+    <label><input type="radio" name="meaning-follicular" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="guide-follicular" data-title="Follicular: what the guide says">
+  <h3>Follicular: what the guide says</h3>
+  <p class="says"><b>The app says / does:</b> Your body is getting ready for ovulation. Many women feel more energetic now.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="guide-follicular" value="ok"> Looks right</label>
+    <label><input type="radio" name="guide-follicular" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="meaning-ovulation" data-title="Ovulation: the short line">
+  <h3>Ovulation: the short line</h3>
+  <p class="says"><b>The app says / does:</b> An egg may be released around now (this is a guess)</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="meaning-ovulation" value="ok"> Looks right</label>
+    <label><input type="radio" name="meaning-ovulation" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="guide-ovulation" data-title="Ovulation: what the guide says">
+  <h3>Ovulation: what the guide says</h3>
+  <p class="says"><b>The app says / does:</b> Ovulation is likely around now. This is only my best guess.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="guide-ovulation" value="ok"> Looks right</label>
+    <label><input type="radio" name="guide-ovulation" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="meaning-luteal" data-title="Luteal: the short line">
+  <h3>Luteal: the short line</h3>
+  <p class="says"><b>The app says / does:</b> Your body is waiting for your next period</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="meaning-luteal" value="ok"> Looks right</label>
+    <label><input type="radio" name="meaning-luteal" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="guide-luteal" data-title="Luteal: what the guide says">
+  <h3>Luteal: what the guide says</h3>
+  <p class="says"><b>The app says / does:</b> Your next period is getting closer. Some women feel tired or moody around now. That is normal.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="guide-luteal" value="ok"> Looks right</label>
+    <label><input type="radio" name="guide-luteal" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>5. Messages when something looks unusual</h2><div class="item" data-id="f-short" data-title="Cycle is short">
+  <h3>Cycle is short</h3>
+  <p class="says"><b>The app says / does:</b> Your last cycle was 19 days. Most cycles are between 21 and 35 days.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-short" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-short" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="f-long" data-title="Cycle is long">
+  <h3>Cycle is long</h3>
+  <p class="says"><b>The app says / does:</b> Your last cycle was 38 days. Most cycles are between 21 and 35 days.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-long" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-long" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="f-var" data-title="Cycles change a lot">
+  <h3>Cycles change a lot</h3>
+  <p class="says"><b>The app says / does:</b> Your cycles are not always the same length. They changed by 11 days from the shortest to the longest.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-var" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-var" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="f-plong" data-title="Period lasted long">
+  <h3>Period lasted long</h3>
+  <p class="says"><b>The app says / does:</b> Your last period lasted 9 days. Most periods last up to 7 days.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-plong" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-plong" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="f-late" data-title="Period is late">
+  <h3>Period is late</h3>
+  <p class="says"><b>The app says / does:</b> Your period is 4 days later than I guessed.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-late" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-late" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="f-late-guide" data-title="What the guide says when the period is late">
+  <h3>What the guide says when the period is late</h3>
+  <p class="says"><b>The app says / does:</b> Your period is a little late. This can happen. If you are worried, please talk to your doctor.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="f-late-guide" value="ok"> Looks right</label>
+    <label><input type="radio" name="f-late-guide" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="disclaimer" data-title="Note shown at the bottom of the Today screen">
+  <h3>Note shown at the bottom of the Today screen</h3>
+  <p class="says"><b>The app says / does:</b> These are only guesses to help you understand your body. This app can't tell you if something is wrong, and it can't stop you getting pregnant. If you are worried, please talk to your doctor.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="disclaimer" value="ok"> Looks right</label>
+    <label><input type="radio" name="disclaimer" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>6. An example: a regular 28-day cycle</h2>
+<p class="intro">This table is made by the app itself for a woman whose cycles are always 28 days and whose periods last 5 days. Does each day look right to you?</p>
+<table><tr class="ph-menstrual"><td>Day 1</td><td>Menstrual</td><td>Lower-fertility</td></tr><tr class="ph-menstrual"><td>Day 2</td><td>Menstrual</td><td>Lower-fertility</td></tr><tr class="ph-menstrual"><td>Day 3</td><td>Menstrual</td><td>Lower-fertility</td></tr><tr class="ph-menstrual"><td>Day 4</td><td>Menstrual</td><td>Lower-fertility</td></tr><tr class="ph-menstrual"><td>Day 5</td><td>Menstrual</td><td>Lower-fertility</td></tr><tr class="ph-follicular"><td>Day 6</td><td>Follicular</td><td>Lower-fertility</td></tr><tr class="ph-follicular"><td>Day 7</td><td>Follicular</td><td>Lower-fertility</td></tr><tr class="ph-follicular"><td>Day 8</td><td>Follicular</td><td></td></tr><tr class="ph-follicular"><td>Day 9</td><td>Follicular</td><td></td></tr><tr class="ph-follicular"><td>Day 10</td><td>Follicular</td><td>Fertile day</td></tr><tr class="ph-follicular"><td>Day 11</td><td>Follicular</td><td>Fertile day</td></tr><tr class="ph-follicular"><td>Day 12</td><td>Follicular</td><td>Fertile day</td></tr><tr class="ph-follicular"><td>Day 13</td><td>Follicular</td><td>Fertile day</td></tr><tr class="ph-ovulation"><td>Day 14</td><td>Ovulation</td><td>Fertile day</td></tr><tr class="ph-ovulation"><td>Day 15</td><td>Ovulation</td><td>Ovulation day, Fertile day</td></tr><tr class="ph-ovulation"><td>Day 16</td><td>Ovulation</td><td>Fertile day</td></tr><tr class="ph-luteal"><td>Day 17</td><td>Luteal</td><td></td></tr><tr class="ph-luteal"><td>Day 18</td><td>Luteal</td><td></td></tr><tr class="ph-luteal"><td>Day 19</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 20</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 21</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 22</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 23</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 24</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 25</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 26</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 27</td><td>Luteal</td><td>Lower-fertility</td></tr><tr class="ph-luteal"><td>Day 28</td><td>Luteal</td><td>Lower-fertility</td></tr></table>
+<div class="item" data-id="example" data-title="Does the 28-day example look right?">
+  <h3>Does the 28-day example look right?</h3>
+  <p class="says"><b>The app says / does:</b> See the table above.</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="example" value="ok"> Looks right</label>
+    <label><input type="radio" name="example" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<h2>Anything else?</h2>
+<div class="item" data-id="other" data-title="Anything else"><textarea id="other" placeholder="Anything missing, confusing, or not kind enough? Write it here."></textarea></div>
+<div class="noprint">
+  <button class="btn" id="copy">Copy my answers</button>
+  <button class="btn ghost" onclick="window.print()">Print or save as PDF</button>
+  <textarea id="out" readonly placeholder="Your answers will appear here after you press Copy."></textarea>
+</div>
+<script>
+document.getElementById('copy').addEventListener('click', function () {
+  var lines = ['Review answers from Drashti', ''];
+  document.querySelectorAll('.item[data-id]').forEach(function (el) {
+    var id = el.getAttribute('data-id');
+    if (id === 'other') return;
+    var picked = el.querySelector('input[type=radio]:checked');
+    var note = el.querySelector('.change');
+    var status = picked ? (picked.value === 'ok' ? 'OK' : 'CHANGE') : 'not answered';
+    var text = note && note.value.trim() ? ' -> ' + note.value.trim() : '';
+    lines.push('- ' + el.getAttribute('data-title') + ': ' + status + text);
+  });
+  var other = document.getElementById('other').value.trim();
+  if (other) { lines.push('', 'Other: ' + other); }
+  var out = document.getElementById('out');
+  out.value = lines.join('\n');
+  out.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  if (navigator.clipboard) { navigator.clipboard.writeText(out.value).catch(function () {}); }
+});
+</script>
+</main></body></html>

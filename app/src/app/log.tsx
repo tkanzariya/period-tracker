@@ -1,71 +1,72 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import type { ComponentProps } from 'react';
 import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDays, todayLocal } from '../domain/dates';
-import { FLOW_LEVELS, type FlowLevel } from '../domain/types';
 import { useData } from '../state/data';
 import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../theme/tokens';
 import { Body, Button } from '../ui/components';
-import { FLOW_LABEL, LOG_ERROR } from '../ui/copy';
+import { LOG_ERROR, STR } from '../ui/copy';
 import { formatMedium } from '../ui/format';
 
-type Mode = 'start' | 'end' | 'flow';
-const MODES: { mode: Mode; label: string }[] = [
-  { mode: 'start', label: 'Period started' },
-  { mode: 'end', label: 'Period ended' },
-  { mode: 'flow', label: 'Just flow' },
-];
-const DROPS: Record<FlowLevel, number> = { none: 0, spotting: 0, light: 1, medium: 2, heavy: 3 };
+type Mode = 'start' | 'end' | 'note';
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
-export default function LogSheet() {
+const CHOICES: { mode: Mode; label: string; icon: IconName }[] = [
+  { mode: 'start', label: STR.periodStarted, icon: 'water' },
+  { mode: 'end', label: STR.periodEnded, icon: 'checkmark-circle' },
+  { mode: 'note', label: STR.justNote, icon: 'create' },
+];
+
+export default function TellMeScreen() {
   const t = useTokens();
   const data = useData();
   const params = useLocalSearchParams<{ mode?: Mode; date?: string }>();
   const today = todayLocal();
 
-  const [mode, setMode] = useState<Mode>(params.mode ?? 'flow');
+  const [mode, setMode] = useState<Mode>(params.mode ?? 'start');
   const [date, setDate] = useState(params.date && params.date <= today ? params.date : today);
-  const [flow, setFlow] = useState<FlowLevel | null>(null);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const existing = data.logs.find((l) => l.date === date);
-  const canGoForward = date < today;
+  const existingNote = data.notes.find((n) => n.date === date)?.note ?? null;
+  const yesterday = addDays(today, -1);
+  const canSave = mode !== 'note' || note.trim().length > 0;
 
   async function save() {
     setSaving(true);
     const cleanNote = note.trim() || null;
     const result =
       mode === 'start'
-        ? await data.logPeriodStart(date, flow, cleanNote)
+        ? await data.periodStarted(date, cleanNote)
         : mode === 'end'
-          ? await data.logPeriodEnd(date, cleanNote)
-          : await data.logFlow(date, flow, cleanNote);
+          ? await data.periodEnded(date, cleanNote)
+          : await data.saveNote(date, note);
     setSaving(false);
     if (!result.ok) {
-      Alert.alert('Can’t save this', LOG_ERROR[result.error] ?? 'Something went wrong.');
+      Alert.alert(STR.cantSaveTitle, LOG_ERROR[result.error] ?? STR.somethingWrong);
       return;
     }
     router.back();
   }
 
-  function confirmDelete() {
-    Alert.alert('Delete this entry?', `The flow entry for ${formatMedium(date)} will be removed.`, [
-      { text: 'Cancel', style: 'cancel' },
+  function confirmRemove() {
+    Alert.alert(STR.removeNoteTitle, STR.removeNoteBody(formatMedium(date)), [
+      { text: STR.cancel, style: 'cancel' },
       {
-        text: 'Delete',
+        text: STR.remove,
         style: 'destructive',
         onPress: async () => {
-          await data.removeFlowLog(date);
+          await data.removeNote(date);
           router.back();
         },
       },
     ]);
   }
 
-  const stepButton = (label: string, delta: number, disabled: boolean) => (
+  const step = (label: string, delta: number, disabled: boolean) => (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -77,89 +78,92 @@ export default function LogSheet() {
     </Pressable>
   );
 
+  const dayChip = (label: string, value: string) => {
+    const on = date === value;
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ selected: on }}
+        onPress={() => setDate(value)}
+        style={{
+          minHeight: 40,
+          paddingHorizontal: spacing.lg,
+          borderRadius: radius.pill,
+          justifyContent: 'center',
+          backgroundColor: on ? t.primarySoft : t.surface2,
+          borderWidth: on ? 1.5 : 0,
+          borderColor: t.primary,
+        }}
+      >
+        <Text style={[typeScale.subhead, { color: on ? t.primary : t.text, fontWeight: on ? '700' : '400' }]}>{label}</Text>
+      </Pressable>
+    );
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: t.background }} edges={['bottom']}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }} keyboardShouldPersistTaps="handled">
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            {stepButton('Previous day', -1, false)}
-            <Text style={[typeScale.title, { color: t.text }]}>{date === today ? 'Today · ' : ''}{formatMedium(date)}</Text>
-            {stepButton('Next day', 1, !canGoForward)}
-          </View>
+          <Text style={[typeScale.title, { color: t.text }]}>{STR.logQuestion}</Text>
 
-          <View style={{ flexDirection: 'row', backgroundColor: t.surface2, borderRadius: radius.button, padding: 3 }}>
-            {MODES.map((m) => {
-              const on = m.mode === mode;
+          <View style={{ gap: spacing.sm }}>
+            {CHOICES.map((c) => {
+              const on = c.mode === mode;
               return (
                 <Pressable
-                  key={m.mode}
+                  key={c.mode}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
-                  onPress={() => setMode(m.mode)}
-                  style={{ flex: 1, minHeight: MIN_TARGET - 4, alignItems: 'center', justifyContent: 'center', borderRadius: radius.button - 3, backgroundColor: on ? t.surface : 'transparent' }}
+                  onPress={() => setMode(c.mode)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing.md,
+                    minHeight: 60,
+                    padding: spacing.md,
+                    borderRadius: radius.card,
+                    borderWidth: 1.5,
+                    borderColor: on ? t.primary : t.line,
+                    backgroundColor: on ? t.primarySoft : t.surface,
+                  }}
                 >
-                  <Text style={[typeScale.subhead, { color: t.text, fontWeight: on ? '600' : '400' }]}>{m.label}</Text>
+                  <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? t.primary : t.surface2 }}>
+                    <Ionicons name={c.icon} size={22} color={on ? t.onPrimary : t.primary} />
+                  </View>
+                  <Text style={[typeScale.headline, { color: t.text, flex: 1 }]}>{c.label}</Text>
+                  {on ? <Ionicons name="checkmark" size={22} color={t.primary} /> : null}
                 </Pressable>
               );
             })}
           </View>
 
-          {mode !== 'end' ? (
-            <View style={{ gap: spacing.sm }}>
-              <Body secondary>Flow{existing?.flow ? ` (saved: ${FLOW_LABEL[existing.flow]})` : ''}</Body>
-              <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-                {FLOW_LEVELS.map((level) => {
-                  const on = flow === level;
-                  return (
-                    <Pressable
-                      key={level}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Flow ${FLOW_LABEL[level]}`}
-                      accessibilityState={{ selected: on }}
-                      onPress={() => setFlow(on ? null : level)}
-                      style={{
-                        flex: 1,
-                        minHeight: 72,
-                        borderRadius: radius.button,
-                        borderWidth: 1.5,
-                        borderColor: on ? t.primary : t.line,
-                        backgroundColor: on ? t.primarySoft : t.surface,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 4,
-                      }}
-                    >
-                      <View style={{ flexDirection: 'row', height: 20, alignItems: 'center' }}>
-                        {level === 'none' ? (
-                          <Ionicons name="remove" size={18} color={on ? t.primary : t.text2} />
-                        ) : level === 'spotting' ? (
-                          <Ionicons name="ellipse" size={8} color={on ? t.primary : t.text2} />
-                        ) : (
-                          Array.from({ length: DROPS[level] }, (_, i) => <Ionicons key={i} name="water" size={16} color={t.primary} />)
-                        )}
-                      </View>
-                      <Text style={[typeScale.footnote, { color: on ? t.primary : t.text, fontWeight: on ? '700' : '400' }]}>{FLOW_LABEL[level]}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
+          <View style={{ gap: spacing.sm }}>
+            <Body secondary>{STR.whichDay}</Body>
+            <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+              {dayChip(STR.today, today)}
+              {dayChip(STR.yesterday, yesterday)}
             </View>
-          ) : null}
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              {step('Day before', -1, false)}
+              <Text style={[typeScale.headline, { color: t.text }]}>{formatMedium(date)}</Text>
+              {step('Day after', 1, date >= today)}
+            </View>
+          </View>
 
           <View style={{ gap: spacing.sm }}>
-            <Body secondary>Note (optional)</Body>
+            <Body secondary>{STR.noteLabel}</Body>
             <TextInput
               value={note}
               onChangeText={setNote}
-              placeholder="Add a note…"
+              placeholder={existingNote ?? STR.notePlaceholder}
               placeholderTextColor={t.text2}
               multiline
-              style={[typeScale.subhead, { minHeight: MIN_TARGET, borderWidth: 1, borderColor: t.line, borderRadius: radius.button, padding: spacing.md, color: t.text, backgroundColor: t.surface }]}
+              style={[typeScale.subhead, { minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: t.line, borderRadius: radius.button, padding: spacing.md, color: t.text, backgroundColor: t.surface }]}
             />
           </View>
 
-          <Button label="Save" onPress={save} disabled={saving} />
-          {existing ? <Button label="Delete this day's flow entry" variant="text" onPress={confirmDelete} /> : null}
+          <Button label={STR.save} onPress={save} disabled={saving || !canSave} />
+          {existingNote ? <Button label={STR.removeNote} variant="text" onPress={confirmRemove} /> : null}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

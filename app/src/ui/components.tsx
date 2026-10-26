@@ -3,7 +3,8 @@ import type { ComponentProps, ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import type { Phase } from '../domain/types';
 import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../theme/tokens';
-import { PHASE_LABEL } from './copy';
+import { PHASE_LABEL, STR } from './copy';
+import { GuideAvatar } from './Guide';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -33,7 +34,11 @@ export function Card({ children, style, accent }: { children: ReactNode; style?:
 
 export function Heading({ children }: { children: ReactNode }) {
   const t = useTokens();
-  return <Text style={[typeScale.largeTitle, { color: t.text }]} accessibilityRole="header">{children}</Text>;
+  return (
+    <Text style={[typeScale.largeTitle, { color: t.text }]} accessibilityRole="header">
+      {children}
+    </Text>
+  );
 }
 
 export function Body({ children, secondary, style }: { children: ReactNode; secondary?: boolean; style?: StyleProp<TextStyle> }) {
@@ -83,14 +88,18 @@ export function Button({
   );
 }
 
+/** Temporary screen for tabs that are not built yet, still with the guide so it feels alive. */
 export function Placeholder({ title, note }: { title: string; note: string }) {
   const t = useTokens();
   return (
-    <View style={{ gap: spacing.md }}>
+    <View style={{ gap: spacing.lg }}>
       <Heading>{title}</Heading>
-      <Card>
-        <Text style={[typeScale.body, { color: t.text }]}>Coming next</Text>
-        <Body secondary>{note}</Body>
+      <Card style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xl }}>
+        <GuideAvatar size={96} mood="wave" />
+        <Text style={[typeScale.headline, { color: t.text }]}>{STR.comingSoon}</Text>
+        <Body secondary style={{ textAlign: 'center' }}>
+          {note}
+        </Body>
       </Card>
     </View>
   );

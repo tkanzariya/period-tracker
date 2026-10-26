@@ -39,6 +39,10 @@ const MIGRATIONS: string[] = [
     updated_at TEXT NOT NULL
   );
   `,
+  // v2: the flow-level feature was dropped (decision 2026-10-27); daily logs keep notes only.
+  `
+  ALTER TABLE daily_logs DROP COLUMN flow;
+  `,
 ];
 
 export const SCHEMA_VERSION = MIGRATIONS.length;

@@ -2,14 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 import { typeScale, useTokens } from '../../theme/tokens';
+import { TAB_NAMES } from '../../ui/copy';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
 const TABS: { name: string; title: string; icon: IconName; iconActive: IconName }[] = [
-  { name: 'index', title: 'Today', icon: 'today-outline', iconActive: 'today' },
-  { name: 'calendar', title: 'Calendar', icon: 'calendar-outline', iconActive: 'calendar' },
-  { name: 'history', title: 'History', icon: 'time-outline', iconActive: 'time' },
-  { name: 'settings', title: 'Settings', icon: 'settings-outline', iconActive: 'settings' },
+  { name: 'index', title: TAB_NAMES.today, icon: 'today-outline', iconActive: 'today' },
+  { name: 'calendar', title: TAB_NAMES.calendar, icon: 'calendar-outline', iconActive: 'calendar' },
+  { name: 'history', title: TAB_NAMES.cycles, icon: 'refresh-circle-outline', iconActive: 'refresh-circle' },
+  { name: 'settings', title: TAB_NAMES.settings, icon: 'settings-outline', iconActive: 'settings' },
 ];
 
 export default function TabsLayout() {

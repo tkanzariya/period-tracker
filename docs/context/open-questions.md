@@ -4,7 +4,8 @@ Last updated: 2026-10-27
 
 | # | Question | Owner |
 |---|---|---|
-| 1 | Drashti to review the default numbers in `app/src/config/cycleRules.ts` (cycle 21-35d, luteal 14d, fertile window -5/+1, variation 7d, period 7d). Her own feedback on phases was never found in the repo. Her symptom list still needed. | Drashti |
+| 1 | Drashti to fill in `docs/review/cycle-review.html` (every number and message in plain words, with Looks right / Needs a change, and a Copy button) and send the answers back. Her symptom list still needed. | Drashti |
+| 1f | Guide lady: look, skin tone, hair and name OK? (first drawing is a simple flat illustration, easy to refine) | Tirth + Drashti |
 | 1b | Drashti to sign off the colour palette and the wireframes (`design/wireframes.html`); logo already locked as A | Drashti |
 | 1e | Week start: Monday (wireframe default) or Sunday? | Tirth + Drashti |
 | 1d | First pushed commit is authored as `kyrithbuilds`. Rewrite it to `tkanzariya` (needs a force-push of a 1-commit repo) or leave it? | Tirth |

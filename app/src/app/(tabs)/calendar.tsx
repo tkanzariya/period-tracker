@@ -8,7 +8,7 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: t.background }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <Placeholder title="Calendar" note="Month view with phase tints, fertile window and predicted period." />
+        <Placeholder title="Calendar" note="Soon you will see all your days here: your period, ovulation, and when the next period may come." />
       </ScrollView>
     </SafeAreaView>
   );
