@@ -29,4 +29,5 @@ Last updated: 2026-10-27
 - **Android toolchain** installed on D: (C: has only ~13 GB free): JDK 17 (Temurin, via winget) and Android SDK at `D:\Android\Sdk`.
 - **Phases confirmed (Tirth):** Menstrual, Follicular, Ovulation, Luteal. Fertile window and lower-fertility days are overlays. "Lower-fertility days (estimate)" accepted instead of "safe period".
 - **Day counts are configurable** in `app/src/config/cycleRules.ts`; defaults from published ranges (cycle 21-35d, luteal 14d, fertile window -5/+1 around ovulation, variation flag 7d). Why: Drashti isn't available to confirm; Tirth can tune later. Still `NEEDS DRASHTI REVIEW`.
+- **First end-to-end run succeeded** on Tirth's phone (debug build, template screen). Pipeline proven: edit, build, install via USB.
 - Dev phone is connected with USB debugging; `adb`/Android SDK not found on PATH yet (needs setup before first build).

@@ -18,7 +18,8 @@ Last updated: 2026-10-27
 - [ ] Lock design (tokens + logo + name) before building
 - [ ] GitHub remote connected and pushed
 - [x] Dev environment: JDK 17 + Android SDK installed on D:; phone detected (needs USB-debugging authorization)
-- [ ] Runs on Drashti's phone (first test)
+- [x] First run on Tirth's phone (Samsung SM-S721B, Android 16): debug build via `npx expo run:android` installed and launched, 2026-10-27
+- [ ] Runs on Drashti's phone (release APK, later)
 - [ ] First git commit (waiting for Tirth's go-ahead)
 
 ## Phase 1 — MVP basic tracking

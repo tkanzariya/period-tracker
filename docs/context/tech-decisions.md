@@ -21,6 +21,12 @@ Last updated: 2026-10-27
 - Android SDK at `D:\Android\Sdk` (C: is nearly full): cmdline-tools, platform-tools (adb), platform android-36, build-tools 36.0.0. `ANDROID_HOME` set and platform-tools on user PATH (open a new terminal to pick up). Licenses accepted.
 - Test device: Tirth's Android phone (serial RZCY90LRNLA), USB debugging on. Must tap "Allow" on the phone's RSA prompt for adb to authorize.
 
+## Build and run (verified 2026-10-27)
+- From `app/`, with `JAVA_HOME`/`ANDROID_HOME` set: `npx expo run:android` builds a debug APK, installs it and starts Metro. First build is slow (Gradle, NDK, C++ compile); later builds are fast and code edits hot-reload.
+- `app/android/` is generated (gitignored); the source of truth is `app.json` and config plugins.
+- Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
+- A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
+
 ## Data portability rules (hard requirement)
 So that moving to a cloud DB later is a script, not a rewrite:
 1. **IDs are UUIDs** (generated on device), never auto-increment integers.
