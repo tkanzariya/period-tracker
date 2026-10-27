@@ -21,6 +21,35 @@ export function periodLength(period: Period): number | null {
   return period.endDate ? diffDays(period.startDate, period.endDate) + 1 : null;
 }
 
+export interface CycleRow {
+  period: Period;
+  /** How long this period lasted; null while no end date is told. */
+  periodDays: number | null;
+  /** Days from this period's start to the next one's; null for the latest (still going). */
+  cycleDays: number | null;
+  /** Outside the usual range, for a calm tag in the list. */
+  tag: 'short' | 'long' | null;
+}
+
+/** One row per period, newest first, for the "My cycles" list. */
+export function cycleRows(periods: Period[], rules: CycleRules): CycleRow[] {
+  const sorted = sortPeriods(periods);
+  const rows = sorted.map((period, i): CycleRow => {
+    const next = sorted[i + 1];
+    const cycleDays = next ? diffDays(period.startDate, next.startDate) : null;
+    const tag =
+      cycleDays === null ? null : cycleDays < rules.cycle.normalMinDays ? 'short' : cycleDays > rules.cycle.normalMaxDays ? 'long' : null;
+    return { period, periodDays: periodLength(period), cycleDays, tag };
+  });
+  return rows.reverse();
+}
+
+/** Average length of periods that have an end date; null if none. */
+export function averagePeriodLength(periods: Period[]): number | null {
+  const lengths = periods.map(periodLength).filter((n): n is number => n !== null);
+  return lengths.length ? lengths.reduce((a, b) => a + b, 0) / lengths.length : null;
+}
+
 export interface CycleStats {
   /** How many completed cycles fed these numbers. */
   count: number;

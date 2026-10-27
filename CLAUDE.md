@@ -49,6 +49,7 @@ Context is only useful if it stays true. Whenever something is learned or decide
 - **UI**: follow `docs/context/design.md` (Apple-HIG-based principles, colour tokens). Use tokens, never raw hex, in app code; WCAG AA contrast; 48dp touch targets; colour is never the only signal.
 - Never use the phrase "safe period" in the app; use "lower-fertility days (estimate)". Phase/fertility output is always an estimate and never contraception advice.
 - **Code layout** is described in `tech-decisions.md`. Cycle maths lives only in `app/src/domain/` (pure, unit-tested; add tests with any change); never put it in screens. Run `npm test` and `npm run typecheck` in `app/` before committing. Build/run on phone: `powershell -File scripts\android-run.ps1` (moves the C++ build output to a short folder to avoid Windows' 260-char path limit; see tech-decisions).
+- **Checking UI without a phone**: use the browser preview + `node scripts/preview-shots.js` (see tech-decisions). Always verify a UI change by looking at a screenshot or the phone, not just that it compiles or a build "completed".
 - Expo changes between SDK versions. Before writing code against an Expo/RN API, check the installed `expo` version in `app/package.json` and the matching docs (https://docs.expo.dev/llms.txt); install packages with `npx expo install`; run `npx tsc --noEmit` before calling work done.
 - Explain things to Tirth logically and plainly, not in heavy technical detail, unless he asks.
 - Prefer simple over clever; this is a solo project that must stay maintainable.

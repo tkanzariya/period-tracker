@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, G } from 'react-native-svg';
 import type { CycleRing as CycleRingData } from '../domain/ring';
 import { useTokens } from '../theme/tokens';
 
@@ -40,25 +40,26 @@ export function CycleRingView({ ring, day, children }: { ring: CycleRingData | n
     <View style={{ width: SIZE, height: SIZE, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
       <Svg width={SIZE} height={SIZE} style={{ position: 'absolute' }}>
         <Circle cx={center} cy={center} r={R} stroke={t.surface2} strokeWidth={STROKE} fill="none" />
-        {ring?.segments.map((s) => {
-          const start = ((s.startDay - 1) / ring.length) * C;
-          const length = ((s.endDay - s.startDay + 1) / ring.length) * C - GAP;
-          return (
-            <Circle
-              key={`${s.phase}-${s.startDay}`}
-              cx={center}
-              cy={center}
-              r={R}
-              stroke={t.phase[s.phase].fg}
-              strokeWidth={STROKE}
-              fill="none"
-              strokeDasharray={`${Math.max(length, 1)} ${C}`}
-              strokeDashoffset={-start}
-              rotation={-90}
-              origin={`${center}, ${center}`}
-            />
-          );
-        })}
+        {/* start the first day at 12 o'clock */}
+        <G transform={`rotate(-90 ${center} ${center})`}>
+          {ring.segments.map((s) => {
+            const start = ((s.startDay - 1) / ring.length) * C;
+            const length = ((s.endDay - s.startDay + 1) / ring.length) * C - GAP;
+            return (
+              <Circle
+                key={`${s.phase}-${s.startDay}`}
+                cx={center}
+                cy={center}
+                r={R}
+                stroke={t.phase[s.phase].fg}
+                strokeWidth={STROKE}
+                fill="none"
+                strokeDasharray={`${Math.max(length, 1)} ${C}`}
+                strokeDashoffset={-start}
+              />
+            );
+          })}
+        </G>
         {marker ? <Circle cx={marker.x} cy={marker.y} r={STROKE / 2 + 3} fill={t.background} stroke={t.text} strokeWidth={3} /> : null}
       </Svg>
       <View style={{ alignItems: 'center', paddingHorizontal: 40 }}>{children}</View>

@@ -17,7 +17,8 @@ export function GuideAvatar({ size = 88, mood = 'happy' }: { size?: number; mood
   const t = useTokens();
   const mouth = mood === 'caring' ? 'M53 67 Q60 70 67 67' : 'M51 66 Q60 75 69 66';
   return (
-    <Svg width={size} height={size} viewBox="0 0 120 120" accessibilityLabel="Your friendly guide" accessible>
+    <View accessible accessibilityLabel="Your friendly guide" style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 120 120">
       <Circle cx="60" cy="60" r="60" fill={t.primarySoft} />
       {/* hair behind */}
       <Path d="M27 58 C25 26 95 26 93 58 L98 100 C80 94 40 94 22 100 Z" fill={HAIR} />
@@ -49,6 +50,7 @@ export function GuideAvatar({ size = 88, mood = 'happy' }: { size?: number; mood
         </G>
       ) : null}
     </Svg>
+    </View>
   );
 }
 

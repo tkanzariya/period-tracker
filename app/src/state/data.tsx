@@ -12,10 +12,17 @@ import {
   updatePeriod,
 } from '../db/repository';
 import { todayLocal, type DateStr } from '../domain/dates';
-import { findOpenPeriod, validatePeriodStart, type LogError } from '../domain/logging';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+import { exportBackupText, restoreBackupText, type RestoreResult } from '../db/backup';
+import { restorePeriod, deletePeriod } from '../db/repository';
+import { periodsToCsv } from '../domain/backup';
+import { findOpenPeriod, validatePeriodEdit, validatePeriodStart, type LogError } from '../domain/logging';
 import type { DailyLog, Period } from '../domain/types';
 
 type Result = { ok: true } | { ok: false; error: LogError };
+
+export const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
 
 interface DataValue {
   periods: Period[];
@@ -29,6 +36,14 @@ interface DataValue {
   periodEnded(date: DateStr, note: string | null): Promise<Result>;
   saveNote(date: DateStr, note: string): Promise<Result>;
   removeNote(date: DateStr): Promise<void>;
+  /** Change when a period started/ended. */
+  changePeriod(id: string, startDate: DateStr, endDate: DateStr | null): Promise<Result>;
+  /** Removes a period (kept as "deleted" so it can be brought back). */
+  removePeriod(id: string): Promise<void>;
+  undoRemovePeriod(id: string): Promise<void>;
+  backupText(): Promise<string>;
+  csvText(): string;
+  restoreFromText(text: string): Promise<RestoreResult>;
 }
 
 const DataContext = createContext<DataValue | null>(null);
@@ -91,9 +106,38 @@ export function DataProvider({ children }: { children: ReactNode }) {
         await deleteDailyNote(db, date);
         await reload();
       },
+      async changePeriod(id, startDate, endDate) {
+        const error = validatePeriodEdit(id, startDate, endDate, periods, todayLocal(), rules);
+        if (error) return { ok: false, error };
+        await updatePeriod(db, id, { startDate, endDate });
+        await reload();
+        return { ok: true };
+      },
+      async removePeriod(id) {
+        await deletePeriod(db, id);
+        await reload();
+      },
+      async undoRemovePeriod(id) {
+        await restorePeriod(db, id);
+        await reload();
+      },
+      backupText: () => exportBackupText(db, APP_VERSION),
+      csvText: () => periodsToCsv(periods),
+      async restoreFromText(text) {
+        const result = await restoreBackupText(db, text);
+        await reload();
+        return result;
+      },
     }),
     [db, periods, notes, name, rules, loading, reload],
   );
+
+  // Developer helper for the browser preview only: lets a test script load a backup file's text.
+  useEffect(() => {
+    if (__DEV__ && Platform.OS === 'web') {
+      (globalThis as unknown as { __cadence?: unknown }).__cadence = { restore: (text: string) => value.restoreFromText(text) };
+    }
+  }, [value]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

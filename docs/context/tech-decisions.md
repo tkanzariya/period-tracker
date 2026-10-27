@@ -39,6 +39,18 @@ Last updated: 2026-10-27
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
 
+### Working without the phone: browser preview (added 2026-10-27)
+- The app runs in a browser: from `app/` run `npx expo start --web --port 8082` (needs `react-native-web`, `react-dom`, `@expo/metro-runtime`; `app/metro.config.js` adds the WebAssembly + cross-origin headers that web SQLite needs; it does not affect the phone build). Data lives in the browser's own storage, separate from the phone.
+- `node scripts/preview-shots.js [outDir]` (uses `playwright-core` + the Edge already on Windows, headless) loads sample data and screenshots Today, Calendar, My cycles, Settings. `SCHEME=dark` for dark mode. Use this instead of Claude's browser pane, which does not run properly while the Claude window is hidden.
+- Web-only dev hook: `window.__cadence.restore(text)` (in `state/data.tsx`, `__DEV__` + web only) loads a backup file's text; the screenshot script uses it for sample data.
+- `ui/dialog.ts` wraps alerts/confirms (React Native's `Alert` does nothing on web); `platform/files.ts` saves (share sheet on phone, download on web) and picks files.
+- Browser preview does not replace phone testing (native SQLite, share sheet, file picker, system fonts and safe areas differ).
+
+### Backup file (built 2026-10-27)
+- JSON `{format:"cadence-backup", schema_version, exported_at, app_version, data:{periods, daily_logs, settings}}`; rows keep UUIDs and timestamps, including deleted rows. Logic is pure and tested in `domain/backup.ts`; DB part in `db/backup.ts`.
+- Restore merges by id (newer `updated_at` wins), skips a second active period/note for the same date, rejects files from a newer schema or with any bad row (nothing changes), ignores unknown fields. Running it twice changes nothing.
+- CSV for doctors: `periodsToCsv` (Period started, Period ended, Period length, Cycle length, Note).
+
 ### Dev loop lessons (2026-10-27)
 - After the first install, edit code and it reloads on the phone only if the dev server is a normal one: `npx expo start --dev-client` from `app/` (NOT with `CI=1`, which stops file watching). Reopen the app with `adb shell am start -a android.intent.action.VIEW -d "cadence://?__expo_url=http%3A%2F%2F<PC-IP>%3A8081" dev.cadence.app`.
 - Only rebuild (`android-run.ps1`) after adding native modules, changing `app.json`, or changing icons (then run `npx expo prebuild --platform android --clean --no-install` first so the generated `android/` is regenerated).

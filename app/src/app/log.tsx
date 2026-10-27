@@ -1,14 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import type { ComponentProps } from 'react';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addDays, todayLocal } from '../domain/dates';
 import { useData } from '../state/data';
 import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../theme/tokens';
 import { Body, Button } from '../ui/components';
 import { LOG_ERROR, STR } from '../ui/copy';
+import { confirmAction, notify } from '../ui/dialog';
+import { goBackOrHome } from '../ui/nav';
 import { formatMedium } from '../ui/format';
 
 type Mode = 'start' | 'end' | 'note';
@@ -46,24 +48,17 @@ export default function TellMeScreen() {
           : await data.saveNote(date, note);
     setSaving(false);
     if (!result.ok) {
-      Alert.alert(STR.cantSaveTitle, LOG_ERROR[result.error] ?? STR.somethingWrong);
+      await notify(STR.cantSaveTitle, LOG_ERROR[result.error] ?? STR.somethingWrong);
       return;
     }
-    router.back();
+    goBackOrHome();
   }
 
-  function confirmRemove() {
-    Alert.alert(STR.removeNoteTitle, STR.removeNoteBody(formatMedium(date)), [
-      { text: STR.cancel, style: 'cancel' },
-      {
-        text: STR.remove,
-        style: 'destructive',
-        onPress: async () => {
-          await data.removeNote(date);
-          router.back();
-        },
-      },
-    ]);
+  async function confirmRemove() {
+    const yes = await confirmAction(STR.removeNoteTitle, STR.removeNoteBody(formatMedium(date)), STR.remove, STR.cancel, true);
+    if (!yes) return;
+    await data.removeNote(date);
+    goBackOrHome();
   }
 
   const step = (label: string, delta: number, disabled: boolean) => (

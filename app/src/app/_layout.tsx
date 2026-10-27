@@ -34,6 +34,7 @@ export default function RootLayout() {
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="log" options={{ presentation: 'modal', title: STR.logTitle }} />
+            <Stack.Screen name="period/[id]" options={{ presentation: 'modal', title: STR.editTitle }} />
           </Stack>
         </DataProvider>
       </SQLiteProvider>

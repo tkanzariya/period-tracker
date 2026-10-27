@@ -28,9 +28,11 @@ Last updated: 2026-10-27
 - [x] Expo Router shell: 4 tabs + Log modal; design tokens with light/dark
 - [x] Today screen (empty state, cycle day, phase chip, next-period range, flags, log buttons)
 - [x] Log screen (start / end / flow, note, date stepper, delete flow entry)
-- [ ] Calendar screen
-- [ ] History screen (+ edit/delete periods)
-- [ ] Settings: backup export/import (JSON, CSV)
+- [x] Calendar screen (phase tints, fertile bar, ovulation star, predicted-period outline, note on day, "Tell me about this day") — verified in browser preview 2026-10-27
+- [x] My cycles screen (summary, last-cycles bar chart with usual range, list with tags, edit/delete a period)
+- [x] Settings: name, save a copy (JSON), save a spreadsheet (CSV), bring information back (restore, safe to repeat) — verified in browser preview
+- [ ] Rebuild and test on the phone (new native modules: expo-file-system, expo-sharing, expo-document-picker; phone not connected for this round)
+- [ ] Settings still to do: theme choice, week start (Mon/Sun), reminders
 - [x] App icon from logo A (adaptive + themed); splash uses the same mark
 - [x] Plain-language rewrite, guide character, cycle ring, name on first run, flow removed (2026-10-27)
 - [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)

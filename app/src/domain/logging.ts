@@ -3,7 +3,27 @@ import { sortPeriods } from './cycles';
 import { addDays, type DateStr } from './dates';
 import type { Period } from './types';
 
-export type LogError = 'future_date' | 'inside_period' | 'no_open_period';
+export type LogError = 'future_date' | 'inside_period' | 'no_open_period' | 'end_before_start' | 'overlaps';
+
+/** Why changing a period to start/end on these dates should be refused, or null if it is fine. */
+export function validatePeriodEdit(
+  id: string,
+  startDate: DateStr,
+  endDate: DateStr | null,
+  periods: Period[],
+  today: DateStr,
+  rules: CycleRules,
+): LogError | null {
+  if (startDate > today || (endDate !== null && endDate > today)) return 'future_date';
+  if (endDate !== null && endDate < startDate) return 'end_before_start';
+  const newEnd = endDate ?? addDays(startDate, rules.period.assumedLengthDays - 1);
+  for (const other of periods) {
+    if (other.id === id) continue;
+    const otherEnd = other.endDate ?? addDays(other.startDate, rules.period.assumedLengthDays - 1);
+    if (startDate <= otherEnd && other.startDate <= newEnd) return 'overlaps';
+  }
+  return null;
+}
 
 /** Why a "period started" entry on `date` should be refused, or null if it is fine. */
 export function validatePeriodStart(date: DateStr, periods: Period[], today: DateStr, rules: CycleRules): LogError | null {

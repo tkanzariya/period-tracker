@@ -26,7 +26,8 @@
     "plugins": [
       "expo-sqlite",
       "expo-router",
-      "./plugins/withShortCxxDir"
+      "./plugins/withShortCxxDir",
+      "expo-sharing"
     ]
   }
 }
