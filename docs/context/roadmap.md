@@ -36,7 +36,8 @@ Last updated: 2026-10-27
 - [x] App icon from the final logo (drop + flowing line; adaptive + themed); splash uses the same mark
 - [x] Plain-language rewrite, guide character, cycle ring, name on first run, flow removed (2026-10-27)
 - [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)
-- [x] Free cloud build of the APK on GitHub (`.github/workflows/build-apk.yml`), first run being verified 2026-10-27
+- [x] Free cloud build of the APK on GitHub (`.github/workflows/build-apk.yml`): works (first run 8.6 min, builds on GitHub's machines, no PC load). Local build also works (7 min 13 s via `scripts/build-apk.bat`).
+- [x] APK size: baseline 29.4-30 MB, after compressing native libraries + JS bundle **~14 MB** (2026-10-28). Still to verify by installing it on a phone.
 - [ ] Release signing key for Drashti's APK (generate once, back it up outside the repo, add as a GitHub secret); needed before she relies on updates keeping her data
 - [ ] Release APK for Drashti
 
