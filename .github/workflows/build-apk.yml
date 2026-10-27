@@ -92,6 +92,28 @@ jobs:
             echo "::warning title=Test key::No release key set up: this app file is signed with the test key (fine for testing, not for Drashti)."
           fi
 
+      - name: Check the version, version code and changelog (releases only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="$GITHUB_REF_NAME"
+          VERSION=$(node -p "require('./app.json').expo.version")
+          CODE=$(node -p "require('./app.json').expo.android.versionCode")
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error title=Bad tag::Release tags must look like v1.2.3, with nothing extra."; exit 1
+          fi
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "::error title=Version mismatch::The tag is $TAG but app/app.json says version $VERSION. Fix app.json (or the tag) so they agree."; exit 1
+          fi
+          IFS=. read -r MAJ MIN PAT <<< "$VERSION"
+          EXPECTED=$((10#$MAJ * 10000 + 10#$MIN * 100 + 10#$PAT))
+          if [ "$CODE" != "$EXPECTED" ]; then
+            echo "::error title=Wrong version code::versionCode is $CODE but version $VERSION needs $EXPECTED (MAJOR*10000 + MINOR*100 + PATCH)."; exit 1
+          fi
+          if ! grep -qF "## [$VERSION] - " ../CHANGELOG.md; then
+            echo "::error title=Changelog missing::CHANGELOG.md has no '## [$VERSION] - date' section. Write the release notes first."; exit 1
+          fi
+          echo "Version $VERSION, version code $CODE and changelog all agree."
+
       - name: Install packages
         run: npm ci --legacy-peer-deps
 
@@ -144,7 +166,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          VERSION=$(node -p "require('./app/app.json').expo.version")
+          # The release notes are this version's section of CHANGELOG.md.
+          awk -v h="## [$VERSION] - " 'index($0,h)==1{p=1;next} /^## \[/{p=0} p' CHANGELOG.md > release-notes.md
+          {
+            echo
+            echo "---"
+            echo "**Install:** on your Android phone download the .apk below and open it. If Android asks, allow installing from this source. If Google Play Protect asks to scan the app, you can choose Don't send."
+          } >> release-notes.md
+          # 0.x versions are test builds for Drashti, not the public launch.
+          PRE=""
+          if [[ "$VERSION" == 0.* ]]; then PRE="--prerelease"; fi
           gh release create "$GITHUB_REF_NAME" dist/*.apk \
             --title "Cycle Saathi $GITHUB_REF_NAME" \
-            --notes "Cycle Saathi $GITHUB_REF_NAME. Download the .apk below on your Android phone and open it to install. If Android asks, allow installing from this source. If Google Play Protect asks to scan the app, you can choose Don't send." \
+            --notes-file release-notes.md $PRE \
             --verify-tag

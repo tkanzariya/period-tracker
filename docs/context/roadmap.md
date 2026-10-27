@@ -41,7 +41,9 @@ Last updated: 2026-10-27
 - [x] Release signing key created 2026-10-28 at `local\keys\` inside the project (git-ignored); local builds sign with it
 - [ ] Tirth: back up the key folder (2 places) and add the 4 GitHub secrets (see tech-decisions "Release signing key")
 - [x] **First release v1.0.0 published 2026-10-28**: https://github.com/tkanzariya/period-tracker/releases/tag/v1.0.0 (13.9 MB, built in the cloud in 6.7 min, signed with the Cycle Saathi key; downloaded and verified: package com.cyclesaathi.app, versionCode 1, certificate SHA-256 matches). Not yet installed on a real phone from the release link.
-- [ ] Drashti installs v1.0.0, uses it, and fills in the review sheet; feedback decides Phase 2/3
+- [x] Changelog (`CHANGELOG.md`), release process + checklist (`docs/context/release-process.md`), versioning policy proposed (0.x tester builds, 1.0.0 = Play Store launch; pending Tirth's yes, see open question 1j)
+- [x] "Start here" guide for Drashti: `docs/review/start-here-drashti.html`
+- [ ] Drashti installs the first build, uses it, and fills in the review sheet; feedback decides Phase 2/3
 - [ ] Release APK for Drashti
 
 ## Phase 1 — MVP basic tracking

@@ -23,6 +23,7 @@ Full detail lives in `docs/context/`. Do not duplicate it here.
 | `docs/context/roadmap.md` | Phases, current phase, status of each item |
 | `docs/context/research.md` | Competitor and clinical research (Drashti's findings go here) |
 | `docs/context/design.md` | Brand, logo, UI direction, screens, design decisions |
+| `docs/context/release-process.md` | Versioning policy, changelog rule, the release checklist (every release), Play Store extras |
 | `docs/context/decisions-log.md` | Dated, append-only log of every decision and why |
 | `docs/context/open-questions.md` | Unresolved questions and who owns them |
 
@@ -47,6 +48,7 @@ Context is only useful if it stays true. Whenever something is learned or decide
 - Ask before: adding dependencies with ongoing cost, committing/pushing, anything outward-facing.
 - **Git**: all code and docs go through git on `main` at https://github.com/tkanzariya/period-tracker and must be pushed; commit after each meaningful unit of work with a clear message. Never commit secrets, keystores, APKs or personal cycle data.
 - **UI**: follow `docs/context/design.md` (Apple-HIG-based principles, colour tokens). Use tokens, never raw hex, in app code; WCAG AA contrast; 48dp touch targets; colour is never the only signal.
+- **Changelog and releases (mandatory)**: keep `CHANGELOG.md` (Keep a Changelog format, Semantic Versioning) current. Every change the user can notice gets one plain-language line under `## [Unreleased]` in the SAME commit as the change. Every release follows `docs/context/release-process.md` (versioning policy, versionCode formula, the full checklist); do not skip steps. `0.y.z` = test builds for Drashti (GitHub "pre-release"), `1.0.0` = the public Play Store launch. Never reuse or move a published tag. The cloud build refuses a release whose tag, `app.json` version, versionCode or changelog section disagree.
 - **File locations**: keep everything inside the project folder in subfolders (`local/` for private things, `dist/` for built files); never create new folders at the root of D:. The only exceptions are the two short-path build caches `D:\cs` and `D:\c`, which must stay short (see `tech-decisions.md`).
 - **Signing key**: `local\keys\` holds the release key and its passwords. Never read the passwords aloud, print them, commit the folder, or type them into web pages; never delete or regenerate the key (it cannot be recovered and would strand Drashti's installs). Each release bumps `android.versionCode` and `version` in `app.json`.
 - Never use the phrase "safe period" in the app; use "lower-fertility days (estimate)". Phase/fertility output is always an estimate and never contraception advice.
