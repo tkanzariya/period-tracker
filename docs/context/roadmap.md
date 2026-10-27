@@ -33,7 +33,7 @@ Last updated: 2026-10-27
 - [x] Settings: name, save a copy (JSON), save a spreadsheet (CSV), bring information back (restore, safe to repeat) — verified in browser preview
 - [x] Rebuilt and tested on the phone 2026-10-27 (Samsung SM-S721B): Today, Calendar, My cycles, Settings render correctly in the phone's dark mode; share sheet opens with `my-cycle-info-<date>.json` (WhatsApp, Gmail, Drive offered); Android file picker opens; restoring a backup on native SQLite added 5 periods + 1 note. Not yet checked on the phone: saving the CSV share, editing/removing a period, "Tell me about this day", light mode on device.
 - [ ] Settings still to do: theme choice, week start (Mon/Sun), reminders
-- [x] App icon from logo A (adaptive + themed); splash uses the same mark
+- [x] App icon from the final logo (drop + flowing line; adaptive + themed); splash uses the same mark
 - [x] Plain-language rewrite, guide character, cycle ring, name on first run, flow removed (2026-10-27)
 - [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)
 - [ ] Release APK for Drashti

@@ -9,6 +9,7 @@ import { APP_VERSION, useData } from '../../state/data';
 import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../../theme/tokens';
 import { Body, Button, Card, Heading } from '../../ui/components';
 import { STR } from '../../ui/copy';
+import { Logo } from '../../ui/Logo';
 import { notify } from '../../ui/dialog';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
@@ -95,9 +96,12 @@ export default function SettingsScreen() {
           <Row icon="cloud-download-outline" title={STR.bringBack} help={STR.bringBackHelp} onPress={bringBack} />
         </Card>
 
-        <Body secondary style={{ textAlign: 'center' }}>
-          {STR.appVersion} {APP_VERSION}
-        </Body>
+        <View style={{ alignItems: 'center', gap: spacing.sm }}>
+          <Logo size={72} />
+          <Body secondary style={{ textAlign: 'center' }}>
+            {STR.appVersion} {APP_VERSION}
+          </Body>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

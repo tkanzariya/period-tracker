@@ -38,3 +38,8 @@ Last updated: 2026-10-27
 - Decision: restore keeps what she already has when a row exists with the same id or the same date (never overwrites newer data); deleted rows travel in backups so a future cloud sync can learn about deletions.
 - **Phone test (2026-10-27)**: new build installed and checked by screenshots on the real phone. Works: all four tabs, dark mode follows the phone, share sheet for the backup file, file picker, restore. Small fix after seeing it on device: a one-day period now reads "27 Oct", not "27–27 Oct" (test added, 72 tests). The test backup file I pushed to the phone's Download folder was removed again. Android Play Protect asks "Send app for a security check?" after each install; "Don't send" chosen.
 - Dev phone is connected with USB debugging; `adb`/Android SDK not found on PATH yet (needs setup before first build).
+
+## 2026-10-27: Logo changed to Tirth's own sketch (drop + flowing line + sparkle + crescent)
+- **Decision:** Replace concept A "Ring" with Tirth's sketch, redrawn as vector. Icon is full colour on blush `#FCEDE7`; themed icon is single colour; logo also shown in Settings.
+- **Why:** Tirth had a specific design in mind; the Ring was a stand-in.
+- **Alternatives rejected:** keeping the Ring on rose (superseded); keeping the "no gradients" icon rule (the sketch's gradients are the design).
