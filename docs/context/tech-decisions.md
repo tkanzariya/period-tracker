@@ -56,7 +56,9 @@ Last updated: 2026-10-27
 
 ### APK size (kept small from the start)
 - `buildArchs: ["arm64-v8a"]` (only 64-bit phones; drops 32-bit and PC-emulator CPU types, ~3/4 of native code), R8 minify + resource shrinking in release, GIF support off (unused), Hermes on, no unused image/font families. Debug builds are larger (~61 MB) and are not what Drashti gets.
-- Measure with `build-apk.bat` (it prints the size). Baseline and later numbers are in `roadmap.md`.
+- Measure with `build-apk.bat` (it prints the size) or the "App file size" notice on a cloud run. **Baseline (2026-10-27, first release build): 29.4 MB** (local) / ~30 MB (cloud). Most of it is native libraries stored uncompressed inside the APK: `libreactnative.so` 7.0 MB, `classes.dex` 5.1 MB (2.3 packed), JS bundle 2.7 MB, `libhermesvm.so` 2.6 MB, `libexpo-sqlite.so` 1.8 MB, `libexpo-modules-core.so` 1.5 MB, `libappmodules.so` 1.4 MB, Ionicons font 1.25 MB, `libc++_shared.so` 1.2 MB, screens/svg codegen libs ~2 MB. (GitHub's artifact download is a zip of the APK, so it shows ~13.5 MB: that is not the APK size.)
+- Applied next: `useLegacyPackaging: true` (libraries compressed inside the APK: the file you share gets much smaller, installed size is a bit bigger) and `enableBundleCompression: true` (compressed JS bundle; slightly slower first start). Expected APK ~14-16 MB; actual number is in `roadmap.md` once the cloud run finishes.
+- Later ideas (not done): replace the Ionicons font (1.25 MB) with the few icons we use as SVG; trim languages in resources; review each Expo module for removal; re-check after Phase 2 features.
 - Trade-off: a 32-bit-only phone or an x86 emulator cannot run it. To use an emulator later, add `x86_64` to `buildArchs` temporarily.
 
 ### Testing on the PC without a phone (decision 2026-10-27)

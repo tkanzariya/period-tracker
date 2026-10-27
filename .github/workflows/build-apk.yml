@@ -6,7 +6,8 @@
 #   3. Wait about 10-20 minutes. Open the finished run and download "CycleSaathi-apk" at the bottom.
 #      (The download is a .zip with the .apk inside.)
 #
-# It also runs by itself when this file changes, which checks that the setup still works.
+# It also runs by itself when this file or app/app.json changes (a new version number or native
+# setting means a fresh app file is wanted), which also checks that the setup still works.
 name: Build app file (APK)
 
 on:
@@ -15,6 +16,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/build-apk.yml'
+      - 'app/app.json'   # app version or native settings changed: build a fresh app file
 
 concurrency:
   group: build-apk
@@ -41,7 +43,7 @@ jobs:
           cache-dependency-path: app/package-lock.json
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
