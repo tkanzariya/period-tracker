@@ -56,6 +56,7 @@ Last updated: 2026-10-27
 - Only rebuild (`android-run.ps1`) after adding native modules, changing `app.json`, or changing icons (then run `npx expo prebuild --platform android --clean --no-install` first so the generated `android/` is regenerated).
 - A "completed" background task does not mean the build worked; read the log for `BUILD SUCCESSFUL` and check the phone. Old dev servers can lock `build.log`; stop them first.
 - If `adb devices` is empty/hangs: `taskkill /F /IM adb.exe`, restart `adb start-server`, unlock the phone and replug USB.
+- Phone checks without touching the user's files: screenshots via `adb exec-out screencap -p > file.png` (use Bash, not PowerShell, which corrupts the PNG), taps via `adb shell input tap x y` (screenshot is shown scaled; multiply by 1.17). Git Bash rewrites `/sdcard/...` paths: use `MSYS_NO_PATHCONV=1` or PowerShell for `adb push/shell` with phone paths. In the Android file picker, search for the test file name instead of browsing.
 - Google Play Protect may show "Send app for a security check?" on install. "Don't send" is fine.
 
 ## Data portability rules (hard requirement)

@@ -30,6 +30,7 @@ export function formatShort(date: DateStr): string {
 
 /** "10–14 Nov" or "30 Oct – 3 Nov" */
 export function formatRange(from: DateStr, to: DateStr): string {
+  if (from === to) return formatShort(from);
   const a = parts(from);
   const b = parts(to);
   if (a.month === b.month) return `${a.day}–${b.day} ${MONTHS[a.month]}`;
