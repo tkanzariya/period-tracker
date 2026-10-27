@@ -135,7 +135,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   // Developer helper for the browser preview only: lets a test script load a backup file's text.
   useEffect(() => {
     if (__DEV__ && Platform.OS === 'web') {
-      (globalThis as unknown as { __cadence?: unknown }).__cadence = { restore: (text: string) => value.restoreFromText(text) };
+      (globalThis as unknown as { __cycleSaathi?: unknown }).__cycleSaathi = { restore: (text: string) => value.restoreFromText(text) };
     }
   }, [value]);
 

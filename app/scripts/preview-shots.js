@@ -19,7 +19,7 @@ fs.mkdirSync(outDir, { recursive: true });
 const ts = '2026-10-01T10:00:00.000Z';
 const period = (id, s, e) => ({ id, start_date: s, end_date: e, note: null, created_at: ts, updated_at: ts, deleted_at: null });
 const sample = {
-  format: 'cadence-backup',
+  format: 'cycle-saathi-backup',
   schema_version: 2,
   exported_at: ts,
   app_version: '1.0.0',
@@ -53,13 +53,13 @@ async function settle(page, ms = 1500) {
   });
 
   await page.goto(BASE, { waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => typeof window.__cadence !== 'undefined', null, { timeout: 120000 });
+  await page.waitForFunction(() => typeof window.__cycleSaathi !== 'undefined', null, { timeout: 120000 });
 
   if (!process.env.NO_SAMPLE) {
-    const result = await page.evaluate((text) => window.__cadence.restore(text), JSON.stringify(sample));
+    const result = await page.evaluate((text) => window.__cycleSaathi.restore(text), JSON.stringify(sample));
     console.log('restore:', JSON.stringify(result));
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => typeof window.__cadence !== 'undefined', null, { timeout: 120000 });
+    await page.waitForFunction(() => typeof window.__cycleSaathi !== 'undefined', null, { timeout: 120000 });
   }
   await settle(page, 2500);
 

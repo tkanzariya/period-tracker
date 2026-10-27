@@ -5,7 +5,7 @@ Last updated: 2026-10-27
 ## Stack (CONFIRMED 2026-10-27)
 - **React Native with Expo (TypeScript)**, scaffolded in `app/` from the `blank-typescript` template. Installed: Expo SDK 58, React Native 0.88, React 19.3, TypeScript 6. Expo = framework/toolchain on top of React Native that handles native config, dev workflow and builds. Tirth already knows RN.
 - **expo-sqlite** for on-device storage (installed).
-- Android package id `dev.cadence.app` (placeholder; changing it later means a fresh install, fine while Drashti is the only user).
+- Android package id `com.cyclesaathi.app`, URL scheme `cyclesaathi`, database file `cycle-saathi.db`. (Renamed from the working name Cadence on 2026-10-27; the id differs, so the renamed app installs as a NEW app and does not see the old app's data. Fine: only test data existed. Changing the id after Drashti starts using it would lose her data on the phone.)
 - The scaffold's `app/.claude/settings.json` enables the official `expo@claude-plugins-official` plugin (Expo's skills).
 - **Navigation: Expo Router** (file-based, `app/src/app/`), bottom tabs (Today, Calendar, History, Settings) + a modal `log` route. Chosen 2026-10-27.
 - Tests: **Vitest** for pure logic (`npm test`). Installed with `--legacy-peer-deps` because `react-dom` (pulled by router) wants React 19.3.1 while Expo pins 19.3.0; `vite` added explicitly for the same reason.
@@ -39,15 +39,34 @@ Last updated: 2026-10-27
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
 
+### One-click scripts (added 2026-10-27; double-click in `scripts/`)
+- `build-apk.bat`: builds a standalone release APK (code inside, runs on its own) with live Gradle progress, copies it to `dist\CycleSaathi-v<version>.apk`, prints its size, beeps, opens the folder. No phone needed. This is the file to give Drashti.
+- `build-phone.bat`: builds the debug version, installs it on the connected phone, starts live reload. Only needed after native changes.
+- `preview-web.bat`: makes fake sample data and starts the browser version (no phone). Load `app/sample-data/sample-backup.json` through Settings > "Bring my information back".
+- Why progress used to be invisible: `expo run:android` hides Gradle's output. The scripts call `gradlew` directly, so the % bar and task names show.
+- Why builds are slow: older 4-core CPU (i7-4770S, 2013), ~15 native libraries incl. C++, Gradle had only 2 GB memory, and release builds compiled for 4 CPU types. Typical now: first/clean build ~8 min, later ~3 min. JS-only changes (screens, wording, logic) need NO rebuild: the phone/browser reloads live.
+- Build tuning is in `app.json` + `plugins/withFasterGradle.js` (more Gradle memory, build cache) and applies on every `expo prebuild`.
+
+### APK size (kept small from the start)
+- `buildArchs: ["arm64-v8a"]` (only 64-bit phones; drops 32-bit and PC-emulator CPU types, ~3/4 of native code), R8 minify + resource shrinking in release, GIF support off (unused), Hermes on, no unused image/font families. Debug builds are larger (~61 MB) and are not what Drashti gets.
+- Measure with `build-apk.bat` (it prints the size). Baseline and later numbers are in `roadmap.md`.
+- Trade-off: a 32-bit-only phone or an x86 emulator cannot run it. To use an emulator later, add `x86_64` to `buildArchs` temporarily.
+
+### Testing on the PC without a phone (decision 2026-10-27)
+1. **Automated tests** (`npm test`, 72 now): all cycle/backup logic.
+2. **Browser preview** (`preview-web.bat`, plus `node scripts/preview-shots.js` for screenshots): every screen and flow with real SQLite.
+3. **Phone** only for native things (share sheet, file picker, fonts, safe areas) and final checks, using the built APK.
+- Android emulator is NOT set up: this PC's CPU virtualization is switched off in the BIOS (`VirtualizationFirmwareEnabled: False`, no hypervisor), so an emulator would be unusably slow. It needs "Intel Virtualization Technology" enabled in BIOS plus Windows Hypervisor Platform (system changes Tirth must make himself) and a ~1.5 GB download. Low value given steps 1 and 2; revisit only if needed.
+
 ### Working without the phone: browser preview (added 2026-10-27)
 - The app runs in a browser: from `app/` run `npx expo start --web --port 8082` (needs `react-native-web`, `react-dom`, `@expo/metro-runtime`; `app/metro.config.js` adds the WebAssembly + cross-origin headers that web SQLite needs; it does not affect the phone build). Data lives in the browser's own storage, separate from the phone.
 - `node scripts/preview-shots.js [outDir]` (uses `playwright-core` + the Edge already on Windows, headless) loads sample data and screenshots Today, Calendar, My cycles, Settings. `SCHEME=dark` for dark mode. Use this instead of Claude's browser pane, which does not run properly while the Claude window is hidden.
-- Web-only dev hook: `window.__cadence.restore(text)` (in `state/data.tsx`, `__DEV__` + web only) loads a backup file's text; the screenshot script uses it for sample data.
+- Web-only dev hook: `window.__cycleSaathi.restore(text)` (in `state/data.tsx`, `__DEV__` + web only) loads a backup file's text; the screenshot script uses it for sample data.
 - `ui/dialog.ts` wraps alerts/confirms (React Native's `Alert` does nothing on web); `platform/files.ts` saves (share sheet on phone, download on web) and picks files.
 - Browser preview does not replace phone testing (native SQLite, share sheet, file picker, system fonts and safe areas differ).
 
 ### Backup file (built 2026-10-27)
-- JSON `{format:"cadence-backup", schema_version, exported_at, app_version, data:{periods, daily_logs, settings}}`; rows keep UUIDs and timestamps, including deleted rows. Logic is pure and tested in `domain/backup.ts`; DB part in `db/backup.ts`.
+- JSON `{format:"cycle-saathi-backup" (files with the old "cadence-backup" format are still accepted), schema_version, exported_at, app_version, data:{periods, daily_logs, settings}}`; rows keep UUIDs and timestamps, including deleted rows. Logic is pure and tested in `domain/backup.ts`; DB part in `db/backup.ts`.
 - Restore merges by id (newer `updated_at` wins), skips a second active period/note for the same date, rejects files from a newer schema or with any bad row (nothing changes), ignores unknown fields. Running it twice changes nothing.
 - CSV for doctors: `periodsToCsv` (Period started, Period ended, Period length, Cycle length, Note).
 

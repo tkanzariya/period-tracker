@@ -7,7 +7,7 @@
  */
 const { withAppBuildGradle } = require('expo/config-plugins');
 
-const MARKER = '// cadence: short C++ build dir';
+const MARKER = '// cycle-saathi: short C++ build dir';
 
 module.exports = function withShortCxxDir(config) {
   return withAppBuildGradle(config, (c) => {

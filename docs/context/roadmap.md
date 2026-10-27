@@ -11,7 +11,7 @@ Last updated: 2026-10-27
 - [x] Feature list draft (`features.md`) — needs Drashti's review
 - [x] Data model draft (`data-model.md`) — needs Drashti's review
 - [x] Project scaffolded in `app/` (installs, typechecks, doctor passes)
-- [ ] App name (working codename: Cadence)
+- [x] App name: **Cycle Saathi** (2026-10-27)
 - [x] Logo concepts (3) and palette drafted -> pick one
 - [x] UI direction + tokens drafted (`design.md`, `design/preview.html`) -> needs sign-off
 - [x] Wireframes for all screens (Today, empty Today, Calendar, History, Log sheet, Settings) -> `design/wireframes.html`

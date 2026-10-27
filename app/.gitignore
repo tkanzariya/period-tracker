@@ -43,3 +43,6 @@ yarn-error.*
 # generated helper output
 .tmp/
 build.log
+
+# generated fake test data
+sample-data/

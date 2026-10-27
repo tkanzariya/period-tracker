@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "Cadence",
-    "slug": "cadence",
+    "name": "Cycle Saathi",
+    "slug": "cycle-saathi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "scheme": "cadence",
+    "scheme": "cyclesaathi",
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "package": "dev.cadence.app",
+      "package": "com.cyclesaathi.app",
       "adaptiveIcon": {
         "backgroundColor": "#FCEDE7",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -27,7 +27,19 @@
       "expo-sqlite",
       "expo-router",
       "./plugins/withShortCxxDir",
-      "expo-sharing"
+      "expo-sharing",
+      "./plugins/withFasterGradle",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "buildArchs": ["arm64-v8a"],
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "gifEnabled": false
+          }
+        }
+      ]
     ]
   }
 }

@@ -1,8 +1,8 @@
-# Cadence (working name) — Claude Instructions
+# Cycle Saathi — Claude Instructions
 
 Read this file first in every session. It tells you how to work in this repo and where context lives.
 
-**Naming:** "Cadence" is a placeholder codename; the real name is undecided. Never call the product "Period Tracker" in code, UI or docs. Keep the name in as few places as possible (`app/app.json`, `app/package.json`) so renaming is easy.
+**Naming:** the app is called **Cycle Saathi** ("saathi" = companion in Hindi/Gujarati; chosen by Tirth 2026-10-27). Never call the product "Period Tracker" or the old working name "Cadence" in code, UI or docs (old history entries in `decisions-log.md` may mention it). Android package id `com.cyclesaathi.app`, URL scheme `cyclesaathi`. Keep the name in as few places as possible (`app/app.json`, `app/package.json`, `ui/copy.ts` `STR.appName`) so renaming stays easy. The guide lady is "your Saathi" in the app's words.
 
 **Layout:** docs and context at the repo root (`docs/context/`); the Expo app lives in `app/`. Run app commands from `app/`.
 

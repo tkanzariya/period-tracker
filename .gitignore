@@ -16,3 +16,6 @@ Thumbs.db
 # Personal cycle data exports must never be committed
 exports/
 backups/
+
+# built app files and generated sample data
+dist/

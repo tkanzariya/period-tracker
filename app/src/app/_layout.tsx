@@ -21,7 +21,7 @@ export default function RootLayout() {
   const t = useTokens();
   return (
     <Suspense fallback={<Loading />}>
-      <SQLiteProvider databaseName="cadence.db" onInit={migrateDatabase} useSuspense>
+      <SQLiteProvider databaseName="cycle-saathi.db" onInit={migrateDatabase} useSuspense>
         <DataProvider>
           <StatusBar style="auto" />
           <Stack

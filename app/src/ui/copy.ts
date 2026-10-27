@@ -51,7 +51,7 @@ export function guideMessage(situation: GuideSituation, name: string | null): st
   const hi = name ? `Hi ${name}!` : 'Hi!';
   switch (situation.kind) {
     case 'ask_name':
-      return `${hi} I'm here to help you understand your body. What should I call you?`;
+      return `${hi} I am your Saathi, your friend. I am here to help you understand your body. What should I call you?`;
     case 'ask_first_period':
       return `${hi} Tell me the day your last period started. I will learn from it.`;
     case 'period_going_on':
@@ -154,6 +154,7 @@ export const STR = {
     bad_data: 'Something in that file is wrong, so I did not change anything. Please try another copy.',
   },
   looksLike: 'How the app looks',
+  appName: 'Cycle Saathi',
   appVersion: 'App version',
   // My cycles
   cyclesTitle: 'My cycles',

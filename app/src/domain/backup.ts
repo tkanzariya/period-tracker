@@ -10,7 +10,9 @@ import type { Period } from './types';
  *    restore never creates duplicates and a future cloud sync can merge
  *  - plain snake_case fields that map straight onto Postgres columns
  */
-export const BACKUP_FORMAT = 'cadence-backup';
+export const BACKUP_FORMAT = 'cycle-saathi-backup';
+/** The app's earlier working name; files saved before the rename are still accepted. */
+const LEGACY_BACKUP_FORMAT = 'cadence-backup';
 
 export interface PeriodRecord {
   id: string;
@@ -118,7 +120,12 @@ export function parseBackup(text: string, currentSchemaVersion: number): ParseRe
   } catch {
     return { ok: false, reason: 'not_json' };
   }
-  if (!isObj(raw) || raw.format !== BACKUP_FORMAT || typeof raw.schema_version !== 'number' || !isObj(raw.data)) {
+  if (
+    !isObj(raw) ||
+    (raw.format !== BACKUP_FORMAT && raw.format !== LEGACY_BACKUP_FORMAT) ||
+    typeof raw.schema_version !== 'number' ||
+    !isObj(raw.data)
+  ) {
     return { ok: false, reason: 'not_backup' };
   }
   if (raw.schema_version > currentSchemaVersion) return { ok: false, reason: 'too_new' };

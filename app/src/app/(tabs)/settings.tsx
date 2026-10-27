@@ -98,6 +98,7 @@ export default function SettingsScreen() {
 
         <View style={{ alignItems: 'center', gap: spacing.sm }}>
           <Logo size={72} />
+          <Text style={[typeScale.headline, { color: t.text }]}>{STR.appName}</Text>
           <Body secondary style={{ textAlign: 'center' }}>
             {STR.appVersion} {APP_VERSION}
           </Body>

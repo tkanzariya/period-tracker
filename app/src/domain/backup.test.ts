@@ -49,6 +49,12 @@ describe('backup file', () => {
       expect(result.backup.exported_at).toBe(T2);
     }
   });
+  it('still reads files saved under the earlier working name', () => {
+    const text = serializeBackup(buildBackup(data, { schemaVersion: 2, appVersion: '1.0.0' })).replace('cycle-saathi-backup', 'cadence-backup');
+    const result = parseBackup(text, 2);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.backup.format).toBe('cycle-saathi-backup');
+  });
   it('rejects text that is not JSON', () => {
     expect(parseBackup('hello', 2)).toEqual({ ok: false, reason: 'not_json' });
   });
