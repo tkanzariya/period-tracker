@@ -39,6 +39,13 @@ Last updated: 2026-10-27
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
 
+### Cloud build on GitHub (added 2026-10-27, free)
+- Workflow `.github/workflows/build-apk.yml` builds the release APK on GitHub's machines (Linux, more RAM/CPU than the dev PC, no Windows path-length problem). Cost: free (public repo: unlimited; private repo: ~2,000 minutes/month, a build is ~15 min).
+- **How Tirth uses it:** GitHub repo > **Actions** tab > "Build app file (APK)" > **Run workflow** > wait ~10-20 min > open the run > download **CycleSaathi-apk** (a .zip containing `CycleSaathi-v<version>.apk`). The run also shows the APK size as a notice and in the summary. It runs by itself only when the workflow file changes.
+- The APK is signed with the standard Expo debug key (fine for sideloading to test; a proper release key comes before Drashti relies on updates, see roadmap). A different signing key means Android refuses to update in place: she would have to uninstall first and lose her data, so settle the key before real use.
+- Local fallback: `scripts/build-apk.bat` (copies the project to `D:\cs`, builds there: the release build's C++ folders exceed Windows' 248-character folder limit under `D:\Period Tracker\...`). The copy uses ~1.2 GB on D: (`node_modules`). Needs ~8 GB free RAM; the script stops leftover Gradle helpers first. Gradle memory is set to 3 GB (4 GB made the C++ compiler crash on this 16 GB PC).
+- The repo is **public** (checked 2026-10-27): code and docs are readable by anyone. No health data is in it, but `people.md` names Drashti and her job. Making it private is Tirth's call (cloud builds still work).
+
 ### One-click scripts (added 2026-10-27; double-click in `scripts/`)
 - `build-apk.bat`: builds a standalone release APK (code inside, runs on its own) with live Gradle progress, copies it to `dist\CycleSaathi-v<version>.apk`, prints its size, beeps, opens the folder. No phone needed. This is the file to give Drashti.
 - `build-phone.bat`: builds the debug version, installs it on the connected phone, starts live reload. Only needed after native changes.

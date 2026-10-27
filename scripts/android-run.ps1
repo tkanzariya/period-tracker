@@ -12,7 +12,7 @@ $repo = Split-Path -Parent $PSScriptRoot
 
 $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
 $env:ANDROID_HOME = "D:\Android\Sdk"
-$env:ANDROID_CXX_STAGING_DIR = "D:\cx"
+$env:ANDROID_CXX_STAGING_DIR = "D:\c"
 $env:PATH = "$env:JAVA_HOME\bin;D:\Android\Sdk\platform-tools;$env:PATH"
 # Do not set CI=1 here: it makes the dev server stop watching files, so edits would not reach the phone.
 

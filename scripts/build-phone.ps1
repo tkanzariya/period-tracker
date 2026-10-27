@@ -8,7 +8,7 @@ $app = Join-Path $repo 'app'
 
 $env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot'
 $env:ANDROID_HOME = 'D:\Android\Sdk'
-$env:ANDROID_CXX_STAGING_DIR = 'D:\cx'
+$env:ANDROID_CXX_STAGING_DIR = 'D:\c'
 $adb = 'D:\Android\Sdk\platform-tools'
 $env:PATH = "$env:JAVA_HOME\bin;$adb;$env:PATH"
 

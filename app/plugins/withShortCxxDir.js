@@ -21,6 +21,17 @@ if (System.getenv("ANDROID_CXX_STAGING_DIR")) {
         buildStagingDirectory = file(System.getenv("ANDROID_CXX_STAGING_DIR"))
       }
     }
+    // The release folder would otherwise be named "RelWithDebInfo" (14 characters). "Release" is 7,
+    // which keeps the longest C++ build paths under Windows' 260-character limit.
+    buildTypes {
+      release {
+        externalNativeBuild {
+          cmake {
+            arguments "-DCMAKE_BUILD_TYPE=Release"
+          }
+        }
+      }
+    }
   }
 }
 `;

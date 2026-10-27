@@ -36,6 +36,8 @@ Last updated: 2026-10-27
 - [x] App icon from the final logo (drop + flowing line; adaptive + themed); splash uses the same mark
 - [x] Plain-language rewrite, guide character, cycle ring, name on first run, flow removed (2026-10-27)
 - [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)
+- [x] Free cloud build of the APK on GitHub (`.github/workflows/build-apk.yml`), first run being verified 2026-10-27
+- [ ] Release signing key for Drashti's APK (generate once, back it up outside the repo, add as a GitHub secret); needed before she relies on updates keeping her data
 - [ ] Release APK for Drashti
 
 ## Phase 1 — MVP basic tracking

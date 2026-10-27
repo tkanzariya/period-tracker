@@ -6,9 +6,11 @@
 const { withGradleProperties } = require('expo/config-plugins');
 
 const SETTINGS = {
-  'org.gradle.jvmargs': '-Xmx4096m -XX:MaxMetaspaceSize=768m',
+  // 3 GB: more than the default 2 GB, but not so much that the C++ compiler runs out of memory
+  // on a 16 GB PC with other programs open.
+  'org.gradle.jvmargs': '-Xmx3072m -XX:MaxMetaspaceSize=768m',
   'org.gradle.caching': 'true',
-  'kotlin.daemon.jvmargs': '-Xmx2048m',
+  'kotlin.daemon.jvmargs': '-Xmx1536m',
 };
 
 module.exports = function withFasterGradle(config) {
