@@ -39,6 +39,11 @@ Last updated: 2026-10-27
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
 
+### What runs where (2026-10-28)
+- **Cloud (GitHub Actions, free):** building the APK, signing and publishing releases (done). Can also run, not yet set up: automatic tests + type check + `expo-doctor` on every push (~3 min), and headless-browser screenshots of every screen in light/dark.
+- **Local only:** editing code with Claude, live reload while testing on the phone (needs the cable), the interactive browser preview, backing up the signing key, installing and trying the app on a phone.
+- **Local fallback only:** `scripts/build-apk.bat` (use only if GitHub is unavailable). Nothing heavy should be left running: the build scripts stop Gradle helpers; the dev servers are stopped when not testing.
+
 ### Where files live (Tirth's preference, 2026-10-28: keep things inside the project folder in subfolders, not scattered on D:)
 - Inside `D:\Period Tracker\`: `app/` (the app), `docs/`, `design/`, `scripts/`, `dist/` (built APKs, git-ignored), `local/` (private files, git-ignored; `local\keys\` = signing key).
 - Outside, on purpose, because they cannot go inside: `D:\cs` (short-path copy used for release builds) and `D:\c` (C++ build output). Their paths MUST be very short: Windows rejects folder paths over 248 characters and the C++ build nests deeply, so putting them under `D:\Period Tracker\...` makes the release build fail. Both are disposable caches (safe to delete; the next build recreates them). `D:\Android\Sdk` (Android tools) and `C:\Program Files\Eclipse Adoptium\...` (Java) are installed tools.
