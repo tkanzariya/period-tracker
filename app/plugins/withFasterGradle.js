@@ -10,6 +10,9 @@ const SETTINGS = {
   // on a 16 GB PC with other programs open.
   'org.gradle.jvmargs': '-Xmx3072m -XX:MaxMetaspaceSize=768m',
   'org.gradle.caching': 'true',
+  // The build helper process stays alive after a build (3 hours by default, holding ~2.5 GB).
+  // 10 minutes is enough to make back-to-back builds quick.
+  'org.gradle.daemon.idletimeout': '600000',
   'kotlin.daemon.jvmargs': '-Xmx1536m',
 };
 

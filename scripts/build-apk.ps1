@@ -65,6 +65,8 @@ if ($LASTEXITCODE -ne 0) {
   exit 1
 }
 $clock.Stop()
+# Free the memory the build helper was holding.
+& $gradlew -p (Join-Path $mApp 'android') --stop 2>&1 | Out-Null
 
 $apk = Get-ChildItem (Join-Path $mApp 'android\app\build\outputs\apk\release') -Filter *.apk | Select-Object -First 1
 $version = (Get-Content (Join-Path $app 'app.json') -Raw | ConvertFrom-Json).expo.version
