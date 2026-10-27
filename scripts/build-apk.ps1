@@ -26,6 +26,15 @@ function Copy-Changed($from, $to, $excludeDirs) {
   if ($LASTEXITCODE -ge 8) { Write-Host "Copy failed ($from)." -ForegroundColor Red; exit 1 }
 }
 
+# Sign with our own release key when it is on this PC (kept outside the repo, see READ-ME-FIRST.txt there).
+$signing = 'D:\CycleSaathi-keys\signing.env'
+if (Test-Path $signing) {
+  Get-Content $signing | ForEach-Object { if ($_ -match '^([A-Z_]+)=(.*)$') { Set-Item "env:$($Matches[1])" $Matches[2] } }
+  Write-Host 'Signing with the Cycle Saathi release key.' -ForegroundColor Green
+} else {
+  Write-Host 'No release key found on this PC: signing with the test key (fine for testing only).' -ForegroundColor Yellow
+}
+
 Write-Host 'Step 1 of 3: copying the project to a short path (first time a few minutes, later seconds)...' -ForegroundColor Cyan
 New-Item -ItemType Directory -Force $mApp | Out-Null
 Copy-Changed $app $mApp @('node_modules', 'android', '.expo', '.tmp', 'dist', 'sample-data')

@@ -1,13 +1,25 @@
 # Builds the Cycle Saathi app file (APK) on GitHub's free build machines.
 #
-# How to use it (no PC power needed):
-#   1. On GitHub open the repo, then the "Actions" tab.
-#   2. Pick "Build app file (APK)" on the left, then "Run workflow", then the green button.
-#   3. Wait about 10-20 minutes. Open the finished run and download "CycleSaathi-apk" at the bottom.
-#      (The download is a .zip with the .apk inside.)
+# Two ways to use it (no PC power needed):
 #
-# It also runs by itself when this file or app/app.json changes (a new version number or native
-# setting means a fresh app file is wanted), which also checks that the setup still works.
+#  A) A test build, any time:
+#       GitHub repo > "Actions" tab > "Build app file (APK)" > "Run workflow" > green button.
+#       After about 10 minutes open the run and download "CycleSaathi-apk" at the bottom
+#       (a .zip with the .apk inside).
+#
+#  B) A release for Drashti:
+#       Push a version tag such as v1.0.0 (Claude does this, or: git tag v1.0.0 && git push origin v1.0.0).
+#       The build signs the app with our release key and publishes it on the repo's "Releases" page,
+#       where the .apk can be downloaded directly on a phone.
+#       This REFUSES to publish if the signing key secrets are missing (see below), so a release
+#       can never be signed with the wrong key.
+#
+# It also builds by itself when this file or app/app.json changes (a new version number or native
+# setting means a fresh app file is wanted).
+#
+# Signing key (one-time setup): repo > Settings > Secrets and variables > Actions > New repository
+# secret, four of them: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD.
+# The values are in the key folder on the dev PC (READ-ME-FIRST.txt there explains).
 name: Build app file (APK)
 
 on:
@@ -17,9 +29,14 @@ on:
     paths:
       - '.github/workflows/build-apk.yml'
       - 'app/app.json'   # app version or native settings changed: build a fresh app file
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # needed only to publish a release
 
 concurrency:
-  group: build-apk
+  group: build-apk-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -55,6 +72,26 @@ jobs:
           yes | "$SDKMANAGER" --licenses > /dev/null || true
           "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
 
+      - name: Set up the release signing key
+        id: signing
+        working-directory: .
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            echo "CS_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+            echo "Release key found: the app file will be signed with it."
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+              echo "::error title=Signing key missing::A release needs the signing key. Add the four secrets (KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD) in repo Settings > Secrets and variables > Actions, then run again."
+              exit 1
+            fi
+            echo "::warning title=Test key::No release key set up: this app file is signed with the test key (fine for testing, not for Drashti)."
+          fi
+
       - name: Install packages
         run: npm ci --legacy-peer-deps
 
@@ -73,17 +110,25 @@ jobs:
 
       - name: Build the app file
         working-directory: app/android
+        env:
+          CS_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          CS_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          CS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew app:assembleRelease -x lint -x test --no-daemon
 
-      - name: Name the file and report its size
-        id: apk
+      - name: Name the file, check its signature and report its size
         run: |
           VERSION=$(node -p "require('./app.json').expo.version")
           mkdir -p ../dist
           cp android/app/build/outputs/apk/release/*.apk "../dist/CycleSaathi-v${VERSION}.apk"
           SIZE_MB=$(du -m "../dist/CycleSaathi-v${VERSION}.apk" | cut -f1)
+          CERT=$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "../dist/CycleSaathi-v${VERSION}.apk" | grep -m1 'certificate SHA-256 digest' | sed 's/.*: //')
           echo "::notice title=App file size::CycleSaathi-v${VERSION}.apk is about ${SIZE_MB} MB"
-          echo "### CycleSaathi-v${VERSION}.apk is about ${SIZE_MB} MB" >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=Signed with key (SHA-256)::${CERT}"
+          {
+            echo "### CycleSaathi-v${VERSION}.apk is about ${SIZE_MB} MB"
+            echo "Signing key SHA-256: \`${CERT}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Keep the app file for download
         uses: actions/upload-artifact@v4
@@ -92,3 +137,14 @@ jobs:
           path: dist/*.apk
           retention-days: 30
           if-no-files-found: error
+
+      - name: Publish a release with the app file
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.apk \
+            --title "Cycle Saathi $GITHUB_REF_NAME" \
+            --notes "Cycle Saathi $GITHUB_REF_NAME. Download the .apk below on your Android phone and open it to install. If Android asks, allow installing from this source. If Google Play Protect asks to scan the app, you can choose Don't send." \
+            --verify-tag

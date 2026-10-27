@@ -12,6 +12,7 @@
     },
     "android": {
       "package": "com.cyclesaathi.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#FCEDE7",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -29,6 +30,7 @@
       "./plugins/withShortCxxDir",
       "expo-sharing",
       "./plugins/withFasterGradle",
+      "./plugins/withReleaseSigning",
       [
         "expo-build-properties",
         {

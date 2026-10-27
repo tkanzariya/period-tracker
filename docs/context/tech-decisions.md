@@ -39,6 +39,13 @@ Last updated: 2026-10-27
 - Gradle cache lives on C: (`C:\Users\Hp\.gradle`, C: is tight); move with `GRADLE_USER_HOME` to D: if it grows.
 - A shareable release APK for Drashti is a later step (needs a signing key kept out of git).
 
+### Release signing key (created 2026-10-28)
+- Why: Android only updates an installed app if the new file is signed with the SAME key. Lose or change the key and Drashti must uninstall (losing her data) to update. So: one key, for life, backed up.
+- Where: `D:\CycleSaathi-keys\` (OUTSIDE the repo; never commit, never paste in chat). Files: `cycle-saathi-release.jks` (the key, PKCS12, RSA 4096, valid to 2056, alias `cycle-saathi`), `signing.env` (what the local build reads), `keystore-for-github.txt` (base64, for the GitHub secret), `READ-ME-FIRST.txt`. **Tirth must back this folder up in two places** (e.g. private Drive + USB). Certificate fingerprint (public, for checking a file is ours) SHA-256: `86:24:DE:65:51:32:37:3B:10:35:2E:11:72:DC:AA:4C:31:0B:2C:2F:FB:D0:E4:B5:86:33:73:5B:2A:9E:04:B0`.
+- How it is used: plugin `app/plugins/withReleaseSigning.js` signs the release when `CS_KEYSTORE_FILE`, `CS_KEYSTORE_PASSWORD`, `CS_KEY_ALIAS`, `CS_KEY_PASSWORD` are set. `scripts/build-apk.ps1` loads them from `signing.env` automatically. The GitHub workflow gets them from four repository secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`, added by Tirth in repo Settings > Secrets and variables > Actions; Claude must not type secrets into web pages). Without the key, builds fall back to the Expo test key (fine for testing).
+- Releases: pushing a tag like `v1.0.0` makes the workflow build, sign, check the signature (prints the key fingerprint) and publish a GitHub Release with the .apk. It refuses to publish if the secrets are missing. Each release needs a higher `android.versionCode` in `app.json` (and a new `version`), or Android will not treat it as an update.
+- Test builds signed with the old test key cannot be updated in place by a release-signed file: uninstall the test version first.
+
 ### Cloud build on GitHub (added 2026-10-27, free)
 - Workflow `.github/workflows/build-apk.yml` builds the release APK on GitHub's machines (Linux, more RAM/CPU than the dev PC, no Windows path-length problem). Cost: free (public repo: unlimited; private repo: ~2,000 minutes/month, a build is ~15 min).
 - **How Tirth uses it:** GitHub repo > **Actions** tab > "Build app file (APK)" > **Run workflow** > wait ~10-20 min > open the run > download **CycleSaathi-apk** (a .zip containing `CycleSaathi-v<version>.apk`). The run also shows the APK size as a notice and in the summary. It runs by itself only when the workflow file changes.
