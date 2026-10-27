@@ -19,3 +19,6 @@ backups/
 
 # built app files and generated sample data
 dist/
+
+# private files that must never be committed (the signing key lives here)
+/local/

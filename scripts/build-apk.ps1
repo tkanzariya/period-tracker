@@ -27,7 +27,7 @@ function Copy-Changed($from, $to, $excludeDirs) {
 }
 
 # Sign with our own release key when it is on this PC (kept outside the repo, see READ-ME-FIRST.txt there).
-$signing = 'D:\CycleSaathi-keys\signing.env'
+$signing = Join-Path $repo 'local\keys\signing.env'
 if (Test-Path $signing) {
   Get-Content $signing | ForEach-Object { if ($_ -match '^([A-Z_]+)=(.*)$') { Set-Item "env:$($Matches[1])" $Matches[2] } }
   Write-Host 'Signing with the Cycle Saathi release key.' -ForegroundColor Green

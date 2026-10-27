@@ -38,7 +38,7 @@ Last updated: 2026-10-27
 - [x] Review sheet for Drashti generated from the code (`npm run review-sheet`)
 - [x] Free cloud build of the APK on GitHub (`.github/workflows/build-apk.yml`): works (first run 8.6 min, builds on GitHub's machines, no PC load). Local build also works (7 min 13 s via `scripts/build-apk.bat`).
 - [x] APK size: baseline 29.4-30 MB, after compressing native libraries + JS bundle **~14 MB** (2026-10-28). Still to verify by installing it on a phone.
-- [x] Release signing key created 2026-10-28 at `D:\CycleSaathi-keys` (outside the repo); local builds sign with it
+- [x] Release signing key created 2026-10-28 at `local\keys\` inside the project (git-ignored); local builds sign with it
 - [ ] Tirth: back up the key folder (2 places) and add the 4 GitHub secrets (see tech-decisions "Release signing key")
 - [ ] First release v1.0.0 for Drashti: push tag `v1.0.0` once the secrets exist (workflow signs and publishes it on the Releases page)
 - [ ] Release APK for Drashti
