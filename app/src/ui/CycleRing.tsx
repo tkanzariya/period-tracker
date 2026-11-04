@@ -1,44 +1,50 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, G } from 'react-native-svg';
+import Svg, { Circle, Defs, G, LinearGradient, Stop } from 'react-native-svg';
 import type { CycleRing as CycleRingData } from '../domain/ring';
-import { useTokens } from '../theme/tokens';
+import { mix } from '../theme/mix';
+import { useTokens } from '../theme/useTokens';
 
 const SIZE = 232;
-const STROKE = 20;
+const STROKE = 22;
 const R = (SIZE - STROKE) / 2 - 8;
 const C = 2 * Math.PI * R;
 const GAP = 3; // visible gap between phases, in px
 
 /**
- * The cycle drawn as a ring: one coloured arc per phase, and a marker showing
- * where she is today. Without enough data it is a plain grey ring.
+ * The cycle drawn as a ring: one soft gradient arc per phase, each in its own colour, and a marker
+ * for today. Before her first period there is no ring (the screen shows the welcome instead).
  */
-export function CycleRingView({ ring, day, children }: { ring: CycleRingData | null; day: number | null; children: ReactNode }) {
+export function CycleRingView({ ring, day, children }: { ring: CycleRingData; day: number | null; children: ReactNode }) {
   const t = useTokens();
   const center = SIZE / 2;
 
-  // Not enough data to draw the phases yet: a soft rose disc instead of an empty ring.
-  if (!ring) {
-    return (
-      <View
-        style={{ width: 176, height: 176, borderRadius: 88, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: t.primarySoft }}
-      >
-        {children}
-      </View>
-    );
-  }
-
   let marker: { x: number; y: number } | null = null;
-  if (ring && day !== null) {
+  if (day !== null) {
     const clamped = Math.min(Math.max(day, 1), ring.length);
     const angle = ((clamped - 0.5) / ring.length) * 2 * Math.PI - Math.PI / 2;
     marker = { x: center + R * Math.cos(angle), y: center + R * Math.sin(angle) };
   }
 
+  // Gradient end points follow each arc (angles here are before the group is turned to start at the top).
+  const at = (angle: number) => ({ x: center + R * Math.cos(angle), y: center + R * Math.sin(angle) });
+
   return (
     <View style={{ width: SIZE, height: SIZE, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
       <Svg width={SIZE} height={SIZE} style={{ position: 'absolute' }}>
+        <Defs>
+          {ring.segments.map((s) => {
+            const c = t.phase[s.phase];
+            const a = at(((s.startDay - 1) / ring.length) * 2 * Math.PI);
+            const b = at((s.endDay / ring.length) * 2 * Math.PI);
+            return (
+              <LinearGradient key={s.phase + s.startDay} id={`arc-${s.phase}-${s.startDay}`} gradientUnits="userSpaceOnUse" x1={a.x} y1={a.y} x2={b.x} y2={b.y}>
+                <Stop offset="0" stopColor={mix(c.from, c.fg, 0.25)} />
+                <Stop offset="1" stopColor={mix(c.to, c.fg, 0.5)} />
+              </LinearGradient>
+            );
+          })}
+        </Defs>
         <Circle cx={center} cy={center} r={R} stroke={t.surface2} strokeWidth={STROKE} fill="none" />
         {/* start the first day at 12 o'clock */}
         <G transform={`rotate(-90 ${center} ${center})`}>
@@ -51,7 +57,7 @@ export function CycleRingView({ ring, day, children }: { ring: CycleRingData | n
                 cx={center}
                 cy={center}
                 r={R}
-                stroke={t.phase[s.phase].fg}
+                stroke={`url(#arc-${s.phase}-${s.startDay})`}
                 strokeWidth={STROKE}
                 fill="none"
                 strokeDasharray={`${Math.max(length, 1)} ${C}`}
@@ -62,7 +68,7 @@ export function CycleRingView({ ring, day, children }: { ring: CycleRingData | n
         </G>
         {marker ? <Circle cx={marker.x} cy={marker.y} r={STROKE / 2 + 3} fill={t.background} stroke={t.text} strokeWidth={3} /> : null}
       </Svg>
-      <View style={{ alignItems: 'center', paddingHorizontal: 40 }}>{children}</View>
+      <View style={{ alignItems: 'center', paddingHorizontal: 44 }}>{children}</View>
     </View>
   );
 }

@@ -1,8 +1,10 @@
 # Design
 
-Last updated: 2026-10-27
+Last updated: 2026-11-02
 
 Status: **logo locked (drop + flowing line + sparkle, 2026-10-27); colours/tokens drafted, awaiting Drashti's sign-off.** Live preview: `design/preview.html` (open in a browser; respects dark mode). Logo concepts: `design/logo/`.
+
+> **2026-11-02: shared UX standards.** Tirth asked for the same design, UX and wording standards as HomeHisab. They are in `ux-standards.md` (with an audit of this app and a refresh plan). Where they differ from this file they win: **three tabs with a gear for Settings** (instead of four tabs), a **floating "Tell me" button**, **no Android dialogs**, **Undo toasts**, **examples under every input**. The colour tokens, the phase colours, the logo and the guide below stay as they are.
 
 ## Design principles (from Apple's HIG, via dickwu/apple-design-skill, adapted for Android)
 1. **Clarity**: one primary action per screen; text legible at every size; nothing decorative that carries no meaning.
@@ -98,3 +100,7 @@ A red drop (a period) held by a flowing line and a crescent (the cycle), with a 
 - Primary is a red-ish pink; secondary is a warm off-white (Tirth, 2026-10-27).
 - Phase colours avoid red/green pairing; teal chosen for fertile window.
 - Design system is token-based so new screens inherit the look.
+
+## Phase colours and calendar (2026-11-05)
+Each phase has its own colour pair plus a soft gradient (`phase.from` to `phase.to` in `theme/tokens.ts`): Menstrual rose, Follicular sand, Ovulation teal, Luteal lavender. The Today ring draws one gradient arc per phase; the Calendar paints a soft gradient band behind each week's days that share a phase. No underlines, stars or outlines: the colour is the phase, a tap explains it in words, and the legend pairs colour with icon and name. Guesses about the future are drawn softer. Contrast of text on every gradient end is tested (`tokens.test.ts`).
+

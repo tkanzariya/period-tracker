@@ -86,3 +86,10 @@ Diagnosis, treatment advice, ads, social/community, selling data, accounts.
 - Never alarm. Flags say "worth mentioning to a doctor", not "you have X".
 - Missing a day of logging is normal; nothing breaks or nags.
 - Every user entry can be edited or deleted.
+
+## Behaviour added in the UX refresh (2026-11-05)
+- Typical-cycle fallback: with one period known, the app shows a "Typical cycle" estimate (28 days, range ±3 days) for next period, phases and fertile days; it switches to her own pattern after 2 finished cycles. NEEDS DRASHTI REVIEW.
+- The main button depends on stage: no period yet, "Add my last period"; a period going on, "Period ended"; otherwise "Period started".
+- Periods cannot overlap or start twice; unusual but possible cases ask "Is that right?". Full list in `scenarios.md`.
+- First-run welcome (hello, privacy, name, last period) and a replayable tour; language in Settings.
+

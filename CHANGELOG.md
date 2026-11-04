@@ -11,6 +11,25 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### Added
+- The app is never empty: after you tell it about one period, it shows a clearly marked "typical cycle" guess for your next period, your phases and your fertile days, and swaps to your own pattern as you add more.
+- A calendar-style date picker everywhere you choose a day, with Today and Yesterday shortcuts.
+- A walkthrough with your Saathi after you first open the app, and again any time from Settings, "How to use Cycle Saathi".
+- Language (English or Hindi) is now chosen in Settings.
+- Tap any day in the Calendar to change a period, say a period started or ended that day, or add a note.
+- Undo after every save and every removal.
+
+### Changed
+- The big button follows your situation: "Add my last period", then "Period started", then "Period ended".
+- Each cycle phase has its own soft colour, in the ring and on the calendar, instead of one red cycle with marks.
+- Problems are explained in calm boxes inside the screen, with a button for the next step, instead of Android pop-ups. Questions like "Is that right?" use the app's own popup.
+- A new look for every screen: three tabs (Today, Calendar, My cycles) with Settings behind the gear, rounded cards and bigger buttons.
+- The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
+
+### Fixed
+- You could start a second period inside a running one, or two periods on the same day. The app now stops this and says why.
+- Dates could not be edited from the Calendar.
+
 ## [0.1.0] - 2026-10-28
 
 First build for Drashti to try (a pre-release: not the public launch).

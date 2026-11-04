@@ -1,7 +1,7 @@
 import type { CycleRules } from '../config/cycleRules';
 import { cycleStats, isRegular, sortPeriods } from './cycles';
 import { addDays, diffDays, type DateStr } from './dates';
-import { predictNextPeriod } from './prediction';
+import { predictWithFallback } from './prediction';
 import type { Period, Phase } from './types';
 
 export interface DayInfo {
@@ -21,6 +21,11 @@ export interface DayInfo {
   daysLate: number;
   /** Menstrual days that she logged are facts; everything else is an estimate. */
   isEstimate: boolean;
+  /**
+   * The estimate comes only from a typical cycle (she has not logged enough cycles for her own
+   * pattern yet). Shown with a "typical cycle" label.
+   */
+  isTentative: boolean;
 }
 
 function emptyInfo(date: DateStr, cycleDay: number | null): DayInfo {
@@ -34,6 +39,7 @@ function emptyInfo(date: DateStr, cycleDay: number | null): DayInfo {
     isPredictedPeriod: false,
     daysLate: 0,
     isEstimate: true,
+    isTentative: false,
   };
 }
 
@@ -55,7 +61,7 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
   const inPeriod = date <= periodEnd;
 
   const next = sorted[index + 1];
-  const prediction = next ? null : predictNextPeriod(sorted, rules);
+  const prediction = next ? null : predictWithFallback(sorted, rules);
   const nextStart = next ? next.startDate : prediction ? prediction.expectedStart : null;
 
   if (inPeriod) {
@@ -64,6 +70,7 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
   }
 
   if (nextStart === null) return info;
+  info.isTentative = !!prediction?.tentative && !inPeriod;
 
   const ovulationDay = addDays(nextStart, -rules.ovulation.lutealPhaseDays);
   const ovulationStart = addDays(ovulationDay, -rules.ovulation.phaseDaysBefore);

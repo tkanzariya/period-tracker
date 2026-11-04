@@ -10,18 +10,16 @@ export interface Prediction {
   latestStart: DateStr;
   basedOnCycles: number;
   averageLength: number;
-}
-
-/** Estimated ovulation day for the current cycle, or null when there is no prediction yet. */
-export function estimateOvulationDay(periods: Period[], rules: CycleRules): DateStr | null {
-  const prediction = predictNextPeriod(periods, rules);
-  return prediction ? addDays(prediction.expectedStart, -rules.ovulation.lutealPhaseDays) : null;
+  /**
+   * True when this is only a first guess from a typical cycle (too few finished cycles of her own).
+   * Shown with a "typical cycle" label and replaced as soon as her own pattern is known.
+   */
+  tentative: boolean;
 }
 
 /**
- * Next-period estimate: last start + average of recent completed cycles, shown
- * as a range that widens with how much her cycles vary. Returns null until
- * enough cycles are logged, rather than guessing.
+ * Next-period estimate from HER OWN cycles: last start + average of recent completed cycles, shown
+ * as a range that widens with how much her cycles vary. Returns null until enough cycles are logged.
  */
 export function predictNextPeriod(periods: Period[], rules: CycleRules): Prediction | null {
   const stats = cycleStats(periods, rules);
@@ -38,5 +36,35 @@ export function predictNextPeriod(periods: Period[], rules: CycleRules): Predict
     latestStart: addDays(expectedStart, halfWidth),
     basedOnCycles: stats.count,
     averageLength: stats.averageLength,
+    tentative: false,
   };
+}
+
+/**
+ * Her own prediction when there is one; otherwise a TENTATIVE one from a typical cycle, so the app
+ * is useful from the very first period she tells it about. Null only when she has told it nothing.
+ */
+export function predictWithFallback(periods: Period[], rules: CycleRules): Prediction | null {
+  const own = predictNextPeriod(periods, rules);
+  if (own) return own;
+  const sorted = sortPeriods(periods);
+  if (sorted.length === 0) return null;
+
+  const typical = rules.prediction.typicalCycleLengthDays;
+  const half = rules.prediction.tentativeRangeHalfWidthDays;
+  const expectedStart = addDays(sorted[sorted.length - 1].startDate, typical);
+  return {
+    expectedStart,
+    earliestStart: addDays(expectedStart, -half),
+    latestStart: addDays(expectedStart, half),
+    basedOnCycles: 0,
+    averageLength: typical,
+    tentative: true,
+  };
+}
+
+/** Estimated ovulation day for the current cycle (tentative until her own pattern is known). */
+export function estimateOvulationDay(periods: Period[], rules: CycleRules): DateStr | null {
+  const prediction = predictWithFallback(periods, rules);
+  return prediction ? addDays(prediction.expectedStart, -rules.ovulation.lutealPhaseDays) : null;
 }

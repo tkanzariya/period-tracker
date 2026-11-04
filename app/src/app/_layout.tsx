@@ -3,10 +3,14 @@ import { SQLiteProvider } from 'expo-sqlite';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { migrateDatabase } from '../db/migrations';
-import { DataProvider } from '../state/data';
-import { useTokens } from '../theme/tokens';
-import { STR } from '../ui/copy';
+import { DataProvider, useData } from '../state/data';
+import { LanguageProvider } from '../state/language';
+import { SheetsProvider } from '../state/sheets';
+import { useTokens } from '../theme/useTokens';
+import { PopupProvider, ToastProvider } from '../ui/kit';
+import { Welcome } from '../ui/Welcome';
 
 function Loading() {
   const t = useTokens();
@@ -17,27 +21,39 @@ function Loading() {
   );
 }
 
-export default function RootLayout() {
+function Gate() {
   const t = useTokens();
+  const { loading, welcomeDone } = useData();
+  if (loading) return <Loading />;
+  if (!welcomeDone) return <Welcome />;
   return (
-    <Suspense fallback={<Loading />}>
-      <SQLiteProvider databaseName="cycle-saathi.db" onInit={migrateDatabase} useSuspense>
-        <DataProvider>
-          <StatusBar style="auto" />
-          <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor: t.background },
-              headerTintColor: t.text,
-              headerShadowVisible: false,
-              contentStyle: { backgroundColor: t.background },
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="log" options={{ presentation: 'modal', title: STR.logTitle }} />
-            <Stack.Screen name="period/[id]" options={{ presentation: 'modal', title: STR.editTitle }} />
-          </Stack>
-        </DataProvider>
-      </SQLiteProvider>
-    </Suspense>
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: t.background } }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="settings" />
+      <Stack.Screen name="tour" options={{ presentation: 'modal' }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <SafeAreaProvider>
+      <Suspense fallback={<Loading />}>
+        <SQLiteProvider databaseName="cycle-saathi.db" onInit={migrateDatabase} useSuspense>
+          <LanguageProvider>
+            <DataProvider>
+              <PopupProvider>
+                <ToastProvider>
+                  <SheetsProvider>
+                    <StatusBar style="auto" />
+                    <Gate />
+                  </SheetsProvider>
+                </ToastProvider>
+              </PopupProvider>
+            </DataProvider>
+          </LanguageProvider>
+        </SQLiteProvider>
+      </Suspense>
+    </SafeAreaProvider>
   );
 }

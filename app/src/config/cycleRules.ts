@@ -29,6 +29,22 @@ export interface CycleRules {
     minCyclesForPrediction: number;
     /** The predicted range is never narrower than expected date ± this many days. */
     minRangeHalfWidthDays: number;
+    /**
+     * Before enough cycles are logged, a typical cycle of this many days is used for a
+     * TENTATIVE estimate (always shown as an estimate). 28 is the commonly quoted typical length.
+     */
+    typicalCycleLengthDays: number;
+    /** A tentative next-period range is the typical date ± this many days. */
+    tentativeRangeHalfWidthDays: number;
+  };
+  /** Gentle checks on what she tells the app (never about her health, only about the entry itself). */
+  checks: {
+    /** A new period starting fewer than this many days after another one started asks "is this a new period?". */
+    minDaysBetweenStarts: number;
+    /** A period longer than this many days asks "is that right?". */
+    longPeriodDays: number;
+    /** A period still open after this many days is gently asked about ("did it end?"). */
+    unfinishedPeriodAfterDays: number;
   };
   ovulation: {
     /** Ovulation is estimated this many days before the next period starts. */
@@ -54,7 +70,14 @@ export interface CycleRules {
 export const DEFAULT_CYCLE_RULES: CycleRules = {
   cycle: { normalMinDays: 21, normalMaxDays: 35, maxVariationDays: 7 },
   period: { assumedLengthDays: 5, normalMaxDays: 7 },
-  prediction: { cyclesToAverage: 6, minCyclesForPrediction: 2, minRangeHalfWidthDays: 1 },
+  prediction: {
+    cyclesToAverage: 6,
+    minCyclesForPrediction: 2,
+    minRangeHalfWidthDays: 1,
+    typicalCycleLengthDays: 28,
+    tentativeRangeHalfWidthDays: 3,
+  },
+  checks: { minDaysBetweenStarts: 15, longPeriodDays: 14, unfinishedPeriodAfterDays: 10 },
   ovulation: { lutealPhaseDays: 14, phaseDaysBefore: 1, phaseDaysAfter: 1 },
   fertileWindow: { daysBeforeOvulation: 5, daysAfterOvulation: 1 },
   lowerFertility: { bufferDays: 2, requireRegularCycles: true },

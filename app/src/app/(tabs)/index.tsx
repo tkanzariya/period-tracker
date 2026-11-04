@@ -1,142 +1,102 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { completedCycleLengths, sortPeriods } from '../../domain/cycles';
+import { View } from 'react-native';
 import { todayLocal } from '../../domain/dates';
 import { getIrregularityFlags } from '../../domain/flags';
 import { getDayInfo } from '../../domain/phases';
-import { estimateOvulationDay, predictNextPeriod } from '../../domain/prediction';
+import { estimateOvulationDay, predictWithFallback } from '../../domain/prediction';
 import { currentCycleRing } from '../../domain/ring';
+import { getStage, mainAction } from '../../domain/stage';
 import { useData } from '../../state/data';
-import { MIN_TARGET, radius, spacing, typeScale, useTokens } from '../../theme/tokens';
-import { Body, Button, Card, Heading, PhaseChip } from '../../ui/components';
+import { useLanguage } from '../../state/language';
+import { useSheets } from '../../state/sheets';
+import { GearButton } from '../../ui/chrome';
 import { CycleRingView } from '../../ui/CycleRing';
-import { DISCLAIMER, PHASE_MEANING, STR, TELL_DOCTOR_TITLE, flagMessage, guideMessage, type GuideSituation } from '../../ui/copy';
-import { GuideMessage } from '../../ui/Guide';
+import { flagText } from '../../ui/flagText';
 import { formatLong, formatRange, formatShort } from '../../ui/format';
+import { GuideMessage } from '../../ui/Guide';
+import { Button, Card, Fab, Notice, PhaseChip, Screen, T, useHideOnScroll } from '../../ui/kit';
 
 export default function TodayScreen() {
-  const t = useTokens();
-  const { periods, rules, loading, name, saveName } = useData();
-  const [draftName, setDraftName] = useState('');
+  const { S } = useLanguage();
+  const { periods, rules, name } = useData();
+  const { openTell, openChange } = useSheets();
+  const fab = useHideOnScroll();
   const today = todayLocal();
 
-  const sorted = sortPeriods(periods);
-  const latest = sorted[sorted.length - 1];
+  const stage = getStage(periods, today, rules);
+  const action = mainAction(stage);
   const info = getDayInfo(today, periods, rules);
-  const prediction = predictNextPeriod(periods, rules);
+  const prediction = predictWithFallback(periods, rules);
   const ovulation = estimateOvulationDay(periods, rules);
   const ring = currentCycleRing(periods, rules);
   const flags = getIrregularityFlags(periods, today, rules);
-  const completed = completedCycleLengths(periods).length;
-
-  // A period with no end told yet counts as going on for a few days past the usual maximum.
-  const periodGoingOn = !!latest && latest.endDate === null && (info.cycleDay ?? 99) <= rules.period.normalMaxDays + 3;
   const lateDays = flags.find((f) => f.code === 'period_late')?.value ?? 0;
+  const doctorFlags = flags.filter((f) => f.code !== 'period_late');
 
-  const openTell = (mode: 'start' | 'end' | 'note') => router.push({ pathname: '/log', params: { mode, date: today } });
+  const fabLabel = stage.kind === 'none' ? S.today.fab.first : action === 'end' ? S.today.fab.end : S.today.fab.start;
+  const fabHint = stage.kind === 'none' ? S.today.fabHelp.first : action === 'end' ? S.today.fabHelp.end : S.today.fabHelp.start;
 
-  let situation: GuideSituation;
-  if (name === null) situation = { kind: 'ask_name' };
-  else if (!latest) situation = { kind: 'ask_first_period' };
-  else if (periodGoingOn) situation = { kind: 'period_going_on' };
-  else if (lateDays > 0) situation = { kind: 'late', days: lateDays };
-  else if (info.phase) situation = { kind: 'phase', phase: info.phase };
-  else situation = { kind: 'still_learning' };
-
-  const moreCyclesNeeded = Math.max(1, rules.prediction.minCyclesForPrediction - completed);
+  let guide: string;
+  if (stage.kind === 'none') guide = S.guide.askFirstPeriod(name);
+  else if (stage.kind === 'in_period') guide = S.guide.periodGoingOn(name);
+  else if (stage.kind === 'unfinished_period') guide = S.guide.unfinished(name, stage.periodDay ?? 0);
+  else if (lateDays > 0) guide = S.guide.late;
+  else if (prediction?.tentative) guide = S.guide.typical(name, rules.prediction.typicalCycleLengthDays);
+  else guide = info.phase ? S.phases.guide[info.phase] : S.guide.askFirstPeriod(name);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: t.background }} edges={['top']}>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }} keyboardShouldPersistTaps="handled">
-        <View>
-          <Body secondary>{formatLong(today)}</Body>
-          <Heading>{STR.hiName(name)}</Heading>
-        </View>
+    <View style={{ flex: 1 }}>
+      <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110}>
+        <GuideMessage text={guide} mood={stage.kind === 'none' ? 'wave' : lateDays > 0 ? 'caring' : 'happy'} />
 
-        {loading ? null : (
-          <>
-            <GuideMessage text={guideMessage(situation, name)} mood={situation.kind === 'ask_name' ? 'wave' : situation.kind === 'late' ? 'caring' : 'happy'} />
+        {stage.kind === 'unfinished_period' && stage.period ? (
+          <Notice
+            title={S.today.unfinishedTitle}
+            body={S.today.unfinishedBody(formatShort(stage.period.startDate, S))}
+            actions={<Button small variant="tonal" label={S.today.unfinishedAction} onPress={() => openTell({ mode: 'end' })} />}
+          />
+        ) : null}
 
-            {name === null ? (
-              <Card style={{ gap: spacing.md }}>
-                <Body secondary>{STR.yourName}</Body>
-                <TextInput
-                  value={draftName}
-                  onChangeText={setDraftName}
-                  placeholder={STR.nameHint}
-                  placeholderTextColor={t.text2}
-                  autoCapitalize="words"
-                  style={[
-                    typeScale.body,
-                    { minHeight: MIN_TARGET, borderWidth: 1, borderColor: t.line, borderRadius: radius.button, paddingHorizontal: spacing.md, color: t.text, backgroundColor: t.background },
-                  ]}
-                />
-                <Button label={STR.continue} disabled={!draftName.trim()} onPress={() => saveName(draftName)} />
-              </Card>
-            ) : !latest ? (
-              <Button label={STR.tellLastPeriod} onPress={() => openTell('start')} />
-            ) : (
-              <>
-                <Card style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xl }}>
-                  <CycleRingView ring={ring} day={info.cycleDay}>
-                    <Text style={[typeScale.largeTitle, { fontSize: 40, lineHeight: 46, color: t.text }]}>{STR.dayOfCycle(info.cycleDay ?? 1)}</Text>
-                    <Body secondary>{STR.ofYourCycle}</Body>
-                  </CycleRingView>
-                  {info.phase ? (
-                    <View style={{ alignItems: 'center', gap: spacing.sm }}>
-                      <PhaseChip phase={info.phase} />
-                      <Body secondary style={{ textAlign: 'center' }}>
-                        {PHASE_MEANING[info.phase]}
-                      </Body>
-                    </View>
-                  ) : null}
-                  {info.phase === 'follicular' && ovulation && today < ovulation ? (
-                    <Body secondary>{STR.ovulationAround(formatShort(ovulation))}</Body>
-                  ) : null}
-                  <Body secondary style={{ textAlign: 'center' }}>
-                    {STR.dayOfCycleSub}
-                  </Body>
-                </Card>
+        {ring && info.cycleDay !== null ? (
+          <Card style={{ alignItems: 'center', gap: 12, paddingVertical: 24 }}>
+            <CycleRingView ring={ring} day={info.cycleDay}>
+              <T kind="display" center>{S.today.dayOfCycle(info.cycleDay)}</T>
+              <T muted center>{S.today.ofYourCycle}</T>
+            </CycleRingView>
+            {info.phase ? (
+              <View style={{ alignItems: 'center', gap: 8 }}>
+                <PhaseChip phase={info.phase} />
+                <T muted center>{S.phases.meaning[info.phase]}</T>
+              </View>
+            ) : null}
+            {info.phase === 'follicular' && ovulation && today < ovulation ? <T muted center>{S.today.ovulationAround(formatShort(ovulation, S))}</T> : null}
+            {ring.tentative ? <T kind="caption" muted center>{S.today.basisTypical(rules.prediction.typicalCycleLengthDays)}</T> : null}
+          </Card>
+        ) : null}
 
-                {prediction ? (
-                  <Card>
-                    <Body secondary>{STR.nextPeriodTitle}</Body>
-                    <Text style={[typeScale.title, { color: t.text }]}>{STR.nextPeriodRange(formatRange(prediction.earliestStart, prediction.latestStart))}</Text>
-                    <Body secondary>{STR.nextPeriodBasis(prediction.basedOnCycles, Math.round(prediction.averageLength))}</Body>
-                  </Card>
-                ) : (
-                  <Card>
-                    <Text style={[typeScale.headline, { color: t.text }]}>{STR.stillLearningTitle}</Text>
-                    <Body secondary>{STR.stillLearningBody(moreCyclesNeeded)}</Body>
-                  </Card>
-                )}
+        {prediction ? (
+          <Card>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <T muted>{S.today.nextTitle}</T>
+              <T kind="caption" muted>{prediction.tentative ? S.today.typicalTag : S.today.estimateTag}</T>
+            </View>
+            <T kind="heading">{S.today.nextRange(formatRange(prediction.earliestStart, prediction.latestStart, S))}</T>
+            <T kind="caption" muted>
+              {prediction.tentative ? S.today.basisTypical(rules.prediction.typicalCycleLengthDays) : S.today.basisOwn(prediction.basedOnCycles, Math.round(prediction.averageLength))}
+            </T>
+          </Card>
+        ) : null}
 
-                {flags.map((flag) => (
-                  <Card key={flag.code} accent={t.phase.luteal.fg}>
-                    <Text style={[typeScale.subhead, { color: t.text, fontWeight: '600' }]}>{TELL_DOCTOR_TITLE}</Text>
-                    <Body secondary>{flagMessage(flag, rules)}</Body>
-                  </Card>
-                ))}
+        {doctorFlags.map((flag) => (
+          <Notice key={flag.code} title={S.flags.title} body={flagText(flag, S, rules)} icon="medkit-outline" />
+        ))}
 
-                <View style={{ gap: spacing.sm }}>
-                  {periodGoingOn ? (
-                    <Button label={STR.periodEnded} onPress={() => openTell('end')} />
-                  ) : (
-                    <Button label={STR.periodStarted} onPress={() => openTell('start')} />
-                  )}
-                  <Button label={STR.addNote} variant="secondary" onPress={() => openTell('note')} />
-                </View>
-              </>
-            )}
+        {stage.period && stage.kind === 'between' ? (
+          <Button variant="text" label={S.change.title} icon="create-outline" onPress={() => openChange(stage.period!.id)} />
+        ) : null}
 
-            <Body secondary style={{ textAlign: 'center' }}>
-              {DISCLAIMER}
-            </Body>
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        <T kind="caption" muted center>{S.today.disclaimer}</T>
+      </Screen>
+      <Fab label={fabLabel} hint={fabHint} icon={action === 'end' && stage.kind !== 'none' ? 'checkmark-circle' : 'water'} visible={fab.visible} onPress={() => openTell({ mode: action })} />
+    </View>
   );
 }

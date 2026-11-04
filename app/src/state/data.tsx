@@ -1,28 +1,41 @@
+import Constants from 'expo-constants';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Platform } from 'react-native';
 import { DEFAULT_CYCLE_RULES, type CycleRules } from '../config/cycleRules';
+import { exportBackupText, restoreBackupText, type RestoreResult } from '../db/backup';
 import {
   addPeriod,
   deleteDailyNote,
+  deletePeriod,
   getSetting,
   listDailyLogs,
   listPeriods,
+  restorePeriod,
   saveDailyNote,
   setSetting,
   updatePeriod,
 } from '../db/repository';
-import { todayLocal, type DateStr } from '../domain/dates';
-import Constants from 'expo-constants';
-import { Platform } from 'react-native';
-import { exportBackupText, restoreBackupText, type RestoreResult } from '../db/backup';
-import { restorePeriod, deletePeriod } from '../db/repository';
 import { periodsToCsv } from '../domain/backup';
-import { findOpenPeriod, validatePeriodEdit, validatePeriodStart, type LogError } from '../domain/logging';
+import { todayLocal, type DateStr } from '../domain/dates';
+import { findOpenPeriod } from '../domain/logging';
 import type { DailyLog, Period } from '../domain/types';
+import { checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, type Issue } from '../domain/validation';
 
-type Result = { ok: true } | { ok: false; error: LogError };
+export const APP_VERSION = Constants.expoConfig?.version ?? '0.1.0';
 
-export const APP_VERSION = Constants.expoConfig?.version ?? '1.0.0';
+/**
+ * What an action gives back:
+ *  - ok: it was saved; `undo` puts everything back (shown as a toast with Undo)
+ *  - issue: it cannot be saved as it is ('block') or needs a "is that right?" first ('confirm')
+ *  - failed: the phone could not store it (for example it is full)
+ */
+export type ActionResult = { ok: true; undo: () => Promise<void> } | { ok: false; issue: Issue } | { ok: false; failed: true };
+
+interface Options {
+  /** She has already said "yes, that is right" to a 'confirm' issue. */
+  confirmed?: boolean;
+}
 
 interface DataValue {
   periods: Period[];
@@ -31,16 +44,18 @@ interface DataValue {
   name: string | null;
   rules: CycleRules;
   loading: boolean;
+  /** The welcome (hello, privacy, name, last period) has been done, or she already uses the app. */
+  welcomeDone: boolean;
+  tourSeen: boolean;
   saveName(name: string): Promise<void>;
-  periodStarted(date: DateStr, note: string | null): Promise<Result>;
-  periodEnded(date: DateStr, note: string | null): Promise<Result>;
-  saveNote(date: DateStr, note: string): Promise<Result>;
-  removeNote(date: DateStr): Promise<void>;
-  /** Change when a period started/ended. */
-  changePeriod(id: string, startDate: DateStr, endDate: DateStr | null): Promise<Result>;
-  /** Removes a period (kept as "deleted" so it can be brought back). */
-  removePeriod(id: string): Promise<void>;
-  undoRemovePeriod(id: string): Promise<void>;
+  markWelcomeDone(): Promise<void>;
+  markTourSeen(): Promise<void>;
+  periodStarted(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
+  periodEnded(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
+  saveNote(date: DateStr, note: string): Promise<ActionResult>;
+  removeNote(date: DateStr): Promise<ActionResult>;
+  changePeriod(id: string, startDate: DateStr, endDate: DateStr | null, options?: Options): Promise<ActionResult>;
+  removePeriod(id: string): Promise<ActionResult>;
   backupText(): Promise<string>;
   csvText(): string;
   restoreFromText(text: string): Promise<RestoreResult>;
@@ -53,14 +68,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [periods, setPeriods] = useState<Period[]>([]);
   const [notes, setNotes] = useState<DailyLog[]>([]);
   const [name, setName] = useState<string | null>(null);
+  const [welcomeFlag, setWelcomeFlag] = useState(false);
+  const [tourSeen, setTourSeen] = useState(false);
   const [loading, setLoading] = useState(true);
   const rules = DEFAULT_CYCLE_RULES;
 
   const reload = useCallback(async () => {
-    const [p, n, savedName] = await Promise.all([listPeriods(db), listDailyLogs(db), getSetting(db, 'display_name')]);
+    const [p, n, savedName, welcome, tour] = await Promise.all([
+      listPeriods(db),
+      listDailyLogs(db),
+      getSetting(db, 'display_name'),
+      getSetting(db, 'welcome_done'),
+      getSetting(db, 'tour_seen'),
+    ]);
     setPeriods(p);
     setNotes(n);
     setName(savedName);
+    setWelcomeFlag(welcome === '1');
+    setTourSeen(tour === '1');
     setLoading(false);
   }, [db]);
 
@@ -68,59 +93,132 @@ export function DataProvider({ children }: { children: ReactNode }) {
     void reload();
   }, [reload]);
 
-  const value = useMemo<DataValue>(
-    () => ({
+  const value = useMemo<DataValue>(() => {
+    const failed: ActionResult = { ok: false, failed: true };
+    /** Runs a change, reloads, and turns a storage problem into `failed`. */
+    const run = async (work: () => Promise<() => Promise<void>>): Promise<ActionResult> => {
+      try {
+        const undoWork = await work();
+        await reload();
+        return {
+          ok: true,
+          undo: async () => {
+            try {
+              await undoWork();
+            } finally {
+              await reload();
+            }
+          },
+        };
+      } catch {
+        return failed;
+      }
+    };
+    const noteOn = (date: DateStr) => notes.find((n) => n.date === date)?.note ?? null;
+
+    return {
       periods,
       notes,
       name,
       rules,
       loading,
+      // Anyone who already has a name or periods has long since been welcomed.
+      welcomeDone: welcomeFlag || name !== null || periods.length > 0,
+      tourSeen,
       async saveName(newName) {
         await setSetting(db, 'display_name', newName.trim());
         await reload();
       },
-      async periodStarted(date, note) {
-        const error = validatePeriodStart(date, periods, todayLocal(), rules);
-        if (error) return { ok: false, error };
-        await addPeriod(db, date);
-        if (note) await saveDailyNote(db, date, note);
+      async markWelcomeDone() {
+        await setSetting(db, 'welcome_done', '1');
         await reload();
-        return { ok: true };
       },
-      async periodEnded(date, note) {
-        if (date > todayLocal()) return { ok: false, error: 'future_date' };
+      async markTourSeen() {
+        await setSetting(db, 'tour_seen', '1');
+        await reload();
+      },
+
+      async periodStarted(date, note, options) {
+        const issue = checkPeriodStart(date, periods, todayLocal(), rules);
+        if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
+        const before = noteOn(date);
+        return run(async () => {
+          const created = await addPeriod(db, date);
+          if (note) await saveDailyNote(db, date, note);
+          return async () => {
+            await deletePeriod(db, created.id);
+            if (note) {
+              if (before) await saveDailyNote(db, date, before);
+              else await deleteDailyNote(db, date);
+            }
+          };
+        });
+      },
+
+      async periodEnded(date, note, options) {
+        const issue = checkPeriodEnd(date, periods, todayLocal(), rules);
+        if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
         const open = findOpenPeriod(date, periods);
-        if (!open) return { ok: false, error: 'no_open_period' };
-        await updatePeriod(db, open.id, { endDate: date });
-        if (note) await saveDailyNote(db, date, note);
-        await reload();
-        return { ok: true };
+        if (!open) return { ok: false, issue: { severity: 'block', code: 'end_no_period', data: { date } } };
+        const before = noteOn(date);
+        return run(async () => {
+          await updatePeriod(db, open.id, { endDate: date });
+          if (note) await saveDailyNote(db, date, note);
+          return async () => {
+            await updatePeriod(db, open.id, { endDate: null });
+            if (note) {
+              if (before) await saveDailyNote(db, date, before);
+              else await deleteDailyNote(db, date);
+            }
+          };
+        });
       },
-      async saveNote(date, note) {
-        if (date > todayLocal()) return { ok: false, error: 'future_date' };
-        await saveDailyNote(db, date, note.trim() || null);
-        await reload();
-        return { ok: true };
+
+      async saveNote(date, text) {
+        const issue = checkNote(date, text, todayLocal());
+        if (issue) return { ok: false, issue };
+        const before = noteOn(date);
+        return run(async () => {
+          await saveDailyNote(db, date, text.trim());
+          return async () => {
+            if (before) await saveDailyNote(db, date, before);
+            else await deleteDailyNote(db, date);
+          };
+        });
       },
+
       async removeNote(date) {
-        await deleteDailyNote(db, date);
-        await reload();
+        const before = noteOn(date);
+        return run(async () => {
+          await deleteDailyNote(db, date);
+          return async () => {
+            if (before) await saveDailyNote(db, date, before);
+          };
+        });
       },
-      async changePeriod(id, startDate, endDate) {
-        const error = validatePeriodEdit(id, startDate, endDate, periods, todayLocal(), rules);
-        if (error) return { ok: false, error };
-        await updatePeriod(db, id, { startDate, endDate });
-        await reload();
-        return { ok: true };
+
+      async changePeriod(id, startDate, endDate, options) {
+        const issue = checkPeriodEdit(id, startDate, endDate, periods, todayLocal(), rules);
+        if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
+        const old = periods.find((p) => p.id === id);
+        if (!old) return failed;
+        return run(async () => {
+          await updatePeriod(db, id, { startDate, endDate });
+          return async () => {
+            await updatePeriod(db, id, { startDate: old.startDate, endDate: old.endDate });
+          };
+        });
       },
+
       async removePeriod(id) {
-        await deletePeriod(db, id);
-        await reload();
+        return run(async () => {
+          await deletePeriod(db, id);
+          return async () => {
+            await restorePeriod(db, id);
+          };
+        });
       },
-      async undoRemovePeriod(id) {
-        await restorePeriod(db, id);
-        await reload();
-      },
+
       backupText: () => exportBackupText(db, APP_VERSION),
       csvText: () => periodsToCsv(periods),
       async restoreFromText(text) {
@@ -128,9 +226,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         await reload();
         return result;
       },
-    }),
-    [db, periods, notes, name, rules, loading, reload],
-  );
+    };
+  }, [db, periods, notes, name, rules, loading, welcomeFlag, tourSeen, reload]);
 
   // Developer helper for the browser preview only: lets a test script load a backup file's text.
   useEffect(() => {

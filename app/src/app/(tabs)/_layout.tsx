@@ -1,42 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import type { ComponentProps } from 'react';
-import { typeScale, useTokens } from '../../theme/tokens';
-import { TAB_NAMES } from '../../ui/copy';
-
-type IconName = ComponentProps<typeof Ionicons>['name'];
-
-const TABS: { name: string; title: string; icon: IconName; iconActive: IconName }[] = [
-  { name: 'index', title: TAB_NAMES.today, icon: 'today-outline', iconActive: 'today' },
-  { name: 'calendar', title: TAB_NAMES.calendar, icon: 'calendar-outline', iconActive: 'calendar' },
-  { name: 'history', title: TAB_NAMES.cycles, icon: 'refresh-circle-outline', iconActive: 'refresh-circle' },
-  { name: 'settings', title: TAB_NAMES.settings, icon: 'settings-outline', iconActive: 'settings' },
-];
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLanguage } from '../../state/language';
+import { useTokens } from '../../theme/useTokens';
 
 export default function TabsLayout() {
   const t = useTokens();
+  const { S } = useLanguage();
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: t.primary,
         tabBarInactiveTintColor: t.text2,
-        tabBarStyle: { backgroundColor: t.surface, borderTopColor: t.line },
-        tabBarLabelStyle: { fontSize: typeScale.footnote.fontSize },
+        tabBarLabelStyle: { fontSize: 13, fontWeight: '700' },
+        tabBarStyle: { backgroundColor: t.surface, borderTopColor: t.line, height: 76 + insets.bottom, paddingTop: 8, paddingBottom: insets.bottom + 10 },
+        sceneStyle: { backgroundColor: t.background },
       }}
     >
-      {TABS.map((tab) => (
-        <Tabs.Screen
-          key={tab.name}
-          name={tab.name}
-          options={{
-            title: tab.title,
-            tabBarIcon: ({ focused, size }) => (
-              <Ionicons name={focused ? tab.iconActive : tab.icon} size={size} color={focused ? t.primary : t.text2} />
-            ),
-          }}
-        />
-      ))}
+      <Tabs.Screen name="index" options={{ title: S.nav.today, tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={26} color={color as string} /> }} />
+      <Tabs.Screen name="calendar" options={{ title: S.nav.calendar, tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={26} color={color as string} /> }} />
+      <Tabs.Screen name="history" options={{ title: S.nav.cycles, tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={26} color={color as string} /> }} />
     </Tabs>
   );
 }

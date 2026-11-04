@@ -1,6 +1,6 @@
 # Decisions Log (append-only)
 
-Last updated: 2026-10-27
+Last updated: 2026-11-02
 
 ## 2026-10-26
 - Project goal set: cycle-tracking app for Drashti, built solo by Tirth. Start with basic tracking, then improve.
@@ -48,3 +48,17 @@ Last updated: 2026-10-27
 - **Decision:** Replace concept A "Ring" with Tirth's sketch, redrawn as vector. Icon is full colour on blush `#FCEDE7`; themed icon is single colour; logo also shown in Settings.
 - **Why:** Tirth had a specific design in mind; the Ring was a stand-in.
 - **Alternatives rejected:** keeping the Ring on rose (superseded); keeping the "no gradients" icon rule (the sketch's gradients are the design).
+
+## 2026-11-02: Adopt the same UX and wording standards as HomeHisab
+- **Decision:** Tirth asked for the design, UX and wording standards decided for HomeHisab to apply here too, adapted to a health app. Written as `docs/context/ux-standards.md` (identical core in both repos, an app-specific table, and an audit of this app with a refresh plan). `CLAUDE.md` and `design.md` now point to it.
+- **Why:** HomeHisab's first phone test showed what users notice first: too much reading, stacks of generic buttons, ugly Android dialogs, no examples in inputs, settings scattered. The same test found a keyboard-hides-Save bug that this app very probably has on the same phone.
+- **What changes (planned, not yet built):** three tabs + a gear for Settings, floating "Tell me", answer-first Today, own popups and Undo toasts, examples under inputs, typed English/Hindi wording, permissions reviewed.
+- **Alternatives rejected:** a full visual redesign (the tokens, phase colours, logo and guide already work and Drashti is attached to them); copying HomeHisab's screens (different job: health tracking, not budgeting).
+- **Not touched:** the cycle maths, predictions, phase logic and every health threshold.
+
+## 2026-11-05: UX refresh built (before the first release), version relabelled 0.1.0
+- **Decisions (Tirth's feedback):** (1) label the first build v0.1.0, keep 1.0.0 for the Play Store launch; (2) never an empty app: a typical 28-day cycle (range ±3 days) fills next date, phases and ring until her own pattern is known, labelled "Typical cycle"; (3) calendar-style date picker; (4) the main button follows the stage (none / in period / unfinished / between); (5) no Android alerts: own popups, amber inline notes, Undo toasts; (6) separate soft gradient colour per phase, no underlines or stars; (7) first-run welcome and a replayable tour; (8) language in Settings; (9) follow `ux-standards.md` and the Apple HIG skill (alerts rare, onboarding short and optional, no theme toggle: follow the system).
+- **Why:** "feels empty and useless", "I can start my periods twice, no validation", "I hate the Android popup", "I cannot edit dates from the calendar".
+- **How:** structured validation in `domain/validation.ts` (codes, wording separate in `i18n`), `ActionResult` with undo from every action, three-tab shell, sheets for Tell me and Change period, typed English/Hindi with a parity test. 201 tests; every flow checked by screenshots in light, dark and Hindi (`scripts/scenario-shots.js`).
+- **Rejected:** a theme toggle (follow the system), a separate date typing field, popups for common undoable actions.
+- **Still NEEDS DRASHTI REVIEW:** all new thresholds (15 / 14 / 10 days, typical 28 and ±3) and every health sentence; Hindi needs a Hindi speaker's review. Pending Tirth: scenario rules and texts in `scenarios.md`, then push and release as 0.1.0.

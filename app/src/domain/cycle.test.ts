@@ -4,7 +4,7 @@ import { completedCycleLengths, cycleStats, isRegular, periodLength } from './cy
 import { addDays, diffDays, isValidDate, todayLocal } from './dates';
 import { getIrregularityFlags } from './flags';
 import { getDayInfo } from './phases';
-import { predictNextPeriod } from './prediction';
+import { predictNextPeriod, predictWithFallback } from './prediction';
 import type { Period } from './types';
 
 const p = (startDate: string, endDate: string | null = null): Period => ({ id: startDate, startDate, endDate, note: null });
@@ -78,6 +78,16 @@ describe('prediction', () => {
     const prediction = predictNextPeriod(varied, rules)!;
     expect(diffDays(prediction.earliestStart, prediction.latestStart)).toBeGreaterThan(2);
   });
+  it('predictWithFallback: nothing before the first period, a TENTATIVE typical-cycle guess after it', () => {
+    expect(predictWithFallback([], rules)).toBeNull();
+    const first = predictWithFallback([p('2026-10-24')], rules)!;
+    expect(first).toMatchObject({ tentative: true, expectedStart: '2026-11-21', earliestStart: '2026-11-18', latestStart: '2026-11-24', basedOnCycles: 0 });
+    // one finished cycle is still too little: still the typical cycle, not her single cycle
+    expect(predictWithFallback([p('2026-08-01'), p('2026-08-29')], rules)).toMatchObject({ tentative: true, expectedStart: '2026-09-26' });
+  });
+  it('predictWithFallback: uses her own pattern as soon as there is enough, and says so', () => {
+    expect(predictWithFallback(regular, rules)).toMatchObject({ tentative: false, expectedStart: '2026-10-21' });
+  });
   it('only averages the most recent cycles', () => {
     const custom = { ...rules, prediction: { ...rules.prediction, cyclesToAverage: 2 } };
     const periods = [p('2026-01-01'), p('2026-02-15'), p('2026-03-15'), p('2026-04-12')]; // 45, 28, 28
@@ -133,14 +143,24 @@ describe('phases', () => {
     expect(getDayInfo('2026-08-12', regular, rules).isOvulationDay).toBe(true);
     expect(getDayInfo('2026-08-12', regular, rules).isPredictedPeriod).toBe(false);
   });
-  it('still shows cycle day and the period phase when there is too little data to predict', () => {
+  it('with only one period told, days are placed from a TYPICAL cycle and marked tentative', () => {
     const one = [p('2026-10-24')];
     const day = getDayInfo('2026-10-27', one, rules);
     expect(day.cycleDay).toBe(4);
     expect(day.phase).toBe('menstrual');
+    expect(day.isTentative).toBe(false); // logged period days are facts
     const after = getDayInfo('2026-11-05', one, rules);
     expect(after.cycleDay).toBe(13);
-    expect(after.phase).toBeNull();
+    expect(after.phase).toBe('follicular');
+    expect(after.isFertileWindow).toBe(true); // ovulation about Nov 7 (typical 28-day cycle)
+    expect(after.isTentative).toBe(true);
+    expect(getDayInfo('2026-11-07', one, rules).isOvulationDay).toBe(true);
+  });
+  it('once her own pattern is known, nothing is tentative any more', () => {
+    expect(getDayInfo('2026-10-10', regular, rules).isTentative).toBe(false);
+  });
+  it('before her first period nothing is placed', () => {
+    expect(getDayInfo('2026-11-05', [], rules)).toMatchObject({ cycleDay: null, phase: null, isTentative: false });
   });
 });
 

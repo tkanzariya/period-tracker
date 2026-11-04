@@ -10,7 +10,14 @@ import { DEFAULT_CYCLE_RULES as r } from '../src/config/cycleRules';
 import { addDays } from '../src/domain/dates';
 import { getDayInfo } from '../src/domain/phases';
 import type { Period, Phase } from '../src/domain/types';
-import { DISCLAIMER, PHASE_GUIDE, PHASE_LABEL, PHASE_MEANING, flagMessage } from '../src/ui/copy';
+import { en } from '../src/i18n/en';
+import { flagText } from '../src/ui/flagText';
+
+const PHASE_LABEL = en.phases.names;
+const PHASE_MEANING = en.phases.meaning;
+const PHASE_GUIDE = en.phases.guide;
+const DISCLAIMER = en.today.disclaimer;
+const flagMessage = (flag: Parameters<typeof flagText>[0], rules: Parameters<typeof flagText>[2]) => flagText(flag, en, rules);
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const days = (n: number) => `${n} ${n === 1 ? 'day' : 'days'}`;

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
-import { radius, spacing, typeScale, useTokens } from '../theme/tokens';
+import { radius, spacing, typeScale } from '../theme/tokens';
+import { useTokens } from '../theme/useTokens';
 
 const SKIN = '#D99B73';
 const HAIR = '#2B1B20';

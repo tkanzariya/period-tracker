@@ -23,6 +23,9 @@ Full detail lives in `docs/context/`. Do not duplicate it here.
 | `docs/context/roadmap.md` | Phases, current phase, status of each item |
 | `docs/context/research.md` | Competitor and clinical research (Drashti's findings go here) |
 | `docs/context/design.md` | Brand, logo, UI direction, screens, design decisions |
+| `docs/context/ux-standards.md` | **UX and wording standards shared with HomeHisab** (clarity, examples, no Android dialogs, Undo, settings hub, forms, accessibility, how to verify) + the audit and refresh plan for this app |
+| `docs/context/working-standards.md` | **Habits to follow on every feature** (look at screenshots, no Android dialogs, validate every action, never an empty app, etc.) |
+| `docs/context/scenarios.md` | What a user can and cannot do: every problem situation, the rule and the exact wording (Tirth decides) |
 | `docs/context/release-process.md` | Versioning policy, changelog rule, the release checklist (every release), Play Store extras |
 | `docs/context/decisions-log.md` | Dated, append-only log of every decision and why |
 | `docs/context/open-questions.md` | Unresolved questions and who owns them |
@@ -47,6 +50,7 @@ Context is only useful if it stays true. Whenever something is learned or decide
 - Data portability is a hard requirement (see `tech-decisions.md`). Don't make schema or storage choices that break it.
 - Ask before: adding dependencies with ongoing cost, committing/pushing, anything outward-facing.
 - **Git**: all code and docs go through git on `main` at https://github.com/tkanzariya/period-tracker and must be pushed; commit after each meaningful unit of work with a clear message. Never commit secrets, keystores, APKs or personal cycle data.
+- **UX and wording**: follow `docs/context/ux-standards.md` for every screen and every sentence (the same standards as HomeHisab). No Android system dialogs (`Alert.alert`): use the app's own popup and a toast with Undo. Every input has an example. Wording moves to typed English/Hindi files. Health sentences that change stay `NEEDS DRASHTI REVIEW`.
 - **UI**: follow `docs/context/design.md` (Apple-HIG-based principles, colour tokens). Use tokens, never raw hex, in app code; WCAG AA contrast; 48dp touch targets; colour is never the only signal.
 - **Changelog and releases (mandatory)**: keep `CHANGELOG.md` (Keep a Changelog format, Semantic Versioning) current. Every change the user can notice gets one plain-language line under `## [Unreleased]` in the SAME commit as the change. Every release follows `docs/context/release-process.md` (versioning policy, versionCode formula, the full checklist); do not skip steps. `0.y.z` = test builds for Drashti (GitHub "pre-release"), `1.0.0` = the public Play Store launch. Never reuse or move a published tag. The cloud build refuses a release whose tag, `app.json` version, versionCode or changelog section disagree.
 - **File locations**: keep everything inside the project folder in subfolders (`local/` for private things, `dist/` for built files); never create new folders at the root of D:. The only exceptions are the two short-path build caches `D:\cs` and `D:\c`, which must stay short (see `tech-decisions.md`).

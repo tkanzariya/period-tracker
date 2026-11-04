@@ -7,8 +7,17 @@ const p = (startDate: string, endDate: string | null = null): Period => ({ id: s
 const regular = [p('2026-07-01', '2026-07-05'), p('2026-07-29', '2026-08-02'), p('2026-08-26', '2026-08-30'), p('2026-09-23', '2026-09-27')];
 
 describe('currentCycleRing', () => {
-  it('is null until there is enough data to predict', () => {
-    expect(currentCycleRing([p('2026-10-01')], rules)).toBeNull();
+  it('is null only before the first period', () => {
+    expect(currentCycleRing([], rules)).toBeNull();
+  });
+  it('with one period it draws a TENTATIVE typical 28-day cycle', () => {
+    const ring = currentCycleRing([p('2026-10-01')], rules)!;
+    expect(ring.tentative).toBe(true);
+    expect(ring.length).toBe(28);
+    expect(ring.segments.map((s) => s.phase)).toEqual(['menstrual', 'follicular', 'ovulation', 'luteal']);
+  });
+  it('with her own pattern it is not tentative', () => {
+    expect(currentCycleRing(regular, rules)!.tentative).toBe(false);
   });
   it('lays out a regular 28-day cycle phase by phase', () => {
     const ring = currentCycleRing(regular, rules)!;

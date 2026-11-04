@@ -22,3 +22,7 @@ dist/
 
 # private files that must never be committed (the signing key lives here)
 /local/
+
+# local helper files
+.claude/skills/
+app/.tmp/

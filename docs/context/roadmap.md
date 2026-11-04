@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-10-27
+Last updated: 2026-11-05
 
 **Current phase: Phase 0 — Foundation & Planning**
 
@@ -46,6 +46,11 @@ Last updated: 2026-10-27
 - [ ] Drashti installs the first build, uses it, and fills in the review sheet; feedback decides Phase 2/3
 - [ ] Release APK for Drashti
 
+## UX refresh (built 2026-11-05, awaiting Tirth's review; not pushed or released)
+- [x] Typical-cycle data from the first period, stage-aware main button, validation (19 scenarios), own popups/toasts with Undo, calendar date picker, phase gradients, Calendar day sheet with edit actions, welcome + tour, language in Settings, Hindi wording
+- [ ] Tirth reviews `scenarios.md` and the screenshots; Drashti reviews health wording
+- [ ] Push, then re-label v1.0.0 as v0.1.0 and release (`release-process.md`)
+
 ## Phase 1 — MVP basic tracking
 Log period start/end and flow, calendar + history, derived cycle stats, next-cycle range prediction, cycle phases (ovulation/fertile window estimates), irregularity flags, edit/delete, JSON/CSV export + import.
 
@@ -57,3 +62,10 @@ PDF/CSV medical-history export designed with Drashti.
 
 ## Phase 4 — Insights, AI, cloud
 Pattern insights, AI summaries (Claude API; has a cost, decide later), optional cloud backup/sync.
+
+## UX refresh (proposed 2026-11-02, scope awaiting Tirth's go-ahead)
+Apply `ux-standards.md` (shared with HomeHisab). Plan and audit: `ux-standards.md` section 10.
+- [ ] A: keyboard no longer hides Save; own popup + Undo toast instead of Android dialogs; review and block unneeded permissions; typed English/Hindi wording files
+- [ ] B1-B5: Today (answer first, floating Tell me), Tell me sheet, Settings hub behind a gear, three tabs
+- [ ] B6-B9: My cycles filters and trend, first-run welcome, empty states, 200% text and dark-mode check
+- [ ] Drashti reviews the changed health wording; release through `release-process.md`
