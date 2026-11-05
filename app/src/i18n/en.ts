@@ -47,7 +47,7 @@ export const en = {
   nav: { today: 'Today', calendar: 'Calendar', cycles: 'My cycles' },
 
   phases: {
-    names: { menstrual: 'Menstrual', follicular: 'Follicular', ovulation: 'Ovulation', luteal: 'Luteal' } as Record<Phase, string>,
+    names: { menstrual: 'Bleeding', follicular: 'Follicular', ovulation: 'Ovulation', luteal: 'Luteal' } as Record<Phase, string>,
     /** One plain line under the phase name. NEEDS DRASHTI REVIEW. */
     meaning: {
       menstrual: 'Your period days',

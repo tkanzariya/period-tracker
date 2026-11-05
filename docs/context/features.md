@@ -37,13 +37,13 @@ All wording lives in `app/src/ui/copy.ts`.
 Not enough data yet? The app says "I need 2-3 cycles to predict" instead of guessing.
 
 ## Cycle phases (added 2026-10-27, in Phase 1)
-Four phases (confirmed by Tirth): **Menstrual, Follicular, Ovulation, Luteal**. Everything is **calculated from her own period start dates and the predicted next start**, never stored. Always labelled "estimate".
+Four phases (confirmed by Tirth): **Bleeding, Follicular, Ovulation, Luteal**. Everything is **calculated from her own period start dates and the predicted next start**, never stored. Always labelled "estimate".
 
 **All day counts live in one editable file: `app/src/config/cycleRules.ts`** (source of truth; change numbers there, no logic changes). Defaults, from published ranges, all `NEEDS DRASHTI REVIEW`:
 
 | Phase | How it's worked out (default) |
 |---|---|
-| Menstrual | Day 1 to her logged end date (assume 5 days if none logged) |
+| Bleeding | Day 1 to her logged end date (assume 5 days if none logged) |
 | Follicular | After the period ends until the Ovulation phase begins |
 | Ovulation | Estimated ovulation day ±1 day. Ovulation day = **14 days before the next predicted period** (luteal length, not "day 14") |
 | Luteal | After the Ovulation phase until the next period |

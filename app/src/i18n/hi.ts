@@ -45,7 +45,7 @@ export const hi: Strings = {
   nav: { today: 'आज', calendar: 'कैलेंडर', cycles: 'मेरे चक्र' },
 
   phases: {
-    names: { menstrual: 'मेंस्ट्रुअल', follicular: 'फॉलिक्यूलर', ovulation: 'ओव्यूलेशन', luteal: 'ल्यूटियल' },
+    names: { menstrual: 'ब्लीडिंग', follicular: 'फॉलिक्यूलर', ovulation: 'ओव्यूलेशन', luteal: 'ल्यूटियल' },
     meaning: {
       menstrual: 'आपके पीरियड के दिन',
       follicular: 'आपका शरीर अंडाणु छोड़ने की तैयारी कर रहा है',

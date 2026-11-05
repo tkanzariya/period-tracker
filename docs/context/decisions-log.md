@@ -67,3 +67,6 @@ Last updated: 2026-11-02
 - **Done:** (1) Saathi's hair fixed (face peeked above the hair); (2) tour wording "See how long each cycle was" (no period); (3) "Save a spreadsheet" (CSV) replaced by "Save a PDF report", branded (logo, name, date, summary, history table, disclaimer), made with `expo-print` (free, small), words in `i18n` (`report.*`), tested; (4) `docs/review/cycle-review.html` regenerated from code with new sections 4-6 (checks and every problem message, Saathi lines and main button, welcome/tour/report) so it matches the app.
 - **Open:** Drashti asked to say "Cycle ended" / "Current cycle end" instead of "Period ended" / "Did your period end?", because a cycle only starts and ends at the next start. Meaning unclear (rename only, or drop the period end day). Question put to Tirth; see `open-questions.md`.
 
+## 2026-11-06: Bleeding, and first-open/history rules
+- **Decisions (Tirth):** phase "Menstrual" renamed **Bleeding** (English and Hindi); keep the end-of-period day because history entry asks start date + bleeding days; first open asks only the current cycle start with rough-day chips; 60+ day gaps and starts under 15 days apart ask "Is that right?". See `scenarios.md` F1-F6.
+- **Not built yet:** the first-open chips, the "add earlier cycles" screen and the 60-day gap rule.

@@ -37,3 +37,13 @@ Style: calm, amber box inside the sheet (never red, never an Android popup), say
 - **S25 note on a day with no period**: allowed. OK?
 
 Health-related numbers (15 days, 14 days, 10 days, 21 to 35) are **NEEDS DRASHTI REVIEW**.
+
+## First open and history (decided by Tirth, 2026-11-06; NOT built yet)
+| # | Situation | Decision |
+|---|---|---|
+| F1 | Very first step | Ask only "When did your current cycle start?" History can be added later. |
+| F2 | She does not remember the exact day | Calendar picker plus rough chips ("1 week ago", "2 weeks ago"); labelled as an estimate. |
+| F3 | Adding history | For each past cycle: start date **and** how many days the bleeding lasted (so the end-of-period day stays). |
+| F4 | A gap of 60+ days (missed cycle, pregnancy, illness, pill) | Ask "Is that right?"; if yes, allow and mark the cycle as long (not an error). |
+| F5 | Two starts under 15 days apart | Ask "Is that right?" (today's rule S6). |
+| F6 | Not chosen as "ask": very old start (1+ year), dates added out of order | Out of order: sort automatically. Very old start: allowed without a question; to confirm. |

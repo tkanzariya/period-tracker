@@ -21,6 +21,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- The first phase is now called "Bleeding" instead of "Menstrual".
 - The big button follows your situation: "Add my last period", then "Period started", then "Period ended".
 - Each cycle phase has its own soft colour, in the ring and on the calendar, instead of one red cycle with marks.
 - Problems are explained in calm boxes inside the screen, with a button for the next step, instead of Android pop-ups. Questions like "Is that right?" use the app's own popup.
