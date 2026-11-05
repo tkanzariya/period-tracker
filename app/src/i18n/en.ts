@@ -283,6 +283,7 @@ export const en = {
     aboutApp: 'About Cycle Saathi',
     version: 'Version',
     goodToKnow: 'Good to know',
+    goodToKnowHelp: 'What this app can and cannot do',
     disclaimer:
       'These are only guesses to help you understand your body. This app cannot tell you if something is wrong, and it cannot stop you getting pregnant. If you are worried, please talk to your doctor.',
     fileReadyTitle: 'Your file is ready',

@@ -68,7 +68,7 @@ export function CycleRingView({ ring, day, children }: { ring: CycleRingData; da
         </G>
         {marker ? <Circle cx={marker.x} cy={marker.y} r={STROKE / 2 + 3} fill={t.background} stroke={t.text} strokeWidth={3} /> : null}
       </Svg>
-      <View style={{ alignItems: 'center', paddingHorizontal: 44 }}>{children}</View>
+      <View style={{ alignItems: 'center', paddingHorizontal: 30 }}>{children}</View>
     </View>
   );
 }

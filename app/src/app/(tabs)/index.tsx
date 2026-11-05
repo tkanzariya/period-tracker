@@ -13,12 +13,12 @@ import { CycleRingView } from '../../ui/CycleRing';
 import { flagText } from '../../ui/flagText';
 import { formatLong, formatRange, formatShort } from '../../ui/format';
 import { GuideMessage } from '../../ui/Guide';
-import { Button, Card, Fab, Notice, PhaseChip, Screen, T, useHideOnScroll } from '../../ui/kit';
+import { Button, Card, Disclaimer, Fab, Notice, PhaseChip, Screen, T, useHideOnScroll } from '../../ui/kit';
 
 export default function TodayScreen() {
   const { S } = useLanguage();
   const { periods, rules, name } = useData();
-  const { openTell, openChange } = useSheets();
+  const { openTell } = useSheets();
   const fab = useHideOnScroll();
   const today = todayLocal();
 
@@ -59,7 +59,7 @@ export default function TodayScreen() {
         {ring && info.cycleDay !== null ? (
           <Card style={{ alignItems: 'center', gap: 12, paddingVertical: 24 }}>
             <CycleRingView ring={ring} day={info.cycleDay}>
-              <T kind="display" center>{S.today.dayOfCycle(info.cycleDay)}</T>
+              <T kind="display" center numberOfLines={1} style={{ fontSize: 38, lineHeight: 44 }}>{S.today.dayOfCycle(info.cycleDay)}</T>
               <T muted center>{S.today.ofYourCycle}</T>
             </CycleRingView>
             {info.phase ? (
@@ -90,11 +90,7 @@ export default function TodayScreen() {
           <Notice key={flag.code} title={S.flags.title} body={flagText(flag, S, rules)} icon="medkit-outline" />
         ))}
 
-        {stage.period && stage.kind === 'between' ? (
-          <Button variant="text" label={S.change.title} icon="create-outline" onPress={() => openChange(stage.period!.id)} />
-        ) : null}
-
-        <T kind="caption" muted center>{S.today.disclaimer}</T>
+        <Disclaimer text={S.today.disclaimer} />
       </Screen>
       <Fab label={fabLabel} hint={fabHint} icon={action === 'end' && stage.kind !== 'none' ? 'checkmark-circle' : 'water'} visible={fab.visible} onPress={() => openTell({ mode: action })} />
     </View>

@@ -137,6 +137,17 @@ export function IconCircle({ icon, size = 42, tint }: { icon: IconName; size?: n
   );
 }
 
+/** A quiet note at the bottom of a screen (for example "guesses only"): an icon and a line, in a soft box. */
+export function Disclaimer({ text }: { text: string }) {
+  const t = useTokens();
+  return (
+    <View style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center', backgroundColor: t.surface2, borderRadius: 16, padding: spacing.md }}>
+      <Ionicons name="shield-checkmark-outline" size={22} color={t.text2} />
+      <T kind="caption" muted style={{ flex: 1 }}>{text}</T>
+    </View>
+  );
+}
+
 // ---------- rows ----------------------------------------------------------------------------
 export function ListRow({ icon, title, subtitle, value, onPress, chevron, accessibilityLabel, right }: {
   icon?: IconName; title: string; subtitle?: string; value?: string; onPress?: () => void; chevron?: boolean; accessibilityLabel?: string; right?: ReactNode;

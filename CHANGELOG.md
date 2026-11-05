@@ -24,6 +24,8 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- Today is tidier: the "Guesses only" line is a quiet note with an icon, and the extra "Change this period" button is gone (you can still change a period in My cycles or the Calendar).
+- Settings, About: the app name and version sit in one row, and "Good to know" opens in its own popup instead of a block of small text.
 - The first phase is now called "Bleeding" instead of "Menstrual".
 - The big button follows your situation: "Add my last period", then "Period started", then "Period ended".
 - Each cycle phase has its own soft colour, in the ring and on the calendar, instead of one red cycle with marks.
@@ -32,6 +34,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
 
 ### Fixed
+- "Day 32" no longer wraps onto two lines inside the ring.
 - "Save a PDF report" in the browser preview printed the current screen instead of the report; it now prints the report.
 - Your Saathi's hair now covers her head (it looked bald).
 - The tour no longer talks about period length on My cycles.

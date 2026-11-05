@@ -94,13 +94,22 @@ export default function SettingsScreen() {
       </Card>
 
       <SectionHeader title={S.settings.groups.about} />
-      <Card style={{ alignItems: 'center', gap: 8 }}>
-        <Logo size={64} />
-        <T kind="label">{S.appName}</T>
-        <T kind="caption" muted>{S.settings.version} {APP_VERSION}</T>
-        <Divider />
-        <T kind="label">{S.settings.goodToKnow}</T>
-        <T kind="caption" muted center>{S.settings.disclaimer}</T>
+      <Card style={{ paddingVertical: 4 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 64, paddingVertical: 8, paddingHorizontal: 4 }}>
+          <Logo size={44} />
+          <View style={{ flex: 1 }}>
+            <T kind="label">{S.appName}</T>
+            <T kind="caption" muted>{S.settings.version} {APP_VERSION}</T>
+          </View>
+        </View>
+        <Divider inset={58} />
+        <ListRow
+          icon="shield-checkmark-outline"
+          title={S.settings.goodToKnow}
+          subtitle={S.settings.goodToKnowHelp}
+          chevron
+          onPress={() => void popup.info({ title: S.settings.goodToKnow, message: S.settings.disclaimer, icon: 'shield-checkmark-outline' })}
+        />
       </Card>
 
       <Sheet
