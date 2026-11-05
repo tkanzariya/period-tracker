@@ -56,6 +56,8 @@ export function describeIssue(issue: Issue, S: Strings, rules: CycleRules): Issu
         yes: text.startTooSoon.yes,
         no: text.startTooSoon.no,
       };
+    case 'start_long_gap':
+      return { title: text.startLongGap.title(d.days ?? 0), body: text.startLongGap.body, yes: text.startLongGap.yes, no: text.startLongGap.no };
     case 'end_no_period':
       return { title: text.endNoPeriod.title, body: text.endNoPeriod.body, action: { label: text.endNoPeriod.action, kind: 'start_period' } };
     case 'end_before_start':

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CYCLE_RULES as rules } from '../config/cycleRules';
-import { checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, NOTE_MAX_LENGTH } from './validation';
+import { checkHistory, checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, NOTE_MAX_LENGTH } from './validation';
 import type { Period } from './types';
 
 const p = (startDate: string, endDate: string | null = null): Period => ({ id: startDate, startDate, endDate, note: null });
@@ -50,7 +50,7 @@ describe('telling the app a period STARTED', () => {
     expect(checkPeriodStart('2026-10-12', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({ code: 'start_too_soon' });
   });
   it('S5: filling in an older period before the first one is fine', () => {
-    expect(checkPeriodStart('2026-08-01', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toBeNull();
+    expect(checkPeriodStart('2026-08-20', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toBeNull();
   });
   it('S5b: an older period that would run into a later one is refused', () => {
     expect(checkPeriodStart('2026-10-31', [p('2026-10-06', '2026-10-10'), p('2026-11-03')], TODAY, rules)).toMatchObject({
@@ -131,5 +131,51 @@ describe('NOTES', () => {
   });
   it('a normal note is fine', () => {
     expect(checkNote('2026-11-01', 'cramps in the evening', TODAY)).toBeNull();
+  });
+});
+
+describe('F4: a missed cycle (long gap)', () => {
+  it('a start more than 60 days after the last one asks "is that right?"', () => {
+    expect(checkPeriodStart('2026-10-10', [p('2026-07-01', '2026-07-05')], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_long_gap', data: { days: 101 } });
+  });
+  it('exactly 60 days is normal enough', () => {
+    expect(checkPeriodStart('2026-08-30', [p('2026-07-01', '2026-07-05')], TODAY, rules)).toBeNull();
+  });
+  it('changing a period so it sits far from the others asks too', () => {
+    const a = p('2026-07-01', '2026-07-05');
+    const b = p('2026-07-29', '2026-08-02');
+    expect(checkPeriodEdit(b.id, '2026-10-01', '2026-10-05', [a, b], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_long_gap' });
+  });
+});
+
+describe('F3: adding earlier cycles in one go', () => {
+  const current = p('2026-10-27');
+  it('a tidy list of earlier cycles is fine, in any order', () => {
+    const entries = [
+      { start: '2026-08-30', end: '2026-09-03' },
+      { start: '2026-10-01', end: '2026-10-05' },
+      { start: '2026-08-02', end: '2026-08-06' },
+    ];
+    expect(checkHistory(entries, [current], TODAY, rules)).toEqual([]);
+  });
+  it('the same start twice is reported on the later row only', () => {
+    const entries = [{ start: '2026-09-30', end: '2026-10-03' }, { start: '2026-09-30', end: '2026-10-03' }];
+    const found = checkHistory(entries, [current], TODAY, rules);
+    expect(found).toHaveLength(1);
+    expect(found[0].issue.code).toBe('start_already_logged');
+  });
+  it('a row that runs into another is blocked with its row number', () => {
+    const entries = [{ start: '2026-09-01', end: '2026-09-05' }, { start: '2026-09-03', end: '2026-09-07' }];
+    const found = checkHistory(entries, [current], TODAY, rules);
+    expect(found.map((f) => f.index)).toEqual([1]);
+    expect(found[0].issue.severity).toBe('block');
+  });
+  it('a missed cycle in the history asks, it does not block', () => {
+    const found = checkHistory([{ start: '2026-06-01', end: '2026-06-05' }], [current], TODAY, rules);
+    expect(found[0].issue).toMatchObject({ severity: 'confirm', code: 'start_long_gap' });
+  });
+  it('an end before the start is blocked', () => {
+    const found = checkHistory([{ start: '2026-09-10', end: '2026-09-08' }], [current], TODAY, rules);
+    expect(found[0].issue.code).toBe('end_before_start');
   });
 });

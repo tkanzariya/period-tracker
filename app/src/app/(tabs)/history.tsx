@@ -8,7 +8,8 @@ import { useTokens } from '../../theme/useTokens';
 import { GearButton } from '../../ui/chrome';
 import { formatRange, formatShort } from '../../ui/format';
 import { GuideMessage } from '../../ui/Guide';
-import { Card, Divider, ListRow, Screen, T } from '../../ui/kit';
+import { router } from 'expo-router';
+import { Button, Card, Divider, ListRow, Screen, T } from '../../ui/kit';
 
 const BAR_AREA = 110;
 
@@ -28,7 +29,10 @@ export default function MyCyclesScreen() {
   return (
     <Screen title={S.cycles.title} actions={<GearButton />}>
       {loading ? null : rows.length === 0 ? (
-        <GuideMessage text={S.cycles.emptyBody} />
+        <>
+          <GuideMessage text={S.cycles.emptyBody} />
+          <Button variant="tonal" icon="add" label={S.history.addButton} onPress={() => router.push('/add-cycles')} />
+        </>
       ) : (
         <>
           {stats ? (
@@ -87,6 +91,7 @@ export default function MyCyclesScreen() {
               );
             })}
           </Card>
+          <Button variant="tonal" icon="add" label={S.history.addButton} onPress={() => router.push('/add-cycles')} />
           <T kind="caption" muted center>{S.cycles.showDoctor}</T>
         </>
       )}

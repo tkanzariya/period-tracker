@@ -31,6 +31,7 @@ function Gate() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="tour" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="add-cycles" />
     </Stack>
   );
 }

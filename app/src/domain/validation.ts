@@ -16,6 +16,7 @@ export type IssueCode =
   | 'start_previous_unfinished'
   | 'start_overlaps_next'
   | 'start_too_soon'
+  | 'start_long_gap'
   | 'end_no_period'
   | 'end_before_start'
   | 'end_already'
@@ -75,6 +76,9 @@ export function checkPeriodStart(date: DateStr, periods: Period[], today: DateSt
   const nearest = Math.min(...sorted.map((p) => Math.abs(diffDays(p.startDate, date))));
   if (sorted.length > 0 && nearest < rules.checks.minDaysBetweenStarts) return confirm('start_too_soon', { days: nearest });
 
+  // A long gap from the nearest other start (a missed cycle can be real: illness, pregnancy, pill).
+  if (sorted.length > 0 && nearest > rules.checks.longGapDays) return confirm('start_long_gap', { days: nearest });
+
   return null;
 }
 
@@ -123,6 +127,7 @@ export function checkPeriodEdit(
   if (others.length > 0) {
     const nearest = Math.min(...others.map((p) => Math.abs(diffDays(p.startDate, startDate))));
     if (nearest < rules.checks.minDaysBetweenStarts) return confirm('start_too_soon', { days: nearest });
+    if (nearest > rules.checks.longGapDays) return confirm('start_long_gap', { days: nearest });
   }
   return null;
 }
@@ -133,4 +138,51 @@ export function checkNote(date: DateStr, note: string, today: DateStr): Issue | 
   if (note.trim().length === 0) return block('note_empty');
   if (note.length > NOTE_MAX_LENGTH) return block('note_too_long', { days: NOTE_MAX_LENGTH });
   return null;
+}
+
+/** One earlier cycle she is adding: when it started and when the bleeding ended. */
+export interface HistoryEntry {
+  start: DateStr;
+  end: DateStr | null;
+}
+
+/**
+ * Checks a whole list of earlier cycles at once, as if they were added oldest first.
+ * Returns every problem with the position of the row it belongs to (at most one per row).
+ */
+export function checkHistory(
+  entries: HistoryEntry[],
+  periods: Period[],
+  today: DateStr,
+  rules: CycleRules,
+): { index: number; issue: Issue }[] {
+  const found: { index: number; issue: Issue }[] = [];
+  const accumulated: Period[] = [...periods];
+  // Overlaps and duplicates are found oldest-first; the long-gap question needs every other start, so it is asked at the end.
+  const noGap: CycleRules = { ...rules, checks: { ...rules.checks, longGapDays: Number.POSITIVE_INFINITY } };
+  entries
+    .map((entry, index) => ({ entry, index }))
+    .sort((a, b) => (a.entry.start < b.entry.start ? -1 : a.entry.start > b.entry.start ? 1 : 0))
+    .forEach(({ entry, index }) => {
+      let issue = checkPeriodStart(entry.start, accumulated, today, noGap);
+      if (!issue && entry.end !== null) {
+        if (entry.end < entry.start) issue = block('end_before_start', { date: entry.end, start: entry.start });
+        else if (entry.end > today) issue = block('future_date', { date: entry.end });
+        else if (diffDays(entry.start, entry.end) + 1 > rules.checks.longPeriodDays) {
+          issue = confirm('end_too_long', { days: diffDays(entry.start, entry.end) + 1, start: entry.start });
+        }
+      }
+      if (issue) found.push({ index, issue });
+      accumulated.push({ id: `new-${index}`, startDate: entry.start, endDate: entry.end, note: null });
+    });
+
+  const starts = [...periods.map((x) => x.startDate), ...entries.map((e) => e.start)];
+  entries.forEach((entry, index) => {
+    if (found.some((f) => f.index === index)) return;
+    const others = starts.filter((_, i) => !(i === periods.length + index));
+    if (others.length === 0) return;
+    const nearest = Math.min(...others.map((d) => Math.abs(diffDays(d, entry.start))));
+    if (nearest > rules.checks.longGapDays) found.push({ index, issue: confirm('start_long_gap', { days: nearest }) });
+  });
+  return found.sort((a, b) => a.index - b.index);
 }

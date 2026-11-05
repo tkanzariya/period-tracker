@@ -136,6 +136,7 @@ const issueCodes: [IssueCode, string, number?][] = [
   ['start_previous_unfinished', 'She says a period started while the last one has no end day'],
   ['start_overlaps_next', 'The new start runs into a period that begins later'],
   ['start_too_soon', 'A new period only a few days after another one started (the app asks if that is right)', 14],
+  ['start_long_gap', 'A new start far from the others, 60+ days (a missed cycle; the app asks if that is right)', 101],
   ['end_no_period', 'She says a period ended, but none is going on'],
   ['end_before_start', 'The end day is before the start day'],
   ['end_already', 'That period already has an end day'],
@@ -146,7 +147,7 @@ const issueCodes: [IssueCode, string, number?][] = [
 ];
 sections.push({
   title: '4. Checks when she tells the app something',
-  intro: `The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than ${r.checks.minDaysBetweenStarts} days after another; asks if a period would last more than ${r.checks.longPeriodDays} days; treats a period with no end day as forgotten after ${r.checks.unfinishedPeriodAfterDays} days and asks about it on Today.`,
+  intro: `The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than ${r.checks.minDaysBetweenStarts} days after another; asks if a start is more than ${r.checks.longGapDays} days from the other starts; asks if a period would last more than ${r.checks.longPeriodDays} days; treats a period with no end day as forgotten after ${r.checks.unfinishedPeriodAfterDays} days and asks about it on Today.`,
   items: issueCodes.map(([code, when, days]): Item => {
     const view = describeIssue(
       { severity: code === 'start_too_soon' || code === 'end_too_long' ? 'confirm' : 'block', code, data: { ...issueSample, days } },

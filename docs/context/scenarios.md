@@ -38,7 +38,7 @@ Style: calm, amber box inside the sheet (never red, never an Android popup), say
 
 Health-related numbers (15 days, 14 days, 10 days, 21 to 35) are **NEEDS DRASHTI REVIEW**.
 
-## First open and history (decided by Tirth, 2026-11-06; NOT built yet)
+## First open and history (decided by Tirth, 2026-11-06; built 2026-11-06)
 | # | Situation | Decision |
 |---|---|---|
 | F1 | Very first step | Ask only "When did your current cycle start?" History can be added later. |
@@ -46,4 +46,7 @@ Health-related numbers (15 days, 14 days, 10 days, 21 to 35) are **NEEDS DRASHTI
 | F3 | Adding history | For each past cycle: start date **and** how many days the bleeding lasted (so the end-of-period day stays). |
 | F4 | A gap of 60+ days (missed cycle, pregnancy, illness, pill) | Ask "Is that right?"; if yes, allow and mark the cycle as long (not an error). |
 | F5 | Two starts under 15 days apart | Ask "Is that right?" (today's rule S6). |
-| F6 | Not chosen as "ask": very old start (1+ year), dates added out of order | Out of order: sort automatically. Very old start: allowed without a question; to confirm. |
+| F6 | Not chosen as "ask": very old start (1+ year), dates added out of order | Out of order: sorted automatically. Very old start: allowed without a question (Tirth to confirm). |
+| F7 | History rows that clash (same start twice, or running into each other) | Blocked, shown under the row ("Cycle 2: ..."); Save stays off until fixed. |
+| F8 | Bleeding days in history | Always chosen (2 to 8, default 5), so every earlier cycle has an end day. |
+| F9 | Welcome flow | Chips (Today, 1/2/3 weeks ago) + calendar; then "Want to add earlier cycles?"; also in My cycles any time. One Undo removes all rows saved together. |

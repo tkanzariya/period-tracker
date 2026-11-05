@@ -20,7 +20,7 @@ import { periodsToCsv } from '../domain/backup';
 import { todayLocal, type DateStr } from '../domain/dates';
 import { findOpenPeriod } from '../domain/logging';
 import type { DailyLog, Period } from '../domain/types';
-import { checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, type Issue } from '../domain/validation';
+import { checkHistory, checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, type HistoryEntry, type Issue } from '../domain/validation';
 
 export const APP_VERSION = Constants.expoConfig?.version ?? '0.1.0';
 
@@ -52,6 +52,8 @@ interface DataValue {
   markTourSeen(): Promise<void>;
   periodStarted(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
   periodEnded(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
+  /** Add several earlier cycles at once (start and the day the bleeding ended). One Undo removes them all. */
+  addHistory(entries: HistoryEntry[], options?: Options): Promise<ActionResult>;
   saveNote(date: DateStr, note: string): Promise<ActionResult>;
   removeNote(date: DateStr): Promise<ActionResult>;
   changePeriod(id: string, startDate: DateStr, endDate: DateStr | null, options?: Options): Promise<ActionResult>;
@@ -170,6 +172,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
               if (before) await saveDailyNote(db, date, before);
               else await deleteDailyNote(db, date);
             }
+          };
+        });
+      },
+
+      async addHistory(entries, options) {
+        const found = checkHistory(entries, periods, todayLocal(), rules);
+        const stop = found.find((f) => f.issue.severity === 'block') ?? (options?.confirmed ? undefined : found[0]);
+        if (stop) return { ok: false, issue: stop.issue };
+        return run(async () => {
+          const created: string[] = [];
+          for (const entry of [...entries].sort((a, b) => (a.start < b.start ? -1 : 1))) {
+            created.push((await addPeriod(db, entry.start, entry.end)).id);
+          }
+          return async () => {
+            for (const id of created) await deletePeriod(db, id);
           };
         });
       },

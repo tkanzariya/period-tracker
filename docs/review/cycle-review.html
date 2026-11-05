@@ -145,7 +145,7 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
-<h2>4. Checks when she tells the app something</h2><p class="intro">The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than 15 days after another; asks if a period would last more than 14 days; treats a period with no end day as forgotten after 10 days and asks about it on Today.</p><div class="item" data-id="issue-future_date" data-title="She picks a day that has not come yet">
+<h2>4. Checks when she tells the app something</h2><p class="intro">The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than 15 days after another; asks if a start is more than 60 days from the other starts; asks if a period would last more than 14 days; treats a period with no end day as forgotten after 10 days and asks about it on Today.</p><div class="item" data-id="issue-future_date" data-title="She picks a day that has not come yet">
   <h3>She picks a day that has not come yet</h3>
   <p class="says"><b>The app says / does:</b> "That day has not come yet". Please pick today or an earlier day.</p>
   
@@ -202,6 +202,16 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
   <div class="answer">
     <label><input type="radio" name="issue-start_too_soon" value="ok"> Looks right</label>
     <label><input type="radio" name="issue-start_too_soon" value="change"> Needs a change</label>
+    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
+  </div>
+</div>
+<div class="item" data-id="issue-start_long_gap" data-title="A new start far from the others, 60+ days (a missed cycle; the app asks if that is right)">
+  <h3>A new start far from the others, 60+ days (a missed cycle; the app asks if that is right)</h3>
+  <p class="says"><b>The app says / does:</b> "101 days from your other periods". A cycle can be missed or late (illness, stress, pregnancy, some medicines). Is that right? Buttons: "Yes, save it" / "No, go back".</p>
+  
+  <div class="answer">
+    <label><input type="radio" name="issue-start_long_gap" value="ok"> Looks right</label>
+    <label><input type="radio" name="issue-start_long_gap" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>

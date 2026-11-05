@@ -79,6 +79,9 @@ const tapText = async (page, text) => {
     await page.getByRole('button').last().click().catch(() => {});
     await wait(page);
     await snap(page, '03-welcome-last-period');
+    await page.getByRole('button', { name: /^Next|^आगे/ }).last().click();
+    await wait(page);
+    await snap(page, '04-welcome-history-offer');
     await context.close();
   }
 
@@ -192,6 +195,20 @@ const tapText = async (page, text) => {
     await wait(c.page);
     await save(c.page);
     await snap(c.page, '63-problem-empty-note');
+    await c.context.close();
+
+    // f) add earlier cycles (a missed-cycle question and a clash)
+    c = await open(browser, backup(FULL));
+    await goTab(c.page, /My cycles|मेरे चक्र/);
+    await wait(c.page, 1200);
+    await c.page.getByRole('button', { name: /Add earlier cycles|पिछले चक्र जोड़ें/ }).last().click();
+    await wait(c.page, 1200);
+    await snap(c.page, '70-add-cycles');
+    await c.page.getByRole('button', { name: /Add another cycle|एक और चक्र/ }).last().click();
+    await wait(c.page);
+    await c.page.getByRole('button', { name: /Add another cycle|एक और चक्र/ }).last().click();
+    await wait(c.page);
+    await snap(c.page, '71-add-cycles-three-rows');
     await c.context.close();
 
     // e) remove a period, then the Undo toast

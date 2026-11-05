@@ -6,10 +6,10 @@ import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from './DateField';
 import { GuideAvatar } from './Guide';
-import { Button, Card, Field, Input, Screen, T } from './kit';
+import { Button, Card, Chip, Field, Input, Screen, T } from './kit';
 import { Logo } from './Logo';
 
-type Step = 'intro' | 'name' | 'last' | 'tour';
+type Step = 'intro' | 'name' | 'last' | 'history' | 'tour';
 
 /**
  * First run: hello, privacy and "guesses only", her name, the start of her last period, then an offer
@@ -23,13 +23,15 @@ export function Welcome() {
   const [name, setName] = useState('');
   const [last, setLast] = useState<DateStr | null>(null);
   const [date, setDate] = useState<DateStr>(addDays(today, -7));
+  const [wantsHistory, setWantsHistory] = useState(false);
 
   async function finish(showTour: boolean) {
     if (name.trim()) await data.saveName(name);
     if (last) await data.periodStarted(last, null);
     await data.markTourSeen();
     await data.markWelcomeDone();
-    if (showTour) setTimeout(() => router.push('/tour'), 400);
+    if (wantsHistory && last) setTimeout(() => router.push('/add-cycles'), 400);
+    if (showTour) setTimeout(() => router.push('/tour'), wantsHistory && last ? 900 : 400);
   }
 
   if (step === 'intro') {
@@ -82,16 +84,42 @@ export function Welcome() {
         onBack={() => setStep('name')}
         footer={
           <>
-            <Button label={S.common.next} onPress={() => { setLast(date); setStep('tour'); }} />
-            <Button variant="text" label={S.welcome.lastSkip} onPress={() => { setLast(null); setStep('tour'); }} />
+            <Button label={S.common.next} onPress={() => { setLast(date); setStep('history'); }} />
+            <Button variant="text" label={S.welcome.lastSkip} onPress={() => { setLast(null); setWantsHistory(false); setStep('tour'); }} />
           </>
         }
       >
         <T kind="title" center>{S.welcome.lastTitle}</T>
         <T muted center>{S.welcome.lastBody}</T>
-        <Field label={S.welcome.lastAction}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {([['today', 0], ['week1', 7], ['week2', 14], ['week3', 21]] as const).map(([key, back]) => (
+            <Chip key={key} label={S.welcome.lastChips[key]} selected={date === addDays(today, -back)} onPress={() => setDate(addDays(today, -back))} />
+          ))}
+        </View>
+        <Field label={S.welcome.lastAction} hint={S.welcome.lastRough}>
           <DateField value={date} onChange={setDate} label={S.welcome.lastAction} max={today} />
         </Field>
+      </Screen>
+    );
+  }
+
+  if (step === 'history') {
+    return (
+      <Screen
+        back
+        onBack={() => setStep('last')}
+        footer={
+          <>
+            <Button label={S.welcome.historyYes} onPress={() => { setWantsHistory(true); setStep('tour'); }} />
+            <Button variant="text" label={S.welcome.historyNo} onPress={() => { setWantsHistory(false); setStep('tour'); }} />
+          </>
+        }
+      >
+        <View style={{ alignItems: 'center', gap: 16, paddingTop: 24 }}>
+          <GuideAvatar size={110} mood="happy" />
+          <T kind="title" center>{S.welcome.historyTitle}</T>
+          <T muted center>{S.welcome.historyBody}</T>
+        </View>
       </Screen>
     );
   }

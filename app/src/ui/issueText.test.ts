@@ -5,10 +5,10 @@ import { STRINGS } from '../i18n';
 import { describeIssue } from './issueText';
 
 const CODES: IssueCode[] = [
-  'future_date', 'start_already_logged', 'start_inside_period', 'start_previous_unfinished', 'start_overlaps_next', 'start_too_soon',
+  'future_date', 'start_already_logged', 'start_inside_period', 'start_previous_unfinished', 'start_overlaps_next', 'start_too_soon', 'start_long_gap',
   'end_no_period', 'end_before_start', 'end_already', 'end_too_long', 'overlaps', 'note_empty', 'note_too_long',
 ];
-const CONFIRM: IssueCode[] = ['start_too_soon', 'end_too_long'];
+const CONFIRM: IssueCode[] = ['start_too_soon', 'start_long_gap', 'end_too_long'];
 
 describe.each(Object.entries(STRINGS))('problem wording in %s', (_lang, S) => {
   it.each(CODES)('%s has a title and body', (code) => {

@@ -94,6 +94,12 @@ export const en = {
     lastBody: 'Tell me the first day. A rough day is fine: you can change it later.',
     lastAction: 'Choose the day',
     lastSkip: 'I will do it later',
+    lastRough: 'Not sure of the day? Pick a rough day. I will treat it as a guess.',
+    lastChips: { today: 'Today', week1: '1 week ago', week2: '2 weeks ago', week3: '3 weeks ago' },
+    historyTitle: 'Want to add earlier cycles?',
+    historyBody: 'The more cycles I know, the better my guesses. You can also add them later in My cycles.',
+    historyYes: 'Add earlier cycles',
+    historyNo: 'Not now',
     tourTitle: 'Want a quick tour?',
     tourBody: 'It takes about a minute. You can see it again any time in Settings.',
     tourYes: 'Show me around',
@@ -164,6 +170,12 @@ export const en = {
       yes: 'Yes, save it',
       no: 'No, go back',
     },
+    startLongGap: {
+      title: (days: number) => `${days} days from your other periods`,
+      body: 'A cycle can be missed or late (illness, stress, pregnancy, some medicines). Is that right?',
+      yes: 'Yes, save it',
+      no: 'No, go back',
+    },
     endNoPeriod: { title: 'No period is going on', body: 'Tell me when a period started first.', action: 'Period started' },
     endBeforeStart: { title: (date: string) => `That is before the period started (${date})`, body: 'Please pick a day on or after it.' },
     endAlready: { title: (end: string) => `That period already ended on ${end}`, body: 'You can change its days if that is not right.', action: 'Change that period' },
@@ -200,6 +212,22 @@ export const en = {
     editNote: 'Change my note',
     yourNote: 'Your note',
     selectedDay: (date: string) => `${date}, selected`,
+  },
+
+  /** Adding earlier cycles (history). */
+  history: {
+    title: 'Earlier cycles',
+    intro: 'Add the day each earlier cycle started and how many days the bleeding lasted. A rough day is fine.',
+    cycleN: (n: number) => `Cycle ${n}`,
+    started: 'It started on',
+    bleedDays: 'The bleeding lasted (days)',
+    bleedHint: 'Most people: 3 to 7 days',
+    addAnother: 'Add another cycle',
+    removeRow: 'Remove this row',
+    save: (n: number) => `Save ${n} ${n === 1 ? 'cycle' : 'cycles'}`,
+    toast: (n: number) => `Saved ${n} ${n === 1 ? 'cycle' : 'cycles'}`,
+    addButton: 'Add earlier cycles',
+    problemIn: (n: number, title: string) => `Cycle ${n}: ${title}`,
   },
 
   cycles: {

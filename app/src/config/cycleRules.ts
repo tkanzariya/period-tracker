@@ -41,6 +41,8 @@ export interface CycleRules {
   checks: {
     /** A new period starting fewer than this many days after another one started asks "is this a new period?". */
     minDaysBetweenStarts: number;
+    /** A start more than this many days after (or before) another start asks "is that right?" (a missed cycle can be real). */
+    longGapDays: number;
     /** A period longer than this many days asks "is that right?". */
     longPeriodDays: number;
     /** A period still open after this many days is gently asked about ("did it end?"). */
@@ -77,7 +79,7 @@ export const DEFAULT_CYCLE_RULES: CycleRules = {
     typicalCycleLengthDays: 28,
     tentativeRangeHalfWidthDays: 3,
   },
-  checks: { minDaysBetweenStarts: 15, longPeriodDays: 14, unfinishedPeriodAfterDays: 10 },
+  checks: { minDaysBetweenStarts: 15, longGapDays: 60, longPeriodDays: 14, unfinishedPeriodAfterDays: 10 },
   ovulation: { lutealPhaseDays: 14, phaseDaysBefore: 1, phaseDaysAfter: 1 },
   fertileWindow: { daysBeforeOvulation: 5, daysAfterOvulation: 1 },
   lowerFertility: { bufferDays: 2, requireRegularCycles: true },

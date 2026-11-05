@@ -69,4 +69,4 @@ Last updated: 2026-11-02
 
 ## 2026-11-06: Bleeding, and first-open/history rules
 - **Decisions (Tirth):** phase "Menstrual" renamed **Bleeding** (English and Hindi); keep the end-of-period day because history entry asks start date + bleeding days; first open asks only the current cycle start with rough-day chips; 60+ day gaps and starts under 15 days apart ask "Is that right?". See `scenarios.md` F1-F6.
-- **Not built yet:** the first-open chips, the "add earlier cycles" screen and the 60-day gap rule.
+- **Built (same day):** welcome rough-day chips + history offer, "Earlier cycles" screen (also from My cycles), 60-day gap question (`longGapDays`), one-Undo bulk add; 217 tests. History rows always get bleeding days (default 5) so no earlier cycle is left open (an open older period would block later starts).
