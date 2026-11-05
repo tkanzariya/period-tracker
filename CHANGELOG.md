@@ -12,6 +12,9 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- Add earlier cycles: tap "Add earlier cycles" in My cycles (or after your first period in the welcome) to enter when each cycle started and how many days the bleeding lasted.
+- A not-sure-of-the-day helper when telling the app your last period: Today, 1, 2 or 3 weeks ago.
+- A missed or very late cycle (over 60 days from your other periods) now asks "Is that right?" instead of being refused.
 - "Save a PDF report" in Settings makes a branded page (usual cycle, shortest to longest, every period with its cycle length and notes) to show a doctor. It replaces the spreadsheet.
 - The app is never empty: after you tell it about one period, it shows a clearly marked "typical cycle" guess for your next period, your phases and your fertile days, and swaps to your own pattern as you add more.
 - A calendar-style date picker everywhere you choose a day, with Today and Yesterday shortcuts.

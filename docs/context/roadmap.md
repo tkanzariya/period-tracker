@@ -48,6 +48,7 @@ Last updated: 2026-11-05
 
 ## UX refresh (built 2026-11-05, awaiting Tirth's review; not pushed or released)
 - [x] Typical-cycle data from the first period, stage-aware main button, validation (19 scenarios), own popups/toasts with Undo, calendar date picker, phase gradients, Calendar day sheet with edit actions, welcome + tour, language in Settings, Hindi wording
+- [x] First-open chips, add-earlier-cycles screen, 60-day gap rule (2026-11-06)
 - [ ] Tirth reviews `scenarios.md` and the screenshots; Drashti reviews health wording
 - [ ] Push, then re-label v1.0.0 as v0.1.0 and release (`release-process.md`)
 
