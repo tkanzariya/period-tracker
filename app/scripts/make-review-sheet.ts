@@ -10,7 +10,9 @@ import { DEFAULT_CYCLE_RULES as r } from '../src/config/cycleRules';
 import { addDays } from '../src/domain/dates';
 import { getDayInfo } from '../src/domain/phases';
 import type { Period, Phase } from '../src/domain/types';
+import type { IssueCode } from '../src/domain/validation';
 import { en } from '../src/i18n/en';
+import { describeIssue } from '../src/ui/issueText';
 import { flagText } from '../src/ui/flagText';
 
 const PHASE_LABEL = en.phases.names;
@@ -50,8 +52,14 @@ const sections: Section[] = [
       {
         id: 'min',
         title: 'When it starts guessing',
-        says: `It waits until you have ${r.prediction.minCyclesForPrediction} finished cycles (that means ${r.prediction.minCyclesForPrediction + 1} period start dates). Before that it says "I am still learning".`,
+        says: `It uses her own pattern once she has ${r.prediction.minCyclesForPrediction} finished cycles (that means ${r.prediction.minCyclesForPrediction + 1} period start dates).`,
         why: 'One cycle is not enough to see a pattern.',
+      },
+      {
+        id: 'typical',
+        title: 'Before it knows her own pattern (so the app is not empty)',
+        says: `After even one period, it shows a guess from a typical ${r.prediction.typicalCycleLengthDays}-day cycle, as a range of ${r.prediction.tentativeRangeHalfWidthDays} days before and after. It is tagged "Typical cycle" on Today and says "A guess from a typical cycle" in the Calendar. It switches to her own pattern by itself.`,
+        why: 'An empty app feels useless; a clearly labelled guess is better than nothing.',
       },
       {
         id: 'range',
@@ -119,13 +127,71 @@ const sections: Section[] = [
   },
 ];
 
+// New in the refresh: the checks when she tells the app something, and every message it can show.
+const issueSample = { start: '2026-10-06', end: '2026-10-10', date: '2026-11-06', periodId: 'p1' };
+const issueCodes: [IssueCode, string, number?][] = [
+  ['future_date', 'She picks a day that has not come yet'],
+  ['start_already_logged', 'A period already starts on that day'],
+  ['start_inside_period', 'She says a period started on a day inside an earlier period'],
+  ['start_previous_unfinished', 'She says a period started while the last one has no end day'],
+  ['start_overlaps_next', 'The new start runs into a period that begins later'],
+  ['start_too_soon', 'A new period only a few days after another one started (the app asks if that is right)', 14],
+  ['end_no_period', 'She says a period ended, but none is going on'],
+  ['end_before_start', 'The end day is before the start day'],
+  ['end_already', 'That period already has an end day'],
+  ['end_too_long', 'The period would be very long (the app asks if that is right)', 15],
+  ['overlaps', 'Changing a period so it overlaps another'],
+  ['note_empty', 'She saves an empty note'],
+  ['note_too_long', 'The note is too long', 500],
+];
+sections.push({
+  title: '4. Checks when she tells the app something',
+  intro: `The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than ${r.checks.minDaysBetweenStarts} days after another; asks if a period would last more than ${r.checks.longPeriodDays} days; treats a period with no end day as forgotten after ${r.checks.unfinishedPeriodAfterDays} days and asks about it on Today.`,
+  items: issueCodes.map(([code, when, days]): Item => {
+    const view = describeIssue(
+      { severity: code === 'start_too_soon' || code === 'end_too_long' ? 'confirm' : 'block', code, data: { ...issueSample, days } },
+      en,
+      r,
+    );
+    return {
+      id: `issue-${code}`,
+      title: when,
+      says: `"${view.title}". ${view.body ?? ''}${view.action ? ` Button: "${view.action.label}".` : ''}${view.yes ? ` Buttons: "${view.yes}" / "${view.no}".` : ''}`,
+    };
+  }),
+});
+
+sections.push({
+  title: '5. What the Saathi says and the main button',
+  intro: 'The big button changes with her situation.',
+  items: [
+    { id: 'btn', title: 'The big button', says: `Before any period: "${en.today.fab.first}". While a period is going on: "${en.today.fab.end}". Otherwise: "${en.today.fab.start}".` },
+    { id: 'g-first', title: 'Saathi before any period is told', says: en.guide.askFirstPeriod('Drashti') },
+    { id: 'g-in', title: 'Saathi while a period is going on', says: en.guide.periodGoingOn('Drashti') },
+    { id: 'g-unfinished', title: 'Saathi when a period was never ended', says: en.guide.unfinished('Drashti', 12) },
+    { id: 'g-typical', title: 'Saathi while using a typical cycle', says: en.guide.typical('Drashti', r.prediction.typicalCycleLengthDays) },
+    { id: 'u-title', title: 'The note on Today when a period was never ended', says: `"${en.today.unfinishedTitle}" ${en.today.unfinishedBody('3 Oct')} Button: "${en.today.unfinishedAction}".` },
+    { id: 'basis', title: 'How the next-period guess is explained', says: `${en.today.basisOwn(5, 31)} Or: ${en.today.basisTypical(r.prediction.typicalCycleLengthDays)}` },
+  ],
+});
+
+sections.push({
+  title: '6. First start, tour and report',
+  items: [
+    { id: 'w-intro', title: 'Welcome: what it says about privacy and guesses', says: `${en.welcome.privateTitle}: ${en.welcome.privateBody} ${en.welcome.guessTitle}: ${en.welcome.guessBody}` },
+    ...en.tour.steps.map((s, i): Item => ({ id: `tour-${i}`, title: `Tour step ${i + 1}: ${s.title}`, says: s.body })),
+    { id: 'report', title: 'The PDF report for a doctor (Settings, "Save a PDF report")', says: `A branded page with her name and date, the usual cycle, shortest to longest, usual period, and a table of every period with its cycle length and notes. Footer: "${en.report.footer}"` },
+    { id: 'settings-disclaimer', title: 'Good to know (Settings)', says: en.settings.disclaimer },
+  ],
+});
+
 const phases: Phase[] = ['menstrual', 'follicular', 'ovulation', 'luteal'];
 const phaseItems: Item[] = phases.flatMap((p) => [
   { id: `meaning-${p}`, title: `${PHASE_LABEL[p]}: the short line`, says: PHASE_MEANING[p] },
   { id: `guide-${p}`, title: `${PHASE_LABEL[p]}: what the guide says`, says: PHASE_GUIDE[p] },
 ]);
 sections.push({
-  title: '4. The four parts of the cycle and the words we use',
+  title: '7. The four parts of the cycle and the words we use',
   intro: 'Please check that each sentence is correct, kind, and easy to understand.',
   items: phaseItems,
 });
@@ -136,10 +202,10 @@ const flagItems: Item[] = [
   { id: 'f-var', title: 'Cycles change a lot', says: flagMessage({ code: 'cycle_variation', value: 11 }, r) },
   { id: 'f-plong', title: 'Period lasted long', says: flagMessage({ code: 'period_long', value: 9 }, r) },
   { id: 'f-late', title: 'Period is late', says: flagMessage({ code: 'period_late', value: 4 }, r) },
-  { id: 'f-late-guide', title: 'What the guide says when the period is late', says: 'Your period is a little late. This can happen. If you are worried, please talk to your doctor.' },
+  { id: 'f-late-guide', title: 'What the guide says when the period is late', says: en.guide.late },
   { id: 'disclaimer', title: 'Note shown at the bottom of the Today screen', says: DISCLAIMER },
 ];
-sections.push({ title: '5. Messages when something looks unusual', items: flagItems });
+sections.push({ title: '8. Messages when something looks unusual', items: flagItems });
 
 // Worked example: a regular 28-day pattern, laid out day by day by the real app logic.
 const p = (startDate: string, endDate: string | null): Period => ({ id: startDate, startDate, endDate, note: null });
@@ -206,7 +272,7 @@ ${sections
     (s) => `<h2>${esc(s.title)}</h2>${s.intro ? `<p class="intro">${esc(s.intro)}</p>` : ''}${s.items.map(itemHtml).join('\n')}`,
   )
   .join('\n')}
-<h2>6. An example: a regular 28-day cycle</h2>
+<h2>9. An example: a regular 28-day cycle</h2>
 <p class="intro">This table is made by the app itself for a woman whose cycles are always 28 days and whose periods last 5 days. Does each day look right to you?</p>
 <table>${rows.join('')}</table>
 ${itemHtml({ id: 'example', title: 'Does the 28-day example look right?', says: 'See the table above.' })}

@@ -22,7 +22,7 @@ export function GuideAvatar({ size = 88, mood = 'happy' }: { size?: number; mood
     <Svg width={size} height={size} viewBox="0 0 120 120">
       <Circle cx="60" cy="60" r="60" fill={t.primarySoft} />
       {/* hair behind */}
-      <Path d="M27 58 C25 26 95 26 93 58 L98 100 C80 94 40 94 22 100 Z" fill={HAIR} />
+      <Path d="M27 58 C22 10 98 10 93 58 L98 100 C80 94 40 94 22 100 Z" fill={HAIR} />
       {/* shoulders and top */}
       <Path d="M16 120 C18 99 38 92 60 92 C82 92 102 99 104 120 Z" fill={t.primary} />
       {/* neck */}
@@ -30,7 +30,7 @@ export function GuideAvatar({ size = 88, mood = 'happy' }: { size?: number; mood
       {/* face */}
       <Ellipse cx="60" cy="55" rx="22" ry="25" fill={SKIN} />
       {/* fringe */}
-      <Path d="M37 52 C36 28 84 28 83 52 C76 43 68 39 58 39 C49 39 42 43 37 52 Z" fill={HAIR} />
+      <Path d="M36 54 C30 16 90 16 84 54 C77 43 69 37 60 37 C50 37 42 43 36 54 Z" fill={HAIR} />
       {/* eyes */}
       <Circle cx="51" cy="57" r="2.6" fill={HAIR} />
       <Circle cx="69" cy="57" r="2.6" fill={HAIR} />

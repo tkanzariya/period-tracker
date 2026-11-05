@@ -1,5 +1,6 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
+import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 
@@ -31,6 +32,24 @@ export async function saveTextFile(filename: string, content: string, mimeType: 
   file.write(content);
   if (!(await Sharing.isAvailableAsync())) return 'unavailable';
   await Sharing.shareAsync(file.uri, { mimeType, dialogTitle: filename });
+  return 'shared';
+}
+
+/**
+ * Turns a page of HTML into a PDF and shares it (phone), or opens the browser's print dialog
+ * (preview), where "Save as PDF" is one click.
+ */
+export async function sharePdf(html: string, filename: string): Promise<SaveResult> {
+  if (Platform.OS === 'web') {
+    await Print.printAsync({ html });
+    return 'shared';
+  }
+  const made = await Print.printToFileAsync({ html });
+  const target = new File(Paths.cache, filename);
+  if (target.exists) target.delete();
+  new File(made.uri).move(target);
+  if (!(await Sharing.isAvailableAsync())) return 'unavailable';
+  await Sharing.shareAsync(target.uri, { mimeType: 'application/pdf', dialogTitle: filename, UTI: 'com.adobe.pdf' });
   return 'shared';
 }
 

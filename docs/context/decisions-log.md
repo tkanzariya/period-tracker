@@ -62,3 +62,8 @@ Last updated: 2026-11-02
 - **How:** structured validation in `domain/validation.ts` (codes, wording separate in `i18n`), `ActionResult` with undo from every action, three-tab shell, sheets for Tell me and Change period, typed English/Hindi with a parity test. 201 tests; every flow checked by screenshots in light, dark and Hindi (`scripts/scenario-shots.js`).
 - **Rejected:** a theme toggle (follow the system), a separate date typing field, popups for common undoable actions.
 - **Still NEEDS DRASHTI REVIEW:** all new thresholds (15 / 14 / 10 days, typical 28 and ±3) and every health sentence; Hindi needs a Hindi speaker's review. Pending Tirth: scenario rules and texts in `scenarios.md`, then push and release as 0.1.0.
+
+## 2026-11-06: Drashti's first feedback on the refresh
+- **Done:** (1) Saathi's hair fixed (face peeked above the hair); (2) tour wording "See how long each cycle was" (no period); (3) "Save a spreadsheet" (CSV) replaced by "Save a PDF report", branded (logo, name, date, summary, history table, disclaimer), made with `expo-print` (free, small), words in `i18n` (`report.*`), tested; (4) `docs/review/cycle-review.html` regenerated from code with new sections 4-6 (checks and every problem message, Saathi lines and main button, welcome/tour/report) so it matches the app.
+- **Open:** Drashti asked to say "Cycle ended" / "Current cycle end" instead of "Period ended" / "Did your period end?", because a cycle only starts and ends at the next start. Meaning unclear (rename only, or drop the period end day). Question put to Tirth; see `open-questions.md`.
+

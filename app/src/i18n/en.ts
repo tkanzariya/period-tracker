@@ -247,8 +247,8 @@ export const en = {
     howToHelp: 'A quick tour with your Saathi',
     saveCopy: 'Save a copy of my information',
     saveCopyHelp: 'A file you can keep in Drive or send to yourself',
-    saveSheet: 'Save a spreadsheet',
-    saveSheetHelp: 'Your periods in a table, easy to show a doctor',
+    saveSheet: 'Save a PDF report',
+    saveSheetHelp: 'Your cycles on a neat page, easy to show a doctor',
     bringBack: 'Bring my information back',
     bringBackHelp: 'Choose a copy you saved before',
     privacy: 'Everything stays on this phone. There is no account and nothing is sent anywhere.',
@@ -261,7 +261,7 @@ export const en = {
     fileReadyBody: 'Keep it somewhere safe.',
     fileDownloadedBody: 'Your file was downloaded. Keep it somewhere safe.',
     cantShare: 'This phone could not open the share menu. Please try again.',
-    nothingToSave: 'You have not told me about any period yet, so the file will be nearly empty.',
+    nothingToSave: 'You have not told me about any period yet, so the report will be nearly empty.',
     restoredTitle: 'All done',
     restoredBody: (periods: number, notes: number, skipped: number) =>
       `I added ${periods} ${periods === 1 ? 'period' : 'periods'} and ${notes} ${notes === 1 ? 'note' : 'notes'}.` +
@@ -276,13 +276,35 @@ export const en = {
     restoreProblemTitle: 'I could not use that file',
   },
 
+  /** The PDF report she can show a doctor. */
+  report: {
+    title: 'My cycle report',
+    forName: (name: string) => `For ${name}`,
+    madeOn: (date: string) => `Made on ${date}`,
+    summary: 'Summary',
+    usualCycle: 'Usual cycle',
+    range: 'Shortest to longest',
+    usualPeriod: 'Usual period',
+    cyclesNoted: 'Cycles noted',
+    history: 'Cycle history',
+    colPeriod: 'Period',
+    colPeriodDays: 'Period days',
+    colCycle: 'Cycle length',
+    colNote: 'Note',
+    current: 'Current cycle',
+    endNotTold: 'End not told',
+    empty: 'No periods have been noted yet.',
+    footer: 'Made with Cycle Saathi from what she entered herself. These are records and guesses, not a diagnosis. Please talk to a doctor about any worry.',
+    fileName: (date: string) => `cycle-report-${date}.pdf`,
+  },
+
   tour: {
     steps: [
       { title: 'Hello, I am your Saathi', body: 'I will show you around in a minute. Everything stays on your phone, and nothing here is advice. It is only guesses to help you understand your body.' },
       { title: 'Today', body: 'This is home. The ring shows where you are in your cycle, and the colours are the parts of your cycle. Under it you see when your next period may come.' },
       { title: 'The big button', body: 'Tap it when your period starts. While a period is going on, it changes to "Period ended". You can also add a note, or tell me about an earlier day.' },
       { title: 'Calendar', body: 'Every day has a colour for its part of the cycle. Tap a day to see more, change a period, or write a note.' },
-      { title: 'My cycles', body: 'See how long each cycle and period was. You can show this page to your doctor.' },
+      { title: 'My cycles', body: 'See how long each cycle was. You can show this page to your doctor.' },
       { title: 'Keep your information safe', body: 'In Settings, save a copy of your information, and bring it back on a new phone. You can see this tour again there, and change the language.' },
     ],
     stepOf: (n: number, total: number) => `${n} of ${total}`,

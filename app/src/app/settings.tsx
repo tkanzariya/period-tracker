@@ -3,11 +3,12 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { todayLocal } from '../domain/dates';
 import { STRINGS, type Language } from '../i18n';
-import { pickTextFile, saveTextFile } from '../platform/files';
+import { pickTextFile, saveTextFile, sharePdf } from '../platform/files';
 import { APP_VERSION, useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { Button, Card, Divider, Field, Input, ListRow, Screen, SectionHeader, Sheet, T, usePopup } from '../ui/kit';
 import { Logo } from '../ui/Logo';
+import { buildReportHtml } from '../ui/report';
 
 export default function SettingsScreen() {
   const { S, language, setLanguage } = useLanguage();
@@ -30,7 +31,9 @@ export default function SettingsScreen() {
 
   async function saveSheet() {
     if (data.periods.length === 0) await popup.info({ title: S.settings.saveSheet, message: S.settings.nothingToSave });
-    await share(`my-periods-${today}.csv`, data.csvText(), 'text/csv');
+    const html = buildReportHtml({ periods: data.periods, notes: data.notes, rules: data.rules, S, name: data.name, today });
+    const result = await sharePdf(html, S.report.fileName(today));
+    if (result === 'unavailable') await popup.info({ title: S.settings.fileReadyTitle, message: S.settings.cantShare, icon: 'information-circle' });
   }
 
   async function bringBack() {
