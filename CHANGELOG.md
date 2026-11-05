@@ -32,6 +32,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
 
 ### Fixed
+- "Save a PDF report" in the browser preview printed the current screen instead of the report; it now prints the report.
 - Your Saathi's hair now covers her head (it looked bald).
 - The tour no longer talks about period length on My cycles.
 - You could start a second period inside a running one, or two periods on the same day. The app now stops this and says why.

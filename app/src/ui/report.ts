@@ -9,7 +9,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 // The brand drop (same colours as the logo), small enough to sit in the report header.
 const LOGO_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="54" viewBox="340 225 620 760">' +
+  '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="59" viewBox="340 225 620 760" style="flex:none">' +
   '<defs><linearGradient id="d" gradientUnits="userSpaceOnUse" x1="740" y1="600" x2="585" y2="800">' +
   '<stop offset="0" stop-color="#EE6F7B"/><stop offset="0.55" stop-color="#C13348"/><stop offset="1" stop-color="#951F36"/></linearGradient></defs>' +
   '<path d="M888 525 C 932 610 936 720 882 810 C 822 902 722 956 610 953 C 520 949 430 902 368 818 C 436 886 526 938 612 940 C 714 942 808 890 864 806 C 916 726 912 612 888 525 Z" fill="#E4A59E"/>' +
@@ -64,6 +64,7 @@ export function buildReportHtml(o: {
 @page{margin:18mm 16mm}
 body{font-family:Arial,Helvetica,sans-serif;color:#2B1B20;font-size:12pt;line-height:1.4}
 .head{display:flex;align-items:center;gap:14px;border-bottom:3px solid #C9265F;padding-bottom:10px;margin-bottom:16px}
+.head svg{flex:none;display:block}
 .brand{font-size:11pt;color:#C9265F;font-weight:700;letter-spacing:.5px}
 h1{margin:2px 0 0;font-size:22pt}
 .sub{color:#6B5A60;font-size:10.5pt}

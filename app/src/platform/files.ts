@@ -41,7 +41,25 @@ export async function saveTextFile(filename: string, content: string, mimeType: 
  */
 export async function sharePdf(html: string, filename: string): Promise<SaveResult> {
   if (Platform.OS === 'web') {
-    await Print.printAsync({ html });
+    // expo-print on the web prints the current screen and ignores our page, so print the report in a hidden frame.
+    const g = globalThis as unknown as {
+      document: {
+        createElement(tag: string): { style: Record<string, string>; srcdoc: string; onload: (() => void) | null; contentWindow: { focus(): void; print(): void }; remove(): void };
+        body: { appendChild(el: unknown): void };
+      };
+    };
+    const frame = g.document.createElement('iframe');
+    frame.style.position = 'fixed';
+    frame.style.width = '0';
+    frame.style.height = '0';
+    frame.style.border = '0';
+    frame.srcdoc = html;
+    frame.onload = () => {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+      setTimeout(() => frame.remove(), 60000);
+    };
+    g.document.body.appendChild(frame);
     return 'shared';
   }
   const made = await Print.printToFileAsync({ html });
