@@ -40,6 +40,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
 
 ### Fixed
+- The 0.2.0 test build closed itself right after opening on a real phone (the size-shrinking step removed code the ad library needs). Fixed.
 - "Day 32" no longer wraps onto two lines inside the ring.
 - "Save a PDF report" in the browser preview printed the current screen instead of the report; it now prints the report.
 - Your Saathi's hair now covers her head (it looked bald).

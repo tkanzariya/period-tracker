@@ -42,7 +42,13 @@
             "enableShrinkResourcesInReleaseBuilds": true,
             "useLegacyPackaging": true,
             "enableBundleCompression": true,
-            "gifEnabled": false
+            "gifEnabled": false,
+            "extraProguardRules": "-keep class androidx.work.** { *; }
+-keep class androidx.room.** { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep class androidx.startup.** { *; }
+-dontwarn androidx.work.**
+"
           }
         }
       ],
