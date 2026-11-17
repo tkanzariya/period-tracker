@@ -4,6 +4,9 @@ Last updated: 2026-11-17
 
 Decision (Tirth, 2026-11-17): ads are accepted, including the privacy wording change and the Play Store listing. He already has an AdMob account. **For now only Google's TEST ads are used.** Placement plan: `improvement-plan.md` section 4.
 
+## Status (2026-11-17): IDs received and stored
+Tirth created the app and all six units. The IDs are in `app/src/config/ads.ts` (`REAL_APP_ID`, `REAL_AD_UNITS`, `REAL_EXTRA_UNITS`). Ads are still OFF and every debug or tester build uses Google's test IDs. **To switch on later:** put `REAL_APP_ID` into `app/app.json` (`androidAppId`; it is still the test App ID so tester builds never touch real ads), set `ADS_ENABLED = true`, reword the privacy lines, build the placements. Still open: consent message, payments, blocking controls, Play listing and `app-ads.txt`.
+
 ## 0. The big picture (read once)
 | Piece | Where | Status |
 |---|---|---|
