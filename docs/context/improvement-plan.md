@@ -2,21 +2,21 @@
 
 Last updated: 2026-11-17
 
-Analysis asked for by Tirth on 2026-11-17. **Nothing here is built yet.** Health wording and numbers are `NEEDS DRASHTI REVIEW`. Order of work is in section 6.
+Analysis asked for by Tirth on 2026-11-17. **Status: 0.2.0 built 2026-11-17 = U1, U3, U4, U8 and notifications N1 to N5 and N9 with Settings switches** (marked DONE below). Tirth agreed the order in section 6 and accepted the ad changes (section 4). Health wording and numbers are `NEEDS DRASHTI REVIEW`. Order of work is in section 6.
 
 ## 1. UI: what to fix in the current screens
 Found by going through the latest screenshots (`app/.tmp/shots-*`).
 
 | # | Screen | Problem today | Change |
 |---|---|---|---|
-| U1 | Today | The answer she opens the app for ("when is my next period?") is below the fold; the Saathi bubble takes the top third | Answer first: one big line under the greeting ("Period likely in 3 to 9 days" / "Period day 2" / "4 days later than my guess"). Saathi bubble becomes one short line under it |
-| U2 | Today | The floating button covers the text of the next-period card | Give the page bottom room for the button, and shrink it to an icon while scrolling |
-| U3 | Today | "Based on a typical 28-day cycle…" is printed twice (ring card and next-period card) | Say it once, in the next-period card |
-| U4 | Today | When late, the ring is simply full and says "Day 32" | A "late" state: ring shows the expected window passed, text says how many days later than the guess |
+| U1 DONE | Today | The answer she opens the app for ("when is my next period?") is below the fold; the Saathi bubble takes the top third | Answer first: one big line under the greeting ("Period likely in 3 to 9 days" / "Period day 2" / "4 days later than my guess"). Saathi bubble becomes one short line under it |
+| U2 partly | Today | The floating button covers the text of the next-period card | Give the page bottom room for the button, and shrink it to an icon while scrolling |
+| U3 DONE | Today | "Based on a typical 28-day cycle…" is printed twice (ring card and next-period card) | Say it once, in the next-period card |
+| U4 DONE | Today | When late, the ring is simply full and says "Day 32" | A "late" state: ring shows the expected window passed, text says how many days later than the guess |
 | U5 | Ring | Colours are not explained on Today; arcs cannot be tapped | Tap an arc to read its phase in a small popup; show the expected-period arc |
 | U6 | Calendar | Logged days and guessed days differ only by faintness; fertile days and ovulation day share one colour | Guesses get a dashed edge and the word "guess" in the legend; ovulation day gets a ring |
 | U7 | Calendar | No quick way back to today; months change only with arrows | "Today" chip; swipe left/right between months |
-| U8 | Tell me | The three choices wrap onto two lines; the note box is always open | Shorter labels ("Started", "Ended", "Note"); note box opens when tapped |
+| U8 DONE | Tell me | The three choices wrap onto two lines; the note box is always open | Shorter labels ("Started", "Ended", "Note"); note box opens when tapped |
 | U9 | My cycles | The "unusual" mark is an icon alone; bars are all one colour | Icon + word ("Longer than usual"); unusual bars in the amber tone; a line for her usual length |
 | U10 | Earlier cycles | Each cycle is a tall card; the day chips wrap | One compact row per cycle (date + days stepper) |
 | U11 | Everywhere | Not yet checked: 200% text size, TalkBack, small phones, the real phone | Check on the phone before 0.1.0 goes to Drashti |
@@ -25,6 +25,7 @@ Found by going through the latest screenshots (`app/.tmp/shots-*`).
 Biggest gap against every other app: **she can only write a free-text note**. There is no quick way to record how a day was.
 
 ### Next (make daily use worth it)
+- **COMING SOON (keep, do not forget): bleeding heaviness / pads per day.** Tirth 2026-11-17: keep it marked as coming soon; ask Drashti. Part of F1 and X4.
 - **F1 One-tap day check-in** (icons, no typing): pain (none / some / strong), mood, and 6 to 8 symptoms from Drashti's list (cramps, headache, back pain, bloating, tender breasts, tired, acne, spotting). Bleeding heaviness was parked by Tirth on 2026-10-27; ask Drashti again, because doctors ask "how many pads a day".
 - **F2 Patterns from her own data**: "Cramps usually come on day 1 and 2", "Headaches often come 2 days before your period". Shown on Today the day before they usually happen.
 - **F3 "Is my period late?" helper**: calm list of common reasons and when to see a doctor (Drashti writes it). No diagnosis.
@@ -62,6 +63,7 @@ Rules: at most **one a day**; quiet hours 9 pm to 8 am; each kind has its own sw
 N2 and N3 also fix the "period never ended" problem. Each one opens the app on the right sheet (that is also the ad impression).
 
 ## 4. Ads (AdMob): final placement, built later
+Accepted by Tirth 2026-11-17 (test ads only for now). The full setup, ad unit table, mediation and waterfall advice: `admob-setup.md`.
 Goal: every app open gives an impression; logging a period is never slowed.
 
 | Format | Where | Why there |

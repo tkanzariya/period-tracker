@@ -12,6 +12,9 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Has it ended?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
+- Today now starts with the answer: "Your period may start in 3 to 9 days", "Period day 2" or "4 days later than my guess".
+- Today offers to turn reminders on (once, after your first period).
 - Behind the scenes: the ad library is installed and switched off. No ads are shown yet.
 - Add earlier cycles: tap "Add earlier cycles" in My cycles (or after your first period in the welcome) to enter when each cycle started and how many days the bleeding lasted.
 - A not-sure-of-the-day helper when telling the app your last period: Today, 1, 2 or 3 weeks ago.
@@ -25,6 +28,8 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- Tell me tabs are shorter: Started, Ended, Note.
+- The "typical cycle" sentence shows once on Today, not twice.
 - Today is tidier: the "Guesses only" line is a quiet note with an icon, and the extra "Change this period" button is gone (you can still change a period in My cycles or the Calendar).
 - Settings, About: the app name and version sit in one row, and "Good to know" opens in its own popup instead of a block of small text.
 - The first phase is now called "Bleeding" instead of "Menstrual".

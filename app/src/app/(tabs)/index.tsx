@@ -1,12 +1,14 @@
 import { View } from 'react-native';
 import { todayLocal } from '../../domain/dates';
 import { getIrregularityFlags } from '../../domain/flags';
+import { getHeadline } from '../../domain/headline';
 import { getDayInfo } from '../../domain/phases';
 import { estimateOvulationDay, predictWithFallback } from '../../domain/prediction';
 import { currentCycleRing } from '../../domain/ring';
 import { getStage, mainAction } from '../../domain/stage';
 import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
+import { useReminders } from '../../state/reminders';
 import { useSheets } from '../../state/sheets';
 import { GearButton } from '../../ui/chrome';
 import { CycleRingView } from '../../ui/CycleRing';
@@ -20,6 +22,7 @@ export default function TodayScreen() {
   const { periods, rules, name } = useData();
   const { openTell } = useSheets();
   const fab = useHideOnScroll();
+  const reminders = useReminders();
   const today = todayLocal();
 
   const stage = getStage(periods, today, rules);
@@ -30,6 +33,16 @@ export default function TodayScreen() {
   const ring = currentCycleRing(periods, rules);
   const flags = getIrregularityFlags(periods, today, rules);
   const lateDays = flags.find((f) => f.code === 'period_late')?.value ?? 0;
+  const headline = getHeadline(periods, today, rules);
+  const headlineText =
+    headline.kind === 'period_day' ? S.today.headline.periodDay(headline.day)
+    : headline.kind === 'unfinished' ? S.today.headline.unfinished(headline.day)
+    : headline.kind === 'coming' ? S.today.headline.coming(headline.fromDays, headline.toDays)
+    : headline.kind === 'any_day_now' ? S.today.headline.anyDayNow
+    : headline.kind === 'late' ? S.today.headline.late(headline.days)
+    : null;
+  const needsAttention = headline.kind === 'late' || headline.kind === 'unfinished';
+  const offerReminders = stage.kind !== 'none' && !reminders.asked && !reminders.enabled;
   const doctorFlags = flags.filter((f) => f.code !== 'period_late');
 
   const fabLabel = stage.kind === 'none' ? S.today.fab.first : action === 'end' ? S.today.fab.end : S.today.fab.start;
@@ -46,6 +59,32 @@ export default function TodayScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110}>
+        {headlineText ? (
+          <Card tone={needsAttention ? 'attention' : 'primary'} style={{ gap: 4 }}>
+            <T kind="heading">{headlineText}</T>
+            {headline.kind === 'late' ? <T kind="caption" muted>{S.today.headline.lateHelp}</T> : null}
+            {prediction && headline.kind !== 'period_day' && headline.kind !== 'unfinished' ? (
+              <T kind="caption" muted>
+                {formatRange(prediction.earliestStart, prediction.latestStart, S)} · {prediction.tentative ? S.today.typicalTag : S.today.estimateTag}
+              </T>
+            ) : null}
+          </Card>
+        ) : null}
+
+        {offerReminders ? (
+          <Notice
+            icon="notifications-outline"
+            title={S.today.remindersOffer.title}
+            body={S.today.remindersOffer.body}
+            actions={
+              <>
+                <Button small label={S.today.remindersOffer.yes} onPress={() => void reminders.setEnabled(true).then(() => reminders.markAsked())} />
+                <Button small variant="text" label={S.today.remindersOffer.no} onPress={() => void reminders.markAsked()} />
+              </>
+            }
+          />
+        ) : null}
+
         <GuideMessage text={guide} mood={stage.kind === 'none' ? 'wave' : lateDays > 0 ? 'caring' : 'happy'} />
 
         {stage.kind === 'unfinished_period' && stage.period ? (
@@ -69,7 +108,6 @@ export default function TodayScreen() {
               </View>
             ) : null}
             {info.phase === 'follicular' && ovulation && today < ovulation ? <T muted center>{S.today.ovulationAround(formatShort(ovulation, S))}</T> : null}
-            {ring.tentative ? <T kind="caption" muted center>{S.today.basisTypical(rules.prediction.typicalCycleLengthDays)}</T> : null}
           </Card>
         ) : null}
 

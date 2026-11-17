@@ -125,11 +125,26 @@ export const en = {
     fab: { first: 'Add my last period', start: 'Period started', end: 'Period ended' },
     fabHelp: { first: 'Add the day your last period started', start: 'Tell me a period has started', end: 'Tell me your period has ended' },
     disclaimer: 'Guesses only. Not medical advice, and not birth control.',
+    /** The one line Today leads with. */
+    headline: {
+      periodDay: (n: number) => `Period day ${n}`,
+      unfinished: (n: number) => `Period day ${n}: did it end?`,
+      coming: (from: number, to: number) => (from === to ? `Your period may start in ${from} days` : `Your period may start in ${from} to ${to} days`),
+      anyDayNow: 'Your period may start any day now',
+      late: (n: number) => `${n} ${n === 1 ? 'day' : 'days'} later than my guess`,
+      lateHelp: 'This can happen. If you are worried, please talk to your doctor.',
+    },
+    remindersOffer: {
+      title: 'Want a gentle reminder?',
+      body: 'I can remind you before your next period. At most one a day, in the morning.',
+      yes: 'Turn on reminders',
+      no: 'Not now',
+    },
   },
 
   tell: {
     title: 'Tell me',
-    modes: { start: 'Period started', end: 'Period ended', note: 'Just a note' },
+    modes: { start: 'Started', end: 'Ended', note: 'Note' },
     whichDay: 'Which day?',
     noteLabel: 'A note (optional)',
     noteLabelOnly: 'Your note',
@@ -263,7 +278,7 @@ export const en = {
 
   settings: {
     title: 'Settings',
-    groups: { general: 'General', data: 'Your information', help: 'Help', about: 'About' },
+    groups: { general: 'General', reminders: 'Reminders', data: 'Your information', help: 'Help', about: 'About' },
     language: 'Language',
     languageHelp: 'The language of the whole app',
     name: 'Your name',
@@ -271,6 +286,22 @@ export const en = {
     nameSheetTitle: 'What should I call you?',
     nameExample: 'e.g. Drashti',
     nameWhy: 'I use it to say hello.',
+    reminders: {
+      master: 'Gentle reminders',
+      masterHelp: 'A short note from your Saathi, at most one a day, in the morning',
+      details: 'Show details on the lock screen',
+      detailsHelp: 'Off: it only says "A note from your Saathi"',
+      kinds: {
+        coming: { title: 'Before your period', help: 'A heads-up 2 days before' },
+        did_start: { title: 'Did it start?', help: 'On the days it may start' },
+        did_end: { title: 'Has it ended?', help: 'On day 5 and day 8 of a period' },
+        late: { title: 'Later than my guess', help: 'Once, a day after my guess' },
+        backup: { title: 'Save a copy', help: 'About once a month' },
+        quiet: { title: 'Tell me about your last period', help: 'If I have heard nothing for 40 days' },
+      },
+      blockedTitle: 'Reminders are off on this phone',
+      blockedBody: 'Please allow notifications for Cycle Saathi in your phone settings, then try again.',
+    },
     howTo: 'How to use Cycle Saathi',
     howToHelp: 'A quick tour with your Saathi',
     saveCopy: 'Save a copy of my information',
@@ -303,6 +334,21 @@ export const en = {
       badData: 'I could not read something in that file, so I did not change anything. Please try another copy.',
     },
     restoreProblemTitle: 'I could not use that file',
+  },
+
+  /** What the phone shows when a reminder arrives. Kept short and calm. NEEDS DRASHTI REVIEW. */
+  notify: {
+    channel: 'Reminders',
+    discreetTitle: 'Cycle Saathi',
+    discreetBody: 'A note from your Saathi',
+    details: {
+      coming: { title: 'Your period may be close', body: 'It may start in the next few days.' },
+      did_start: { title: 'Did your period start?', body: 'Tap to tell me.' },
+      did_end: { title: 'Has your bleeding ended?', body: 'Tap to tell me.' },
+      late: { title: 'Later than my guess', body: 'That can happen. Tap to see.' },
+      backup: { title: 'Save a copy of your information', body: 'So it is never lost.' },
+      quiet: { title: 'Tell me about your last period', body: 'So my guesses stay right.' },
+    },
   },
 
   /** The PDF report she can show a doctor. */

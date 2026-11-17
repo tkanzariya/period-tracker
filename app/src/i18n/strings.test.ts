@@ -39,7 +39,7 @@ describe('wording files', () => {
 
   it('Hindi really is Hindi: every plain line has Devanagari, except the app name and the Latin abbreviations of dates', () => {
     const lacking: string[] = [];
-    const skip = new Set(['appName']);
+    const skip = new Set(['appName', 'discreetTitle']);
     const walk = (o: unknown, path: string) => {
       if (typeof o === 'string') {
         if (!/[ऀ-ॿ]/.test(o) && !skip.has(path.split('.').pop() ?? '')) lacking.push(path);

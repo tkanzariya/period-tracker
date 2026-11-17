@@ -1,19 +1,33 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Switch, View } from 'react-native';
 import { todayLocal } from '../domain/dates';
 import { STRINGS, type Language } from '../i18n';
 import { pickTextFile, saveTextFile, sharePdf } from '../platform/files';
 import { APP_VERSION, useData } from '../state/data';
 import { useLanguage } from '../state/language';
+import { useReminders } from '../state/reminders';
+import { REMINDER_KINDS } from '../domain/reminders';
+import { useTokens } from '../theme/useTokens';
 import { Button, Card, Divider, Field, Input, ListRow, Screen, SectionHeader, Sheet, T, usePopup } from '../ui/kit';
 import { Logo } from '../ui/Logo';
 import { buildReportHtml } from '../ui/report';
+
+const KIND_ICON = {
+  coming: 'calendar-outline',
+  did_start: 'water-outline',
+  did_end: 'checkmark-circle-outline',
+  late: 'time-outline',
+  backup: 'cloud-upload-outline',
+  quiet: 'chatbubble-ellipses-outline',
+} as const;
 
 export default function SettingsScreen() {
   const { S, language, setLanguage } = useLanguage();
   const data = useData();
   const popup = usePopup();
+  const t = useTokens();
+  const reminders = useReminders();
   const [langOpen, setLangOpen] = useState(false);
   const [nameOpen, setNameOpen] = useState(false);
   const [name, setName] = useState('');
@@ -27,7 +41,17 @@ export default function SettingsScreen() {
 
   async function saveCopy() {
     await share(`my-cycle-info-${today}.json`, await data.backupText(), 'application/json');
+    await reminders.markBackupSaved();
   }
+
+  async function toggleReminders(on: boolean) {
+    const result = await reminders.setEnabled(on);
+    if (result === 'blocked') await popup.info({ title: S.settings.reminders.blockedTitle, message: S.settings.reminders.blockedBody, icon: 'notifications-off-outline' });
+  }
+
+  const toggle = (value: boolean, onChange: (v: boolean) => void, label: string) => (
+    <Switch accessibilityLabel={label} value={value} onValueChange={onChange} trackColor={{ true: t.primary, false: t.control }} thumbColor={t.surface} {...({ activeThumbColor: t.surface } as object)} />
+  );
 
   async function saveSheet() {
     if (data.periods.length === 0) await popup.info({ title: S.settings.saveSheet, message: S.settings.nothingToSave });
@@ -76,6 +100,38 @@ export default function SettingsScreen() {
             setNameOpen(true);
           }}
         />
+      </Card>
+
+      <SectionHeader title={S.settings.groups.reminders} />
+      <Card style={{ paddingVertical: 4 }}>
+        <ListRow
+          icon="notifications-outline"
+          title={S.settings.reminders.master}
+          subtitle={S.settings.reminders.masterHelp}
+          right={toggle(reminders.enabled, (v) => void toggleReminders(v), S.settings.reminders.master)}
+        />
+        {reminders.enabled ? (
+          <>
+            <Divider inset={56} />
+            <ListRow
+              icon="lock-closed-outline"
+              title={S.settings.reminders.details}
+              subtitle={S.settings.reminders.detailsHelp}
+              right={toggle(reminders.showDetails, (v) => void reminders.setShowDetails(v), S.settings.reminders.details)}
+            />
+            {REMINDER_KINDS.map((kind) => (
+              <View key={kind}>
+                <Divider inset={56} />
+                <ListRow
+                  icon={KIND_ICON[kind]}
+                  title={S.settings.reminders.kinds[kind].title}
+                  subtitle={S.settings.reminders.kinds[kind].help}
+                  right={toggle(reminders.prefs[kind], (v) => void reminders.setKind(kind, v), S.settings.reminders.kinds[kind].title)}
+                />
+              </View>
+            ))}
+          </>
+        ) : null}
       </Card>
 
       <SectionHeader title={S.settings.groups.data} />

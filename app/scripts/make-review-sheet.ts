@@ -186,13 +186,31 @@ sections.push({
   ],
 });
 
+sections.push({
+  title: '7. The line at the top of Today, and reminders',
+  intro: 'Reminders are made on the phone, at 9 in the morning, at most one a day. By default the lock screen only says "A note from your Saathi". She can switch each kind off in Settings.',
+  items: [
+    { id: 'h-coming', title: 'Top line before the period', says: `${en.today.headline.coming(11, 17)} (or "${en.today.headline.coming(3, 3)}")` },
+    { id: 'h-now', title: 'Top line inside the expected days', says: en.today.headline.anyDayNow },
+    { id: 'h-late', title: 'Top line after the expected days', says: `${en.today.headline.late(4)}. ${en.today.headline.lateHelp}` },
+    { id: 'h-day', title: 'Top line during a period', says: `${en.today.headline.periodDay(2)}. If it was never ended: ${en.today.headline.unfinished(12)}` },
+    { id: 'n-offer', title: 'The question that offers reminders', says: `${en.today.remindersOffer.title} ${en.today.remindersOffer.body}` },
+    ...(['coming', 'did_start', 'did_end', 'late', 'backup', 'quiet'] as const).map((k): Item => ({
+      id: `n-${k}`,
+      title: `Reminder: ${en.settings.reminders.kinds[k].title} (${en.settings.reminders.kinds[k].help})`,
+      says: `"${en.notify.details[k].title}" ${en.notify.details[k].body}`,
+    })),
+    { id: 'n-discreet', title: 'What the lock screen says by default', says: `"${en.notify.discreetTitle}" ${en.notify.discreetBody}` },
+  ],
+});
+
 const phases: Phase[] = ['menstrual', 'follicular', 'ovulation', 'luteal'];
 const phaseItems: Item[] = phases.flatMap((p) => [
   { id: `meaning-${p}`, title: `${PHASE_LABEL[p]}: the short line`, says: PHASE_MEANING[p] },
   { id: `guide-${p}`, title: `${PHASE_LABEL[p]}: what the guide says`, says: PHASE_GUIDE[p] },
 ]);
 sections.push({
-  title: '7. The four parts of the cycle and the words we use',
+  title: '8. The four parts of the cycle and the words we use',
   intro: 'Please check that each sentence is correct, kind, and easy to understand.',
   items: phaseItems,
 });
@@ -206,7 +224,7 @@ const flagItems: Item[] = [
   { id: 'f-late-guide', title: 'What the guide says when the period is late', says: en.guide.late },
   { id: 'disclaimer', title: 'Note shown at the bottom of the Today screen', says: DISCLAIMER },
 ];
-sections.push({ title: '8. Messages when something looks unusual', items: flagItems });
+sections.push({ title: '9. Messages when something looks unusual', items: flagItems });
 
 // Worked example: a regular 28-day pattern, laid out day by day by the real app logic.
 const p = (startDate: string, endDate: string | null): Period => ({ id: startDate, startDate, endDate, note: null });
@@ -273,7 +291,7 @@ ${sections
     (s) => `<h2>${esc(s.title)}</h2>${s.intro ? `<p class="intro">${esc(s.intro)}</p>` : ''}${s.items.map(itemHtml).join('\n')}`,
   )
   .join('\n')}
-<h2>9. An example: a regular 28-day cycle</h2>
+<h2>10. An example: a regular 28-day cycle</h2>
 <p class="intro">This table is made by the app itself for a woman whose cycles are always 28 days and whose periods last 5 days. Does each day look right to you?</p>
 <table>${rows.join('')}</table>
 ${itemHtml({ id: 'example', title: 'Does the 28-day example look right?', says: 'See the table above.' })}

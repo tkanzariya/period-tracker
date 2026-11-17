@@ -94,4 +94,4 @@ Diagnosis, treatment advice, ads, social/community, selling data, accounts.
 - First-run welcome (hello, privacy, name, last period) and a replayable tour; language in Settings.
 
 ## Next ideas (2026-11-17)
-UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are planned in `improvement-plan.md`. Nothing there is built.
+UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are planned in `improvement-plan.md`. Built in 0.2.0: Today answer-first headline, reminders (before the period, did it start, has it ended, later than my guess, save a copy, missing you). **COMING SOON: bleeding heaviness (pads per day)** with the day check-in; do not forget (Tirth 2026-11-17).

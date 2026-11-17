@@ -21,7 +21,7 @@ Drashti is a nurse and sees gaps in existing apps (to be documented in `research
 
 ## Non-goals (for now)
 - Diagnosis or medical advice.
-- Social features. (Ads are no longer a non-goal: Tirth wants AdMob ads later, placement decided in `improvement-plan.md` section 4; not built.)
+- Social features. (Ads are no longer a non-goal: **accepted by Tirth 2026-11-17**. AdMob ads, test ads only for now; setup in `admob-setup.md`, placement in `improvement-plan.md` section 4; not shown yet.)
 - iOS, web, cloud accounts, sync (planned later, not now).
 - Public release / app store listing: not yet, but ads will need it (open question 1n).
 - Privacy-law compliance work (deferred until a public release is considered).

@@ -77,3 +77,11 @@ Last updated: 2026-11-17
 - **Changes earlier decisions:** ads and a wider audience were non-goals (`product-vision.md`); "no data leaving the device" and zero cost are affected by ads (`constraints.md`). Flagged as open question 1n; nothing built.
 - **Rejected:** app-open ads; ads that gate the doctor report or backup; personalised ads; streaks or guilt messages.
 - Full plan: `improvement-plan.md`.
+
+## 2026-11-17: Tirth's decisions on the improvement plan; 0.2.0 built
+- **Accepted:** the ad changes (open question 1n): privacy wording will change and the Play Store listing and fee are accepted. An AdMob account exists; **test ads only for now**; full guide in `admob-setup.md`. Plain AdMob first: no mediation or waterfall until real traffic.
+- **Keep, coming soon:** bleeding heaviness (pads per day), parked in October, now marked COMING SOON in the plan, features and open questions.
+- **Agreed:** the order of work in `improvement-plan.md` section 6.
+- **Built as 0.2.0:** answer-first Today (headline, late and unfinished states, one "typical cycle" line, shorter Tell me tabs); reminders N1-N5 and N9 (planned by `domain/reminders.ts`, 11 tests; scheduled on the phone with expo-notifications; 9 am, max one a day, discreet lock-screen text by default, per-kind switches in Settings, permission asked only when she says yes on Today or turns the switch on); tapping a reminder opens the right sheet. 234 tests.
+- **Why:** the plan; Drashti and Tirth want the app to help every day, not only when she opens it.
+- **Not verified:** real notifications on a phone (the browser preview has none).

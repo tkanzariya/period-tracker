@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cycle Saathi",
     "slug": "cycle-saathi",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -12,7 +12,7 @@
     },
     "android": {
       "package": "com.cyclesaathi.app",
-      "versionCode": 100,
+      "versionCode": 200,
       "adaptiveIcon": {
         "backgroundColor": "#FCEDE7",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -44,6 +44,13 @@
             "enableBundleCompression": true,
             "gifEnabled": false
           }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#C9265F"
         }
       ],
       [
