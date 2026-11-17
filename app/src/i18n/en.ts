@@ -44,6 +44,8 @@ export const en = {
     pickDay: 'Pick a day',
   },
 
+  ads: { label: 'Ad' },
+
   nav: { today: 'Today', calendar: 'Calendar', cycles: 'My cycles' },
 
   phases: {
@@ -79,7 +81,7 @@ export const en = {
     title: 'Welcome to Cycle Saathi',
     intro: 'I am your Saathi, your friend. I help you understand your cycle, and I guess when your next period may come.',
     privateTitle: 'Only on your phone',
-    privateBody: 'Everything you tell me stays on this phone. There is no account and nothing is sent anywhere.',
+    privateBody: 'Your cycle information stays on this phone. There is no account. Ads come from Google and never get your cycle information.',
     guessTitle: 'Guesses, not advice',
     guessBody: 'These are only guesses. I cannot tell you if something is wrong, and I am not a way to prevent pregnancy. If you are worried, please talk to your doctor.',
     start: 'Get started',
@@ -284,7 +286,15 @@ export const en = {
     saveSheetHelp: 'Your cycles on a neat page, easy to show a doctor',
     bringBack: 'Bring my information back',
     bringBackHelp: 'Choose a copy you saved before',
-    privacy: 'Everything stays on this phone. There is no account and nothing is sent anywhere.',
+    privacy: 'Your cycle information stays on this phone. There is no account. Ads come from Google and never get your cycle information.',
+    ads: {
+      title: 'No ads for 3 days',
+      help: 'Watch a short video and I will hide the ads for 3 days',
+      until: (date: string) => `No ads until ${date}`,
+      notReady: 'No video is ready right now. Please try again in a little while.',
+      thanksTitle: 'Thank you',
+      thanksBody: (date: string) => `Ads are hidden until ${date}.`,
+    },
     aboutApp: 'About Cycle Saathi',
     version: 'Version',
     goodToKnow: 'Good to know',

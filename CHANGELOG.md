@@ -12,10 +12,10 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- Ads (test ads for now): a small banner above the bottom tabs, an "Ad" card in My cycles and the Calendar, and an occasional full-screen ad after saving a PDF report or earlier cycles (at most once a day, never in your first 3 days). Never while you are telling the app about a period. Settings, "No ads for 3 days" lets you watch a short video to hide ads for 3 days.
 - Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
 - Today now starts with the answer: "Your period may start in 3 to 9 days", "Period day 2" or "4 days later than my guess".
 - Today offers to turn reminders on (once, after your first period).
-- Behind the scenes: the ad library is installed and switched off. No ads are shown yet.
 - Add earlier cycles: tap "Add earlier cycles" in My cycles (or after your first period in the welcome) to enter when each cycle started and how many days the bleeding lasted.
 - A not-sure-of-the-day helper when telling the app your last period: Today, 1, 2 or 3 weeks ago.
 - A missed or very late cycle (over 60 days from your other periods) now asks "Is that right?" instead of being refused.
@@ -28,6 +28,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- The privacy lines now say: "Your cycle information stays on this phone. There is no account. Ads come from Google and never get your cycle information."
 - There is no "period ended" any more. You only tell the app when a period started; a cycle runs from one start to the next. No end dates to add.
 - The Calendar is simpler: one soft colour per part of the cycle, days that have not come yet are softer, and a drop marks the day each cycle started. Tap a day to see "Day 9 of your cycle".
 - My cycles shows each cycle as a range, for example "10 Oct - 9 Nov", and the current one as "10 Nov - Today, Day 9 so far".

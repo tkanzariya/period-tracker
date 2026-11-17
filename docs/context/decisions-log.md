@@ -100,3 +100,8 @@ Last updated: 2026-11-17
 - **Rejected:** keeping an optional end date (it caused this mix-up); renaming the button to "Cycle ended" (a cycle end is just the next start).
 - **Open:** Drashti to confirm 5 bleeding days and that doctors do not need period length (open question 1m).
 
+## 2026-11-18: Ads added to the app with TEST ads (Tirth asked)
+- **Built:** banner, native cards, interstitials, rewarded "no ads for 3 days" at the placements decided on 2026-11-17, all using Google test ads (`USE_TEST_ADS = true`), consent at start-up, non-personalised, PG, privacy text changed in two places. Browser preview has no ads (the library is phone-only).
+- **Why test ads:** no risk of invalid traffic on the real account, and the real app is not on Google Play yet.
+- **Not verified yet:** how the ads look and behave on the phone (needs the new build installed).
+

@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { AdBanner } from '../../ads/AdBanner';
+import { NativeAdCard } from '../../ads/NativeAdCard';
 import { WEEK_STARTS_ON } from '../../config/display';
 import { monthGrid, shiftMonth } from '../../domain/calendar';
 import { addDays, parseDate, todayLocal, type DateStr } from '../../domain/dates';
@@ -58,7 +60,7 @@ export default function CalendarScreen() {
   };
 
   return (
-    <Screen title={S.calendar.title} actions={<GearButton />}>
+    <Screen title={S.calendar.title} actions={<GearButton />} adSlot={<AdBanner />}>
       <View style={styles.monthRow}>
         <IconButton icon="chevron-back" label={S.dates.previousMonth} onPress={() => go(-1)} color={t.primary} size={28} />
         <T kind="heading">{formatMonthYear(view.year, view.month, S)}</T>
@@ -115,6 +117,8 @@ export default function CalendarScreen() {
         <T kind="caption" muted>{S.calendar.startMarker}</T>
         <T kind="caption" muted>{S.calendar.legendNote}</T>
       </Card>
+
+      <NativeAdCard kind="nativeCalendar" />
 
       <Sheet visible={selected !== null} onClose={() => setSelected(null)} title={selected ? formatLong(selected, S) : undefined}>
         {selected ? (

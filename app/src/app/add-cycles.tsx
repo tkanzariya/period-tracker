@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { addDays, todayLocal, type DateStr } from '../domain/dates';
 import { sortPeriods } from '../domain/cycles';
 import { checkHistory } from '../domain/validation';
+import { useAds } from '../ads/AdsProvider';
 import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from '../ui/DateField';
@@ -22,6 +23,7 @@ export default function AddCyclesScreen() {
   const data = useData();
   const popup = usePopup();
   const toast = useToast();
+  const ads = useAds();
   const today = todayLocal();
 
   const earliest = sortPeriods(data.periods)[0]?.startDate ?? addDays(today, TYPICAL_GAP);
@@ -65,6 +67,7 @@ export default function AddCyclesScreen() {
       if (result.ok) {
         toast.show({ message: S.history.toast(entries.length), actionLabel: S.common.undo, onAction: () => void result.undo() });
         router.back();
+        void ads.maybeShowInterstitial('interstitialHistory');
       } else {
         setFailed(true);
       }

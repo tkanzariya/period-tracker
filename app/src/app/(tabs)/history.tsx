@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
+import { AdBanner } from '../../ads/AdBanner';
+import { NativeAdCard } from '../../ads/NativeAdCard';
 import { completedCycleLengths, cycleRows, cycleStats } from '../../domain/cycles';
 import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
@@ -27,7 +29,7 @@ export default function MyCyclesScreen() {
   const heightOf = (days: number) => (days / chartMax) * BAR_AREA;
 
   return (
-    <Screen title={S.cycles.title} actions={<GearButton />}>
+    <Screen title={S.cycles.title} actions={<GearButton />} adSlot={<AdBanner />}>
       {loading ? null : rows.length === 0 ? (
         <>
           <GuideMessage text={S.cycles.emptyBody} />
@@ -74,6 +76,7 @@ export default function MyCyclesScreen() {
                 : `${formatShort(row.period.startDate, S)} – ${S.common.today}`;
               return (
                 <View key={row.period.id}>
+                  {i === 3 ? <View style={{ paddingVertical: 8 }}><NativeAdCard kind="nativeCycles" /></View> : null}
                   {i > 0 ? <Divider /> : null}
                   <ListRow
                     title={dates}

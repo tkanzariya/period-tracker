@@ -1,6 +1,6 @@
 # Improvement plan: UI, features, notifications, ads
 
-Last updated: 2026-11-17
+Last updated: 2026-11-18
 
 Analysis asked for by Tirth on 2026-11-17. **Status: 0.2.0 built 2026-11-17 = U1, U3, U4, U8 and notifications N1 to N5 and N9 with Settings switches** (marked DONE below). Tirth agreed the order in section 6 and accepted the ad changes (section 4). Health wording and numbers are `NEEDS DRASHTI REVIEW`. Order of work is in section 6.
 
@@ -62,7 +62,7 @@ Rules: at most **one a day**; quiet hours 9 pm to 8 am; each kind has its own sw
 
 N2 and N3 also fix the "period never ended" problem. Each one opens the app on the right sheet (that is also the ad impression).
 
-## 4. Ads (AdMob): final placement, built later
+## 4. Ads (AdMob): final placement (built 2026-11-18 with TEST ads)
 Accepted by Tirth 2026-11-17 (test ads only for now). The full setup, ad unit table, mediation and waterfall advice: `admob-setup.md`.
 Goal: every app open gives an impression; logging a period is never slowed.
 

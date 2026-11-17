@@ -51,9 +51,9 @@ export function T({ kind = 'body', muted, color, center, children, style, number
  * A page: optional header (title, back arrow, actions on the right), a scrolling body and an optional
  * footer that stays above the keyboard (Android's edge-to-edge no longer resizes the window).
  */
-export function Screen({ title, subtitle, back, onBack, actions, children, footer, onScroll, bottomSpace = 24 }: {
+export function Screen({ title, subtitle, back, onBack, actions, children, footer, onScroll, bottomSpace = 24, adSlot }: {
   title?: string; subtitle?: string; back?: boolean; onBack?: () => void; actions?: ReactNode; children: ReactNode; footer?: ReactNode;
-  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void; bottomSpace?: number;
+  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void; bottomSpace?: number; adSlot?: ReactNode;
 }) {
   const t = useTokens();
   const insets = useSafeAreaInsets();
@@ -73,6 +73,7 @@ export function Screen({ title, subtitle, back, onBack, actions, children, foote
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }} onScroll={onScroll} scrollEventThrottle={16}>
         <View style={[styles.body, { paddingBottom: footer ? spacing.lg : insets.bottom + bottomSpace }]}>{children}</View>
       </ScrollView>
+      {adSlot}
       {footer ? <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md, backgroundColor: t.background }]}>{footer}</View> : null}
     </KeyboardAvoidingView>
   );
@@ -214,7 +215,7 @@ export function useHideOnScroll() {
 }
 
 /** The extended floating button (Android pattern). Its words change with the situation. */
-export function Fab({ label, icon, onPress, visible = true, hint }: { label: string; icon: IconName; onPress: () => void; visible?: boolean; hint?: string }) {
+export function Fab({ label, icon, onPress, visible = true, hint, lift = 0 }: { label: string; icon: IconName; onPress: () => void; visible?: boolean; hint?: string; lift?: number }) {
   const t = useTokens();
   const shown = useRef(new Animated.Value(1)).current;
   useEffect(() => {
@@ -223,7 +224,7 @@ export function Fab({ label, icon, onPress, visible = true, hint }: { label: str
   return (
     <Animated.View
       pointerEvents={visible ? 'box-none' : 'none'}
-      style={[styles.fab, { bottom: spacing.lg, opacity: shown, transform: [{ translateY: shown.interpolate({ inputRange: [0, 1], outputRange: [90, 0] }) }] }]}
+      style={[styles.fab, { bottom: spacing.lg + lift, opacity: shown, transform: [{ translateY: shown.interpolate({ inputRange: [0, 1], outputRange: [90, 0] }) }] }]}
     >
       <Pressable
         accessibilityRole="button"

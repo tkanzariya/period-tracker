@@ -1,11 +1,18 @@
 # AdMob setup: complete guide, from the app to the ad units
 
-Last updated: 2026-11-17
+Last updated: 2026-11-18
 
 Decision (Tirth, 2026-11-17): ads are accepted, including the privacy wording change and the Play Store listing. He already has an AdMob account. **For now only Google's TEST ads are used.** Placement plan: `improvement-plan.md` section 4.
 
-## Status (2026-11-17): IDs received and stored
-Tirth created the app and all six units. The IDs are in `app/src/config/ads.ts` (`REAL_APP_ID`, `REAL_AD_UNITS`, `REAL_EXTRA_UNITS`). Ads are still OFF and every debug or tester build uses Google's test IDs. **To switch on later:** put `REAL_APP_ID` into `app/app.json` (`androidAppId`; it is still the test App ID so tester builds never touch real ads), set `ADS_ENABLED = true`, reword the privacy lines, build the placements. Still open: consent message, payments, blocking controls, Play listing and `app-ads.txt`.
+## Status (2026-11-18): ads are in the app, TEST ads only
+Placements are built and every ad is Google's TEST ad (`USE_TEST_ADS = true` in `app/src/config/ads.ts`; `app.json` still has the test App ID). Your real IDs are stored in the same file (`REAL_APP_ID`, `REAL_AD_UNITS` for all six units).
+- **Banner** above the tab bar on Today, Calendar and My cycles (`ads/AdBanner.tsx`; the floating button lifts above it; the strip disappears when there is no ad).
+- **Native** card "Ad": My cycles after the 3rd row, Calendar under the Colours card (`ads/NativeAdCard.tsx`).
+- **Interstitial**: after the PDF is shared, and after saving earlier cycles; at most once a day, never in the first 3 days (`ads/AdsProvider.tsx`).
+- **Rewarded**: Settings, "No ads for 3 days" (hides banners and native cards for 3 days).
+- **Never** on welcome, tour, Tell me, Change period, Earlier cycles form, popups. Consent runs at start-up (`ads/init.ts`); non-personalised, PG rating.
+- Privacy wording changed in the app ("Ads come from Google and never get your cycle information").
+**To go live later:** set `USE_TEST_ADS = false`, put `REAL_APP_ID` in `app.json` (`androidAppId`), rebuild, check on your own phone (never click real ads), then Play listing, Data safety, `app-ads.txt`. Still open on the AdMob website: consent message, payments, blocking controls.
 
 ## 0. The big picture (read once)
 | Piece | Where | Status |

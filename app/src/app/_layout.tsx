@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { startAds } from '../ads/init';
+import { AdsProvider } from '../ads/AdsProvider';
 import { migrateDatabase } from '../db/migrations';
 import { DataProvider, useData } from '../state/data';
 import { listenForTaps } from '../platform/notifications';
@@ -28,9 +28,6 @@ function Gate() {
   const t = useTokens();
   const { loading, welcomeDone } = useData();
   const { openTell } = useSheets();
-  useEffect(() => {
-    if (!loading && welcomeDone) void startAds();
-  }, [loading, welcomeDone]);
   // Tapping a reminder opens the right sheet.
   useEffect(() => {
     if (loading || !welcomeDone) return;
@@ -60,14 +57,16 @@ export default function RootLayout() {
           <LanguageProvider>
             <DataProvider>
               <RemindersProvider>
-                <PopupProvider>
-                  <ToastProvider>
-                    <SheetsProvider>
-                      <StatusBar style="auto" />
-                      <Gate />
-                    </SheetsProvider>
-                  </ToastProvider>
-                </PopupProvider>
+                <AdsProvider>
+                  <PopupProvider>
+                    <ToastProvider>
+                      <SheetsProvider>
+                        <StatusBar style="auto" />
+                        <Gate />
+                      </SheetsProvider>
+                    </ToastProvider>
+                  </PopupProvider>
+                </AdsProvider>
               </RemindersProvider>
             </DataProvider>
           </LanguageProvider>

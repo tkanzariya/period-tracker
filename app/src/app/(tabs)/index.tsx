@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { View } from 'react-native';
+import { AdBanner } from '../../ads/AdBanner';
 import { todayLocal } from '../../domain/dates';
 import { getIrregularityFlags } from '../../domain/flags';
 import { getHeadline } from '../../domain/headline';
@@ -24,6 +26,7 @@ export default function TodayScreen() {
   const fab = useHideOnScroll();
   const reminders = useReminders();
   const today = todayLocal();
+  const [bannerHeight, setBannerHeight] = useState(0);
 
   const stage = getStage(periods, today);
   const info = getDayInfo(today, periods, rules);
@@ -54,7 +57,7 @@ export default function TodayScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110}>
+      <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110} adSlot={<AdBanner onHeight={setBannerHeight} />}>
         {headlineText ? (
           <Card tone={late ? 'attention' : 'primary'} style={{ gap: 4 }}>
             <T kind="heading">{headlineText}</T>
@@ -118,7 +121,7 @@ export default function TodayScreen() {
 
         <Disclaimer text={S.today.disclaimer} />
       </Screen>
-      <Fab label={fabLabel} hint={fabHint} icon="water" visible={fab.visible} onPress={() => openTell({ mode: 'start' })} />
+      <Fab lift={bannerHeight} label={fabLabel} hint={fabHint} icon="water" visible={fab.visible} onPress={() => openTell({ mode: 'start' })} />
     </View>
   );
 }

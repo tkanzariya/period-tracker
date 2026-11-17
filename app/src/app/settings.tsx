@@ -1,11 +1,13 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Switch, View } from 'react-native';
-import { todayLocal } from '../domain/dates';
+import { addDays, todayLocal } from '../domain/dates';
+import { formatShort } from '../ui/format';
 import { STRINGS, type Language } from '../i18n';
 import { pickTextFile, saveTextFile, sharePdf } from '../platform/files';
 import { APP_VERSION, useData } from '../state/data';
 import { useLanguage } from '../state/language';
+import { useAds } from '../ads/AdsProvider';
 import { useReminders } from '../state/reminders';
 import { REMINDER_KINDS } from '../domain/reminders';
 import { useTokens } from '../theme/useTokens';
@@ -27,6 +29,7 @@ export default function SettingsScreen() {
   const popup = usePopup();
   const t = useTokens();
   const reminders = useReminders();
+  const ads = useAds();
   const [langOpen, setLangOpen] = useState(false);
   const [nameOpen, setNameOpen] = useState(false);
   const [name, setName] = useState('');
@@ -57,6 +60,17 @@ export default function SettingsScreen() {
     const html = buildReportHtml({ periods: data.periods, notes: data.notes, rules: data.rules, S, name: data.name, today });
     const result = await sharePdf(html, S.report.fileName(today));
     if (result === 'unavailable') await popup.info({ title: S.settings.fileReadyTitle, message: S.settings.cantShare, icon: 'information-circle' });
+    else await ads.maybeShowInterstitial('interstitialReport');
+  }
+
+  async function watchVideo() {
+    const earned = await ads.watchRewarded();
+    if (earned) {
+      const until = addDays(todayLocal(), 3);
+      await popup.info({ title: S.settings.ads.thanksTitle, message: S.settings.ads.thanksBody(formatShort(until, S)), icon: 'checkmark-circle' });
+    } else {
+      await popup.info({ title: S.settings.ads.title, message: S.settings.ads.notReady, icon: 'information-circle' });
+    }
   }
 
   async function bringBack() {
@@ -142,6 +156,18 @@ export default function SettingsScreen() {
         <ListRow icon="cloud-download-outline" title={S.settings.bringBack} subtitle={S.settings.bringBackHelp} chevron onPress={() => void bringBack()} />
       </Card>
       <T kind="caption" muted>{S.settings.privacy}</T>
+
+      {ads.canOfferReward ? (
+        <Card style={{ paddingVertical: 4 }}>
+          <ListRow
+            icon="videocam-outline"
+            title={S.settings.ads.title}
+            subtitle={ads.adsFreeUntil && ads.adsFreeUntil >= today ? S.settings.ads.until(formatShort(ads.adsFreeUntil, S)) : S.settings.ads.help}
+            chevron
+            onPress={() => void watchVideo()}
+          />
+        </Card>
+      ) : null}
 
       <SectionHeader title={S.settings.groups.help} />
       <Card style={{ paddingVertical: 4 }}>
