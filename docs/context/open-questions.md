@@ -1,6 +1,6 @@
 # Open Questions
 
-Last updated: 2026-11-17
+Last updated: 2026-11-18
 
 | # | Question | Owner |
 |---|---|---|
@@ -11,7 +11,7 @@ Last updated: 2026-11-17
 | 1h | The four GitHub secrets are added (Tirth, 2026-10-28). Still to do: confirm `local\keys\` is backed up in two places (private Drive + USB), then delete the old copy at `D:\CycleSaathi-keys` (left in place because it was open during the move; the copy in `local\keys` is byte-identical). | Tirth |
 | 1j | **Version numbering**: re-label the first build from v1.0.0 to v0.1.0 (test build) and keep 1.0.0 for the Play Store launch? Needs: bump `app.json` to 0.1.0 / versionCode 100, delete the published v1.0.0 tag and (by Tirth, in the GitHub web page) its release, then publish v0.1.0. Also decide later whether to pay the one-time Google Play developer fee (the project has been zero-cost). | Tirth |
 | 1k | **UX refresh is built** (see roadmap). Tirth: review the screenshots and the rules and texts in `scenarios.md` (including the open items S21-S25), then say go for push and the 0.1.0 release. Nothing is pushed or released without your go-ahead (public repo). | Tirth |
-| 1m | Drashti's wording: "Period ended" / "Did your period end?" -> "Cycle ended"? Tirth chose to keep bleeding days (history asks start + bleeding days), so the end-of-period day stays. Still to settle with Drashti: the button wording (for example "Bleeding ended"). | Tirth + Drashti |
+| 1m | Period end removed (decided 2026-11-18). Drashti to confirm: the Bleeding phase is drawn for the first 5 days of each cycle (okay?), and doctors do not need period length. If she wants it back it would be an optional field in a later version. | Drashti |
 | 1o | **Reminders** (built in 0.2.0): Drashti to review the notification wording in the review sheet section 7, and say whether 9 in the morning is right. | Drashti |
 | 1p | **Day check-in** (0.3.0) and **bleeding heaviness (pads per day): COMING SOON, keep it on the list** (Tirth 2026-11-17). Needs Drashti's symptom list and her yes on bleeding heaviness. | Drashti |
 | 1l | **Drashti**: please review the health sentences that will change in the refresh (they stay NEEDS DRASHTI REVIEW) and say whether Hindi and Gujarati should come first or second. | Drashti |

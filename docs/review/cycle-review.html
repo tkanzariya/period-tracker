@@ -75,20 +75,10 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
-<div class="item" data-id="period" data-title="Usual period length">
-  <h3>Usual period length</h3>
-  <p class="says"><b>The app says / does:</b> Up to 7 days.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="period" value="ok"> Looks right</label>
-    <label><input type="radio" name="period" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="assumed" data-title="If she forgets to say when the period ended">
-  <h3>If she forgets to say when the period ended</h3>
-  <p class="says"><b>The app says / does:</b> The app guesses the period lasted 5 days.</p>
-  
+<div class="item" data-id="assumed" data-title="There is no "period ended" in the app">
+  <h3>There is no "period ended" in the app</h3>
+  <p class="says"><b>The app says / does:</b> A cycle starts on the day she says a period started, and ends the day before the next one starts. The first 5 days of every cycle are drawn as the Bleeding part (an estimate, never asked).</p>
+  <p class="why">Why: Fewer questions to answer, and no mix-ups between the end of the bleeding and the end of the cycle.</p>
   <div class="answer">
     <label><input type="radio" name="assumed" value="ok"> Looks right</label>
     <label><input type="radio" name="assumed" value="change"> Needs a change</label>
@@ -145,7 +135,7 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
-<h2>4. Checks when she tells the app something</h2><p class="intro">The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than 15 days after another; asks if a start is more than 60 days from the other starts; asks if a period would last more than 14 days; treats a period with no end day as forgotten after 10 days and asks about it on Today.</p><div class="item" data-id="issue-future_date" data-title="She picks a day that has not come yet">
+<h2>4. Checks when she tells the app something</h2><p class="intro">The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than 15 days after another; asks if a start is more than 60 days from the other starts; nothing else is asked.</p><div class="item" data-id="issue-future_date" data-title="She picks a day that has not come yet">
   <h3>She picks a day that has not come yet</h3>
   <p class="says"><b>The app says / does:</b> "That day has not come yet". Please pick today or an earlier day.</p>
   
@@ -165,38 +155,8 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
-<div class="item" data-id="issue-start_inside_period" data-title="She says a period started on a day inside an earlier period">
-  <h3>She says a period started on a day inside an earlier period</h3>
-  <p class="says"><b>The app says / does:</b> "That day is inside your period (6–10 Oct)". A new period cannot start while one is going on. Button: "Change that period".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-start_inside_period" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-start_inside_period" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-start_previous_unfinished" data-title="She says a period started while the last one has no end day">
-  <h3>She says a period started while the last one has no end day</h3>
-  <p class="says"><b>The app says / does:</b> "Your period from 6 Oct has not ended". Tell me when it ended first. Then you can add the new one. Button: "Tell me the end day".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-start_previous_unfinished" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-start_previous_unfinished" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-start_overlaps_next" data-title="The new start runs into a period that begins later">
-  <h3>The new start runs into a period that begins later</h3>
-  <p class="says"><b>The app says / does:</b> "This runs into your period that starts on 6 Oct". Please pick an earlier day.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-start_overlaps_next" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-start_overlaps_next" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-start_too_soon" data-title="A new period only a few days after another one started (the app asks if that is right)">
-  <h3>A new period only a few days after another one started (the app asks if that is right)</h3>
+<div class="item" data-id="issue-start_too_soon" data-title="A new start only a few days after another one (the app asks if that is right)">
+  <h3>A new start only a few days after another one (the app asks if that is right)</h3>
   <p class="says"><b>The app says / does:</b> "Only 14 days after another period started". Most cycles are 21 to 35 days long. Is this a new period? Buttons: "Yes, save it" / "No, go back".</p>
   
   <div class="answer">
@@ -212,56 +172,6 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
   <div class="answer">
     <label><input type="radio" name="issue-start_long_gap" value="ok"> Looks right</label>
     <label><input type="radio" name="issue-start_long_gap" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-end_no_period" data-title="She says a period ended, but none is going on">
-  <h3>She says a period ended, but none is going on</h3>
-  <p class="says"><b>The app says / does:</b> "No period is going on". Tell me when a period started first. Button: "Period started".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-end_no_period" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-end_no_period" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-end_before_start" data-title="The end day is before the start day">
-  <h3>The end day is before the start day</h3>
-  <p class="says"><b>The app says / does:</b> "That is before the period started (6 Oct)". Please pick a day on or after it.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-end_before_start" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-end_before_start" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-end_already" data-title="That period already has an end day">
-  <h3>That period already has an end day</h3>
-  <p class="says"><b>The app says / does:</b> "That period already ended on 10 Oct". You can change its days if that is not right. Button: "Change that period".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-end_already" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-end_already" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-end_too_long" data-title="The period would be very long (the app asks if that is right)">
-  <h3>The period would be very long (the app asks if that is right)</h3>
-  <p class="says"><b>The app says / does:</b> "That makes your period 15 days long". Is that right? Buttons: "Yes, save it" / "No, go back".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-end_too_long" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-end_too_long" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="issue-overlaps" data-title="Changing a period so it overlaps another">
-  <h3>Changing a period so it overlaps another</h3>
-  <p class="says"><b>The app says / does:</b> "This overlaps your period from 6–10 Oct". Periods cannot overlap. Please check the days.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="issue-overlaps" value="ok"> Looks right</label>
-    <label><input type="radio" name="issue-overlaps" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
@@ -287,7 +197,7 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
 </div>
 <h2>5. What the Saathi says and the main button</h2><p class="intro">The big button changes with her situation.</p><div class="item" data-id="btn" data-title="The big button">
   <h3>The big button</h3>
-  <p class="says"><b>The app says / does:</b> Before any period: "Add my last period". While a period is going on: "Period ended". Otherwise: "Period started".</p>
+  <p class="says"><b>The app says / does:</b> Before any period: "Add my last period". After that: "Period started". There is no "ended" button.</p>
   
   <div class="answer">
     <label><input type="radio" name="btn" value="ok"> Looks right</label>
@@ -307,21 +217,11 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
 </div>
 <div class="item" data-id="g-in" data-title="Saathi while a period is going on">
   <h3>Saathi while a period is going on</h3>
-  <p class="says"><b>The app says / does:</b> Your period is here, Drashti. Be kind to yourself today. Tell me when it ends.</p>
+  <p class="says"><b>The app says / does:</b> Your period is here, Drashti. Be kind to yourself today.</p>
   
   <div class="answer">
     <label><input type="radio" name="g-in" value="ok"> Looks right</label>
     <label><input type="radio" name="g-in" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="g-unfinished" data-title="Saathi when a period was never ended">
-  <h3>Saathi when a period was never ended</h3>
-  <p class="says"><b>The app says / does:</b> Drashti, your period started 12 days ago and I have not heard that it ended. Tell me the day it ended.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="g-unfinished" value="ok"> Looks right</label>
-    <label><input type="radio" name="g-unfinished" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
@@ -332,16 +232,6 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
   <div class="answer">
     <label><input type="radio" name="g-typical" value="ok"> Looks right</label>
     <label><input type="radio" name="g-typical" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="u-title" data-title="The note on Today when a period was never ended">
-  <h3>The note on Today when a period was never ended</h3>
-  <p class="says"><b>The app says / does:</b> "Did your period end?" You told me it started on 3 Oct. Button: "Tell me the end day".</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="u-title" value="ok"> Looks right</label>
-    <label><input type="radio" name="u-title" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
@@ -387,7 +277,7 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
 </div>
 <div class="item" data-id="tour-2" data-title="Tour step 3: The big button">
   <h3>Tour step 3: The big button</h3>
-  <p class="says"><b>The app says / does:</b> Tap it when your period starts. While a period is going on, it changes to "Period ended". You can also add a note, or tell me about an earlier day.</p>
+  <p class="says"><b>The app says / does:</b> Tap it on the day your period starts. A new cycle begins that day, and the one before ends. You can also add a note, or tell me about an earlier day.</p>
   
   <div class="answer">
     <label><input type="radio" name="tour-2" value="ok"> Looks right</label>
@@ -477,7 +367,7 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
 </div>
 <div class="item" data-id="h-day" data-title="Top line during a period">
   <h3>Top line during a period</h3>
-  <p class="says"><b>The app says / does:</b> Period day 2. If it was never ended: Period day 12: did it end?</p>
+  <p class="says"><b>The app says / does:</b> Period day 2</p>
   
   <div class="answer">
     <label><input type="radio" name="h-day" value="ok"> Looks right</label>
@@ -512,16 +402,6 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
   <div class="answer">
     <label><input type="radio" name="n-did_start" value="ok"> Looks right</label>
     <label><input type="radio" name="n-did_start" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="n-did_end" data-title="Reminder: Has it ended? (On day 5 and day 8 of a period)">
-  <h3>Reminder: Has it ended? (On day 5 and day 8 of a period)</h3>
-  <p class="says"><b>The app says / does:</b> "Has your bleeding ended?" Tap to tell me.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="n-did_end" value="ok"> Looks right</label>
-    <label><input type="radio" name="n-did_end" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>
@@ -672,16 +552,6 @@ textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:
   <div class="answer">
     <label><input type="radio" name="f-var" value="ok"> Looks right</label>
     <label><input type="radio" name="f-var" value="change"> Needs a change</label>
-    <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
-  </div>
-</div>
-<div class="item" data-id="f-plong" data-title="Period lasted long">
-  <h3>Period lasted long</h3>
-  <p class="says"><b>The app says / does:</b> Your last period lasted 9 days. Most periods last up to 7 days.</p>
-  
-  <div class="answer">
-    <label><input type="radio" name="f-plong" value="ok"> Looks right</label>
-    <label><input type="radio" name="f-plong" value="change"> Needs a change</label>
     <input class="change" type="text" placeholder="Change it to… (or write what is wrong)">
   </div>
 </div>

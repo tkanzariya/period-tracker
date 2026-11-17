@@ -1,6 +1,6 @@
 # Data Model (draft v1)
 
-Last updated: 2026-10-27 (Drashti reviewed: good to go; phases added as calculated values)
+Last updated: 2026-11-18 (Drashti reviewed: good to go; phases added as calculated values)
 
 Described logically. Follows the portability rules in `tech-decisions.md`.
 
@@ -50,3 +50,6 @@ One file, containing a format version number, the export date, the app version, 
 Implemented (migrations v1-v2): `periods` (id, start_date, end_date, note), `daily_logs` (id, date, note; the `flow` column was dropped in v2), `settings` (key, value). All PKs UUID text; `created_at`, `updated_at`, `deleted_at` on entity tables; partial unique indexes on `periods.start_date` and `daily_logs.date` where not deleted. Schema version is stored in SQLite `PRAGMA user_version` (no separate migrations table). Postgres-compatible types only.
 Planned (Phase 2): `symptoms`, `daily_log_symptoms`, `medications`, `daily_log_medications`.
 Code: `app/src/db/migrations.ts`, `app/src/db/repository.ts`.
+
+## Period end is no longer used (2026-11-18)
+The `periods.end_date` column and the backup field stay (portability, old files restore fine) but the app never sets or reads them: loaded periods are treated as start-only. A cycle = start to the day before the next start; the current cycle has no end.

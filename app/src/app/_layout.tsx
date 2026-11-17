@@ -36,7 +36,6 @@ function Gate() {
     if (loading || !welcomeDone) return;
     return listenForTaps((kind) => {
       if (kind === 'did_start' || kind === 'late' || kind === 'quiet') openTell({ mode: 'start' });
-      else if (kind === 'did_end') openTell({ mode: 'end' });
       else if (kind === 'backup') router.push('/settings');
     });
   }, [loading, welcomeDone, openTell]);

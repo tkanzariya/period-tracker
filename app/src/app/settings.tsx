@@ -16,7 +16,6 @@ import { buildReportHtml } from '../ui/report';
 const KIND_ICON = {
   coming: 'calendar-outline',
   did_start: 'water-outline',
-  did_end: 'checkmark-circle-outline',
   late: 'time-outline',
   backup: 'cloud-upload-outline',
   quiet: 'chatbubble-ellipses-outline',

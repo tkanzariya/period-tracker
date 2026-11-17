@@ -181,10 +181,6 @@ describe('irregularity flags', () => {
     const varied = [p('2026-01-01'), p('2026-01-25'), p('2026-03-05'), p('2026-03-30')];
     expect(getIrregularityFlags(varied, '2026-04-02', rules).map((f) => f.code)).toContain('cycle_variation');
   });
-  it('flags a long period', () => {
-    const periods = [...regular.slice(0, 3), p('2026-09-23', '2026-10-01')]; // 9 days
-    expect(getIrregularityFlags(periods, '2026-10-05', rules)).toContainEqual({ code: 'period_long', value: 9 });
-  });
   it('flags a late period only after the predicted range has passed', () => {
     expect(getIrregularityFlags(regular, '2026-10-22', rules).map((f) => f.code)).not.toContain('period_late');
     expect(getIrregularityFlags(regular, '2026-10-25', rules)).toContainEqual({ code: 'period_late', value: 3 });

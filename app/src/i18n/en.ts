@@ -68,9 +68,7 @@ export const en = {
 
   guide: {
     /** Short, friendly lines from the Saathi. `name` is what she asked to be called. */
-    periodGoingOn: (name: string | null) => `Your period is here${name ? `, ${name}` : ''}. Be kind to yourself today. Tell me when it ends.`,
-    unfinished: (name: string | null, days: number) =>
-      `${name ? `${name}, ` : ''}your period started ${days} days ago and I have not heard that it ended. Tell me the day it ended.`,
+    periodGoingOn: (name: string | null) => `Your period is here${name ? `, ${name}` : ''}. Be kind to yourself today.`,
     typical: (name: string | null, days: number) =>
       `${name ? `${name}, ` : ''}I do not know your own cycle yet, so I am using a typical ${days}-day cycle. Tell me about your next periods and I will learn yours.`,
     late: 'Your period is a little late. This can happen. If you are worried, please talk to your doctor.',
@@ -119,16 +117,12 @@ export const en = {
     estimateTag: 'Estimate',
     typicalTag: 'Typical cycle',
     ovulationAround: (date: string) => `Ovulation is likely around ${date} (a guess)`,
-    unfinishedTitle: 'Did your period end?',
-    unfinishedBody: (date: string) => `You told me it started on ${date}.`,
-    unfinishedAction: 'Tell me the end day',
-    fab: { first: 'Add my last period', start: 'Period started', end: 'Period ended' },
-    fabHelp: { first: 'Add the day your last period started', start: 'Tell me a period has started', end: 'Tell me your period has ended' },
+    fab: { first: 'Add my last period', start: 'Period started' },
+    fabHelp: { first: 'Add the day your last period started', start: 'Tell me a period has started' },
     disclaimer: 'Guesses only. Not medical advice, and not birth control.',
     /** The one line Today leads with. */
     headline: {
       periodDay: (n: number) => `Period day ${n}`,
-      unfinished: (n: number) => `Period day ${n}: did it end?`,
       coming: (from: number, to: number) => (from === to ? `Your period may start in ${from} days` : `Your period may start in ${from} to ${to} days`),
       anyDayNow: 'Your period may start any day now',
       late: (n: number) => `${n} ${n === 1 ? 'day' : 'days'} later than my guess`,
@@ -144,7 +138,7 @@ export const en = {
 
   tell: {
     title: 'Tell me',
-    modes: { start: 'Started', end: 'Ended', note: 'Note' },
+    modes: { start: 'Started', note: 'Note' },
     whichDay: 'Which day?',
     noteLabel: 'A note (optional)',
     noteLabelOnly: 'Your note',
@@ -152,12 +146,10 @@ export const en = {
     noteCount: (n: number, max: number) => `${n} of ${max}`,
     save: {
       start: (date: string) => `Save: period started ${date}`,
-      end: (date: string) => `Save: period ended ${date}`,
       note: (date: string) => `Save note for ${date}`,
     },
     toast: {
       start: (date: string) => `Saved: period started ${date}`,
-      end: (date: string) => `Saved: period ended ${date}`,
       note: 'Note saved',
       noteRemoved: 'Note removed',
       periodRemoved: 'Period removed',
@@ -172,13 +164,6 @@ export const en = {
   issues: {
     futureDate: { title: 'That day has not come yet', body: 'Please pick today or an earlier day.' },
     startAlreadyLogged: { title: (date: string) => `A period already starts on ${date}`, body: 'You have already told me about it.', action: 'Change that period' },
-    startInsidePeriod: { title: (range: string) => `That day is inside your period (${range})`, body: 'A new period cannot start while one is going on.', action: 'Change that period' },
-    startPreviousUnfinished: {
-      title: (date: string) => `Your period from ${date} has not ended`,
-      body: 'Tell me when it ended first. Then you can add the new one.',
-      action: 'Tell me the end day',
-    },
-    startOverlapsNext: { title: (date: string) => `This runs into your period that starts on ${date}`, body: 'Please pick an earlier day.' },
     startTooSoon: {
       title: (days: number) => `Only ${days} days after another period started`,
       body: (min: number, max: number) => `Most cycles are ${min} to ${max} days long. Is this a new period?`,
@@ -191,11 +176,6 @@ export const en = {
       yes: 'Yes, save it',
       no: 'No, go back',
     },
-    endNoPeriod: { title: 'No period is going on', body: 'Tell me when a period started first.', action: 'Period started' },
-    endBeforeStart: { title: (date: string) => `That is before the period started (${date})`, body: 'Please pick a day on or after it.' },
-    endAlready: { title: (end: string) => `That period already ended on ${end}`, body: 'You can change its days if that is not right.', action: 'Change that period' },
-    endTooLong: { title: (days: number) => `That makes your period ${days} days long`, body: 'Is that right?', yes: 'Yes, save it', no: 'No, go back' },
-    overlaps: { title: (range: string) => `This overlaps your period from ${range}`, body: 'Periods cannot overlap. Please check the days.' },
     noteEmpty: { title: 'Write something first', body: 'e.g. cramps, travelling, took medicine' },
     noteTooLong: { title: 'That note is too long', body: (max: number) => `Please keep it under ${max} letters.` },
   },
@@ -206,13 +186,13 @@ export const en = {
     cycleShort: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most cycles are between ${min} and ${max} days.`,
     cycleLong: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most cycles are between ${min} and ${max} days.`,
     variation: (days: number) => `Your cycles are not always the same length. They changed by ${days} days from the shortest to the longest.`,
-    periodLong: (days: number, max: number) => `Your last period lasted ${days} days. Most periods last up to ${max} days.`,
     periodLate: (days: number) => `Your period is ${days} ${days === 1 ? 'day' : 'days'} later than I guessed.`,
   },
 
   calendar: {
     title: 'Calendar',
     legendTitle: 'Colours',
+    startMarker: 'The drop marks the day a new cycle started.',
     legendNote: 'Colours are a guess from a typical cycle until I learn yours.',
     dayNoData: 'I do not have information for this day yet.',
     dayFuture: 'This day has not come yet.',
@@ -220,8 +200,9 @@ export const en = {
     fertileDay: 'A fertile day (a guess)',
     ovulationDay: 'Likely ovulation day (a guess)',
     expectedPeriod: 'Your period may start around now (a guess)',
+    dayOfCycle: (n: number) => `Day ${n} of your cycle`,
+    cycleStarts: 'A new cycle started this day',
     periodStartedHere: 'Period started this day',
-    periodEndedHere: 'Period ended this day',
     changePeriod: 'Change this period',
     addNote: 'Add a note',
     editNote: 'Change my note',
@@ -232,11 +213,9 @@ export const en = {
   /** Adding earlier cycles (history). */
   history: {
     title: 'Earlier cycles',
-    intro: 'Add the day each earlier cycle started and how many days the bleeding lasted. A rough day is fine.',
+    intro: 'Add the day each earlier period started. A rough day is fine.',
     cycleN: (n: number) => `Cycle ${n}`,
     started: 'It started on',
-    bleedDays: 'The bleeding lasted (days)',
-    bleedHint: 'Most people: 3 to 7 days',
     addAnother: 'Add another cycle',
     removeRow: 'Remove this row',
     save: (n: number) => `Save ${n} ${n === 1 ? 'cycle' : 'cycles'}`,
@@ -249,15 +228,13 @@ export const en = {
     title: 'My cycles',
     usual: 'Usual cycle',
     range: 'From–to',
-    usualPeriod: 'Usual period',
     chartTitle: 'Your last cycles (days)',
     chartNote: (min: number, max: number) => `Dashed lines show ${min} and ${max} days.`,
     emptyTitle: 'Nothing here yet',
     emptyBody: 'When you tell me about your periods, they will show up here, with how long each cycle was.',
-    periodLasted: (n: number) => `Period lasted ${n} ${n === 1 ? 'day' : 'days'}`,
-    endNotTold: 'End day not told',
     cycleWas: (n: number) => `Cycle ${n} days`,
     current: 'Current cycle',
+    currentDay: (n: number) => `Day ${n} so far`,
     tagShort: 'Shorter than usual',
     tagLong: 'Longer than usual',
     showDoctor: 'You can show this page to your doctor.',
@@ -267,8 +244,6 @@ export const en = {
   change: {
     title: 'Change this period',
     started: 'It started on',
-    ended: 'It ended on',
-    notEnded: 'It has not ended yet',
     save: 'Save changes',
     remove: 'Remove this period',
     removeTitle: 'Remove this period?',
@@ -294,7 +269,6 @@ export const en = {
       kinds: {
         coming: { title: 'Before your period', help: 'A heads-up 2 days before' },
         did_start: { title: 'Did it start?', help: 'On the days it may start' },
-        did_end: { title: 'Has it ended?', help: 'On day 5 and day 8 of a period' },
         late: { title: 'Later than my guess', help: 'Once, a day after my guess' },
         backup: { title: 'Save a copy', help: 'About once a month' },
         quiet: { title: 'Tell me about your last period', help: 'If I have heard nothing for 40 days' },
@@ -344,7 +318,6 @@ export const en = {
     details: {
       coming: { title: 'Your period may be close', body: 'It may start in the next few days.' },
       did_start: { title: 'Did your period start?', body: 'Tap to tell me.' },
-      did_end: { title: 'Has your bleeding ended?', body: 'Tap to tell me.' },
       late: { title: 'Later than my guess', body: 'That can happen. Tap to see.' },
       backup: { title: 'Save a copy of your information', body: 'So it is never lost.' },
       quiet: { title: 'Tell me about your last period', body: 'So my guesses stay right.' },
@@ -359,15 +332,12 @@ export const en = {
     summary: 'Summary',
     usualCycle: 'Usual cycle',
     range: 'Shortest to longest',
-    usualPeriod: 'Usual period',
     cyclesNoted: 'Cycles noted',
     history: 'Cycle history',
     colPeriod: 'Period',
-    colPeriodDays: 'Period days',
     colCycle: 'Cycle length',
     colNote: 'Note',
     current: 'Current cycle',
-    endNotTold: 'End not told',
     empty: 'No periods have been noted yet.',
     footer: 'Made with Cycle Saathi from what she entered herself. These are records and guesses, not a diagnosis. Please talk to a doctor about any worry.',
     fileName: (date: string) => `cycle-report-${date}.pdf`,
@@ -377,7 +347,7 @@ export const en = {
     steps: [
       { title: 'Hello, I am your Saathi', body: 'I will show you around in a minute. Everything stays on your phone, and nothing here is advice. It is only guesses to help you understand your body.' },
       { title: 'Today', body: 'This is home. The ring shows where you are in your cycle, and the colours are the parts of your cycle. Under it you see when your next period may come.' },
-      { title: 'The big button', body: 'Tap it when your period starts. While a period is going on, it changes to "Period ended". You can also add a note, or tell me about an earlier day.' },
+      { title: 'The big button', body: 'Tap it on the day your period starts. A new cycle begins that day, and the one before ends. You can also add a note, or tell me about an earlier day.' },
       { title: 'Calendar', body: 'Every day has a colour for its part of the cycle. Tap a day to see more, change a period, or write a note.' },
       { title: 'My cycles', body: 'See how long each cycle was. You can show this page to your doctor.' },
       { title: 'Keep your information safe', body: 'In Settings, save a copy of your information, and bring it back on a new phone. You can see this tour again there, and change the language.' },

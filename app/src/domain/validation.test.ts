@@ -1,181 +1,104 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CYCLE_RULES as rules } from '../config/cycleRules';
-import { checkHistory, checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, NOTE_MAX_LENGTH } from './validation';
+import { checkHistory, checkNote, checkPeriodEdit, checkPeriodStart, NOTE_MAX_LENGTH } from './validation';
 import type { Period } from './types';
 
-const p = (startDate: string, endDate: string | null = null): Period => ({ id: startDate, startDate, endDate, note: null });
+const p = (startDate: string): Period => ({ id: startDate, startDate, endDate: null, note: null });
 const TODAY = '2026-11-05';
 
 // Each test is named after the situation a person can get into (docs/context/scenarios.md).
+// There is no "period ended" in the app: she only ever says "a period started on this day".
 describe('telling the app a period STARTED', () => {
-  it('S4: a day that has not come yet is refused', () => {
-    expect(checkPeriodStart('2026-11-06', [], TODAY, rules)).toMatchObject({ severity: 'block', code: 'future_date' });
-  });
   it('S0: the very first period, today or any past day, is fine', () => {
     expect(checkPeriodStart(TODAY, [], TODAY, rules)).toBeNull();
     expect(checkPeriodStart('2026-01-02', [], TODAY, rules)).toBeNull();
   });
-  it('S6: starting on a day that is already a start is refused and points at that period', () => {
-    expect(checkPeriodStart('2026-10-06', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({
+  it('S1: a day that has not come yet is refused', () => {
+    expect(checkPeriodStart('2026-11-06', [], TODAY, rules)).toMatchObject({ severity: 'block', code: 'future_date' });
+  });
+  it('S2: the same start twice is refused and points at that period', () => {
+    expect(checkPeriodStart('2026-10-06', [p('2026-10-06')], TODAY, rules)).toMatchObject({
       severity: 'block',
       code: 'start_already_logged',
       data: { periodId: '2026-10-06' },
     });
   });
-  it('S1: a day inside a finished period is refused', () => {
-    expect(checkPeriodStart('2026-10-08', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({ code: 'start_inside_period' });
+  it('S3: a normal next cycle (28 to 35 days later) is fine, no questions', () => {
+    expect(checkPeriodStart('2026-11-03', [p('2026-10-06')], TODAY, rules)).toBeNull();
+    expect(checkPeriodStart('2026-11-10', [p('2026-10-10')], '2026-11-18', rules)).toBeNull();
   });
-  it('S1: a day inside the assumed length of an unfinished period is refused', () => {
-    expect(checkPeriodStart('2026-10-09', [p('2026-10-06')], TODAY, rules)).toMatchObject({ code: 'start_inside_period' });
+  it('S4: a start only a few days after another asks "is that right?"', () => {
+    expect(checkPeriodStart('2026-10-12', [p('2026-10-06')], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_too_soon', data: { days: 6 } });
   });
-  it('S2: starting a second period while the first was never ended is refused, with the open one named', () => {
-    expect(checkPeriodStart('2026-10-25', [p('2026-10-06')], TODAY, rules)).toMatchObject({
-      severity: 'block',
-      code: 'start_previous_unfinished',
-      data: { periodId: '2026-10-06', start: '2026-10-06' },
-    });
+  it('S5: exactly 15 days after another is fine', () => {
+    expect(checkPeriodStart('2026-10-21', [p('2026-10-06')], TODAY, rules)).toBeNull();
   });
-  it('S2: once the first period is ended, the next one can start', () => {
-    expect(checkPeriodStart('2026-11-03', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toBeNull();
+  it('S6: an older period filled in before the first one is fine', () => {
+    expect(checkPeriodStart('2026-08-20', [p('2026-10-06')], TODAY, rules)).toBeNull();
   });
-  it('S3: a start unusually soon after another asks "is this a new period?" (14 days), 15 days is fine', () => {
-    expect(checkPeriodStart('2026-10-20', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({
-      severity: 'confirm',
-      code: 'start_too_soon',
-      data: { days: 14 },
-    });
-    expect(checkPeriodStart('2026-10-21', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toBeNull();
+  it('S7: a missed cycle (more than 60 days) asks, it does not block', () => {
+    expect(checkPeriodStart('2026-10-10', [p('2026-07-01')], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_long_gap', data: { days: 101 } });
+    expect(checkPeriodStart('2026-08-30', [p('2026-07-01')], TODAY, rules)).toBeNull(); // exactly 60
   });
-  it('S3b: just after a period ended (day 2 after) also asks', () => {
-    expect(checkPeriodStart('2026-10-12', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({ code: 'start_too_soon' });
-  });
-  it('S5: filling in an older period before the first one is fine', () => {
-    expect(checkPeriodStart('2026-08-20', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toBeNull();
-  });
-  it('S5b: an older period that would run into a later one is refused', () => {
-    expect(checkPeriodStart('2026-10-31', [p('2026-10-06', '2026-10-10'), p('2026-11-03')], TODAY, rules)).toMatchObject({
-      severity: 'block',
-      code: 'start_overlaps_next',
-    });
+  it('S8: an earlier start is judged against the nearest other start on either side', () => {
+    expect(checkPeriodStart('2026-10-05', [p('2026-10-10')], TODAY, rules)).toMatchObject({ code: 'start_too_soon' });
   });
 });
 
-describe('telling the app a period ENDED', () => {
-  it('S4: a day that has not come yet is refused', () => {
-    expect(checkPeriodEnd('2026-11-06', [p('2026-11-03')], TODAY, rules)).toMatchObject({ code: 'future_date' });
+describe('changing the start day of a saved period', () => {
+  const a = p('2026-09-08');
+  const b = p('2026-10-06');
+  it('S9: moving a start by a few days is fine', () => {
+    expect(checkPeriodEdit(b.id, '2026-10-04', [a, b], TODAY, rules)).toBeNull();
   });
-  it('S7: nothing was started at all', () => {
-    expect(checkPeriodEnd(TODAY, [], TODAY, rules)).toMatchObject({ severity: 'block', code: 'end_no_period' });
+  it('S10: moving it onto another period\'s start is refused', () => {
+    expect(checkPeriodEdit(b.id, '2026-09-08', [a, b], TODAY, rules)).toMatchObject({ severity: 'block', code: 'start_already_logged' });
   });
-  it('S7b: the last period already has an end', () => {
-    expect(checkPeriodEnd('2026-10-20', [p('2026-10-06', '2026-10-10')], TODAY, rules)).toMatchObject({
-      severity: 'block',
-      code: 'end_already',
-      data: { end: '2026-10-10' },
-    });
+  it('S11: moving it to the future is refused', () => {
+    expect(checkPeriodEdit(b.id, '2026-12-01', [a, b], TODAY, rules)).toMatchObject({ code: 'future_date' });
   });
-  it('S8: an end before the period started is refused, naming the start', () => {
-    expect(checkPeriodEnd('2026-10-15', [p('2026-10-20')], TODAY, rules)).toMatchObject({
-      code: 'end_before_start',
-      data: { start: '2026-10-20' },
-    });
+  it('S12: moving it right next to another start asks', () => {
+    expect(checkPeriodEdit(b.id, '2026-09-12', [a, b], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_too_soon' });
   });
-  it('the normal case: ending a period that is going on', () => {
-    expect(checkPeriodEnd(TODAY, [p('2026-11-03')], TODAY, rules)).toBeNull();
-  });
-  it('S9: a very long period asks "is that right?" (15 days), 14 days is fine', () => {
-    expect(checkPeriodEnd('2026-10-20', [p('2026-10-06')], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'end_too_long', data: { days: 15 } });
-    expect(checkPeriodEnd('2026-10-19', [p('2026-10-06')], TODAY, rules)).toBeNull();
-  });
-  it('S9b: an older period that was never ended can still be ended', () => {
-    expect(checkPeriodEnd('2026-06-10', [p('2026-06-06'), p('2026-07-04', '2026-07-08')], TODAY, rules)).toBeNull();
+  it('S13: it is not compared with itself', () => {
+    expect(checkPeriodEdit(b.id, '2026-10-06', [a, b], TODAY, rules)).toBeNull();
   });
 });
 
-describe('CHANGING a period', () => {
-  const a = p('2026-09-08', '2026-09-12');
-  const b = p('2026-10-06', '2026-10-10');
-  it('S12: moving the start into the earlier period is refused', () => {
-    expect(checkPeriodEdit(b.id, '2026-09-10', '2026-10-10', [a, b], TODAY, rules)).toMatchObject({ severity: 'block', code: 'overlaps' });
-  });
-  it('S13: an end before the start is refused', () => {
-    expect(checkPeriodEdit(b.id, '2026-10-06', '2026-10-05', [a, b], TODAY, rules)).toMatchObject({ code: 'end_before_start' });
-  });
-  it('S4: a future day is refused', () => {
-    expect(checkPeriodEdit(b.id, '2026-10-06', '2026-11-06', [a, b], TODAY, rules)).toMatchObject({ code: 'future_date' });
-  });
-  it('a sensible change to its own dates is fine (it never clashes with itself)', () => {
-    expect(checkPeriodEdit(b.id, '2026-10-07', '2026-10-11', [a, b], TODAY, rules)).toBeNull();
-  });
-  it('S9: making it last 15 days asks "is that right?"', () => {
-    expect(checkPeriodEdit(b.id, '2026-10-06', '2026-10-20', [a, b], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'end_too_long' });
-  });
-  it('S3: moving the start unusually close to another start asks', () => {
-    expect(checkPeriodEdit(b.id, '2026-09-20', '2026-09-24', [a, b], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_too_soon' });
-  });
-  it('turning "ended" off (no end) is fine', () => {
-    expect(checkPeriodEdit(b.id, '2026-10-06', null, [a, b], TODAY, rules)).toBeNull();
-  });
-});
-
-describe('NOTES', () => {
-  it('S16: an empty or blank note is refused', () => {
+describe('notes', () => {
+  it('S14: an empty note is refused', () => {
     expect(checkNote('2026-11-01', '   ', TODAY)).toMatchObject({ code: 'note_empty' });
   });
-  it('S17: a note for a future day is refused', () => {
-    expect(checkNote('2026-11-06', 'hello', TODAY)).toMatchObject({ code: 'future_date' });
+  it('S15: a note over the limit is refused', () => {
+    expect(checkNote('2026-11-01', 'x'.repeat(NOTE_MAX_LENGTH + 1), TODAY)).toMatchObject({ code: 'note_too_long' });
+    expect(checkNote('2026-11-01', 'x'.repeat(NOTE_MAX_LENGTH), TODAY)).toBeNull();
   });
-  it('S18: a very long note is refused, the limit itself is fine', () => {
-    expect(checkNote('2026-11-01', 'a'.repeat(NOTE_MAX_LENGTH + 1), TODAY)).toMatchObject({ code: 'note_too_long' });
-    expect(checkNote('2026-11-01', 'a'.repeat(NOTE_MAX_LENGTH), TODAY)).toBeNull();
-  });
-  it('a normal note is fine', () => {
-    expect(checkNote('2026-11-01', 'cramps in the evening', TODAY)).toBeNull();
-  });
-});
-
-describe('F4: a missed cycle (long gap)', () => {
-  it('a start more than 60 days after the last one asks "is that right?"', () => {
-    expect(checkPeriodStart('2026-10-10', [p('2026-07-01', '2026-07-05')], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_long_gap', data: { days: 101 } });
-  });
-  it('exactly 60 days is normal enough', () => {
-    expect(checkPeriodStart('2026-08-30', [p('2026-07-01', '2026-07-05')], TODAY, rules)).toBeNull();
-  });
-  it('changing a period so it sits far from the others asks too', () => {
-    const a = p('2026-07-01', '2026-07-05');
-    const b = p('2026-07-29', '2026-08-02');
-    expect(checkPeriodEdit(b.id, '2026-10-01', '2026-10-05', [a, b], TODAY, rules)).toMatchObject({ severity: 'confirm', code: 'start_long_gap' });
+  it('S16: a note on a future day is refused', () => {
+    expect(checkNote('2026-11-06', 'hi', TODAY)).toMatchObject({ code: 'future_date' });
   });
 });
 
 describe('F3: adding earlier cycles in one go', () => {
   const current = p('2026-10-27');
   it('a tidy list of earlier cycles is fine, in any order', () => {
-    const entries = [
-      { start: '2026-08-30', end: '2026-09-03' },
-      { start: '2026-10-01', end: '2026-10-05' },
-      { start: '2026-08-02', end: '2026-08-06' },
-    ];
+    const entries = [{ start: '2026-08-30' }, { start: '2026-10-01' }, { start: '2026-08-02' }];
     expect(checkHistory(entries, [current], TODAY, rules)).toEqual([]);
   });
   it('the same start twice is reported on the later row only', () => {
-    const entries = [{ start: '2026-09-30', end: '2026-10-03' }, { start: '2026-09-30', end: '2026-10-03' }];
-    const found = checkHistory(entries, [current], TODAY, rules);
+    const found = checkHistory([{ start: '2026-09-30' }, { start: '2026-09-30' }], [current], TODAY, rules);
     expect(found).toHaveLength(1);
-    expect(found[0].issue.code).toBe('start_already_logged');
+    expect(found[0]).toMatchObject({ index: 1, issue: { code: 'start_already_logged' } });
   });
-  it('a row that runs into another is blocked with its row number', () => {
-    const entries = [{ start: '2026-09-01', end: '2026-09-05' }, { start: '2026-09-03', end: '2026-09-07' }];
-    const found = checkHistory(entries, [current], TODAY, rules);
-    expect(found.map((f) => f.index)).toEqual([1]);
-    expect(found[0].issue.severity).toBe('block');
+  it('two starts close together ask "is that right?" on the row concerned', () => {
+    const found = checkHistory([{ start: '2026-09-01' }, { start: '2026-09-05' }], [current], TODAY, rules);
+    expect(found.every((f) => f.issue.code === 'start_too_soon')).toBe(true);
+    expect(found.length).toBeGreaterThan(0);
   });
-  it('a missed cycle in the history asks, it does not block', () => {
-    const found = checkHistory([{ start: '2026-06-01', end: '2026-06-05' }], [current], TODAY, rules);
+  it('F4: a missed cycle in the history asks, it does not block', () => {
+    const found = checkHistory([{ start: '2026-06-01' }], [current], TODAY, rules);
     expect(found[0].issue).toMatchObject({ severity: 'confirm', code: 'start_long_gap' });
   });
-  it('an end before the start is blocked', () => {
-    const found = checkHistory([{ start: '2026-09-10', end: '2026-09-08' }], [current], TODAY, rules);
-    expect(found[0].issue.code).toBe('end_before_start');
+  it('a future start in the list is refused', () => {
+    expect(checkHistory([{ start: '2027-01-01' }], [current], TODAY, rules)[0].issue.code).toBe('future_date');
   });
 });

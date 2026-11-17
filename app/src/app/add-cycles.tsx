@@ -1,6 +1,5 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { View } from 'react-native';
 import { addDays, todayLocal, type DateStr } from '../domain/dates';
 import { sortPeriods } from '../domain/cycles';
 import { checkHistory } from '../domain/validation';
@@ -8,15 +7,13 @@ import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from '../ui/DateField';
 import { describeIssue } from '../ui/issueText';
-import { Button, Card, Chip, Field, Notice, Screen, T, usePopup, useToast } from '../ui/kit';
+import { Button, Card, Field, Notice, Screen, T, usePopup, useToast } from '../ui/kit';
 
 interface Row {
   key: number;
   start: DateStr;
-  days: number;
 }
 
-const DAY_CHOICES = [2, 3, 4, 5, 6, 7, 8];
 const TYPICAL_GAP = 28;
 
 /** Add earlier cycles in one go: when each started and how many days the bleeding lasted. */
@@ -28,12 +25,12 @@ export default function AddCyclesScreen() {
   const today = todayLocal();
 
   const earliest = sortPeriods(data.periods)[0]?.startDate ?? addDays(today, TYPICAL_GAP);
-  const [rows, setRows] = useState<Row[]>([{ key: 1, start: addDays(earliest, -TYPICAL_GAP), days: 5 }]);
+  const [rows, setRows] = useState<Row[]>([{ key: 1, start: addDays(earliest, -TYPICAL_GAP) }]);
   const [nextKey, setNextKey] = useState(2);
   const [failed, setFailed] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  const entries = rows.map((r) => ({ start: r.start, end: addDays(r.start, r.days - 1) }));
+  const entries = rows.map((r) => ({ start: r.start }));
   const found = useMemo(
     () => checkHistory(entries, data.periods, today, data.rules),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,7 +41,7 @@ export default function AddCyclesScreen() {
   const update = (key: number, change: Partial<Row>) => setRows((all) => all.map((r) => (r.key === key ? { ...r, ...change } : r)));
   const add = () => {
     const oldest = rows.reduce((a, r) => (r.start < a ? r.start : a), rows[0].start);
-    setRows([...rows, { key: nextKey, start: addDays(oldest, -TYPICAL_GAP), days: 5 }]);
+    setRows([...rows, { key: nextKey, start: addDays(oldest, -TYPICAL_GAP) }]);
     setNextKey(nextKey + 1);
   };
 
@@ -92,13 +89,6 @@ export default function AddCyclesScreen() {
             <T kind="label">{S.history.cycleN(i + 1)}</T>
             <Field label={S.history.started}>
               <DateField value={row.start} onChange={(d) => update(row.key, { start: d })} label={S.history.started} max={today} />
-            </Field>
-            <Field label={S.history.bleedDays} hint={S.history.bleedHint}>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {DAY_CHOICES.map((n) => (
-                  <Chip key={n} label={String(n)} selected={row.days === n} onPress={() => update(row.key, { days: n })} />
-                ))}
-              </View>
             </Field>
             {view && problem ? <Notice title={S.history.problemIn(i + 1, view.title)} body={view.body} /> : null}
             {rows.length > 1 ? <Button small variant="text" label={S.history.removeRow} icon="close" onPress={() => setRows((all) => all.filter((r) => r.key !== row.key))} /> : null}

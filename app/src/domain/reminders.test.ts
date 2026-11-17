@@ -30,11 +30,6 @@ describe('planning reminders', () => {
     expect(plan.find((r) => r.kind === 'late')?.date).toBe('2026-11-07');
   });
 
-  it('N3: asks on day 5 and day 8 of a period that has no end', () => {
-    const plan = planReminders({ ...base, periods: [p('2026-11-03')], today: '2026-11-04' });
-    expect(plan.filter((r) => r.kind === 'did_end').map((r) => r.date)).toEqual(['2026-11-07', '2026-11-10']);
-  });
-
   it('never more than one reminder a day, and the most useful one wins', () => {
     const plan = planReminders({ ...base, periods: [p('2026-11-01')], today: '2026-11-02' });
     const dates = plan.map((r) => r.date);
@@ -48,7 +43,7 @@ describe('planning reminders', () => {
 
   it('N9: nudges after 40 days with nothing new', () => {
     const plan = planReminders({ ...base, periods, today: '2026-10-12', prefs: { ...DEFAULT_REMINDER_PREFS, did_start: false, coming: false, late: false } });
-    expect(plan.find((r) => r.kind === 'quiet')?.date).toBe('2026-11-19');
+    expect(plan.find((r) => r.kind === 'quiet')?.date).toBe('2026-11-15');
   });
 
   it('a kind that is switched off is never planned', () => {

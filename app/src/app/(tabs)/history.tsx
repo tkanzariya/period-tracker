@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
-import { averagePeriodLength, completedCycleLengths, cycleRows, cycleStats } from '../../domain/cycles';
+import { completedCycleLengths, cycleRows, cycleStats } from '../../domain/cycles';
 import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
 import { useSheets } from '../../state/sheets';
 import { useTokens } from '../../theme/useTokens';
 import { GearButton } from '../../ui/chrome';
+import { addDays, diffDays, todayLocal } from '../../domain/dates';
 import { formatRange, formatShort } from '../../ui/format';
 import { GuideMessage } from '../../ui/Guide';
 import { router } from 'expo-router';
@@ -21,7 +22,6 @@ export default function MyCyclesScreen() {
 
   const rows = cycleRows(periods, rules);
   const stats = cycleStats(periods, rules);
-  const periodAvg = averagePeriodLength(periods);
   const lengths = completedCycleLengths(periods).slice(-6);
   const chartMax = Math.max(rules.cycle.normalMaxDays + 5, ...lengths);
   const heightOf = (days: number) => (days / chartMax) * BAR_AREA;
@@ -46,12 +46,6 @@ export default function MyCyclesScreen() {
                   <T kind="caption" muted>{S.cycles.range}</T>
                   <T kind="heading">{stats.shortest}–{stats.longest}</T>
                 </View>
-                {periodAvg !== null ? (
-                  <View style={{ flex: 1 }}>
-                    <T kind="caption" muted>{S.cycles.usualPeriod}</T>
-                    <T kind="heading">{S.common.days(Math.round(periodAvg))}</T>
-                  </View>
-                ) : null}
               </View>
               <View>
                 <T kind="label">{S.cycles.chartTitle}</T>
@@ -74,14 +68,17 @@ export default function MyCyclesScreen() {
 
           <Card style={{ paddingVertical: 4 }}>
             {rows.map((row, i) => {
-              const dates = row.period.endDate ? formatRange(row.period.startDate, row.period.endDate, S) : formatShort(row.period.startDate, S);
+              // A cycle runs from its start to the day before the next start.
+              const dates = row.cycleDays !== null
+                ? formatRange(row.period.startDate, addDays(row.period.startDate, row.cycleDays - 1), S)
+                : `${formatShort(row.period.startDate, S)} – ${S.common.today}`;
               return (
                 <View key={row.period.id}>
                   {i > 0 ? <Divider /> : null}
                   <ListRow
                     title={dates}
-                    subtitle={row.periodDays !== null ? S.cycles.periodLasted(row.periodDays) : S.cycles.endNotTold}
-                    value={row.cycleDays !== null ? S.cycles.cycleWas(row.cycleDays) : S.cycles.current}
+                    subtitle={row.cycleDays !== null ? S.common.days(row.cycleDays) : S.cycles.currentDay(diffDays(row.period.startDate, todayLocal()) + 1)}
+                    value={row.cycleDays === null ? S.cycles.current : undefined}
                     accessibilityLabel={`${S.change.title}: ${dates}`}
                     onPress={() => openChange(row.period.id)}
                     chevron

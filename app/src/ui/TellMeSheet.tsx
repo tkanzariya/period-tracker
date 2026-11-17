@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { addDays, todayLocal, type DateStr } from '../domain/dates';
-import { getStage, mainAction } from '../domain/stage';
 import { NOTE_MAX_LENGTH } from '../domain/validation';
 import { useData, type ActionResult } from '../state/data';
 import { useLanguage } from '../state/language';
@@ -10,7 +9,7 @@ import { formatShort } from './format';
 import { describeIssue, type IssueView } from './issueText';
 import { Button, Chip, Field, Input, Notice, Segmented, Sheet, T, useToast, usePopup } from './kit';
 
-export type TellMode = 'start' | 'end' | 'note';
+export type TellMode = 'start' | 'note';
 
 /**
  * "Tell me": one bottom sheet for everything she tells the app about a day (period started, period
@@ -37,8 +36,7 @@ export function TellMeSheet({ visible, onClose, mode: startMode, date: startDate
   // Each time the sheet opens, start from what makes sense right now.
   useEffect(() => {
     if (!visible) return;
-    const stage = getStage(data.periods, today, data.rules);
-    setMode(startMode ?? mainAction(stage));
+    setMode(startMode ?? 'start');
     setDate(startDate ?? today);
     setNote(startMode === 'note' ? (data.notes.find((n) => n.date === (startDate ?? today))?.note ?? '') : '');
     setIssue(null);
@@ -77,12 +75,10 @@ export function TellMeSheet({ visible, onClose, mode: startMode, date: startDate
     try {
       const text = note.trim() ? note.trim() : null;
       const result =
-        mode === 'start' ? await data.periodStarted(date, text, { confirmed })
-        : mode === 'end' ? await data.periodEnded(date, text, { confirmed })
-        : await data.saveNote(date, note);
+        mode === 'start' ? await data.periodStarted(date, text, { confirmed }) : await data.saveNote(date, note);
 
       if (result.ok) {
-        await finish(result, mode === 'start' ? S.tell.toast.start(when) : mode === 'end' ? S.tell.toast.end(when) : S.tell.toast.note);
+        await finish(result, mode === 'start' ? S.tell.toast.start(when) : S.tell.toast.note);
       } else if ('failed' in result) {
         setFailed(true);
       } else {
@@ -105,19 +101,13 @@ export function TellMeSheet({ visible, onClose, mode: startMode, date: startDate
 
   function followAction(view: IssueView) {
     const a = view.action;
-    if (!a) return;
-    if (a.kind === 'change_period' && a.periodId) {
+    if (a?.kind === 'change_period' && a.periodId) {
       onClose();
       onChangePeriod(a.periodId);
-    } else if (a.kind === 'end_period') {
-      switchMode('end');
-      setDate(today);
-    } else if (a.kind === 'start_period') {
-      switchMode('start');
     }
   }
 
-  const saveLabel = mode === 'start' ? S.tell.save.start(when) : mode === 'end' ? S.tell.save.end(when) : S.tell.save.note(when);
+  const saveLabel = mode === 'start' ? S.tell.save.start(when) : S.tell.save.note(when);
 
   return (
     <Sheet
@@ -148,7 +138,6 @@ export function TellMeSheet({ visible, onClose, mode: startMode, date: startDate
         onChange={switchMode}
         options={[
           { value: 'start', label: S.tell.modes.start, icon: 'water' },
-          { value: 'end', label: S.tell.modes.end, icon: 'checkmark-circle' },
           { value: 'note', label: S.tell.modes.note, icon: 'create-outline' },
         ]}
       />

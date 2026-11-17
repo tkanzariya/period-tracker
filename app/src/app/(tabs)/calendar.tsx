@@ -44,13 +44,13 @@ export default function CalendarScreen() {
   };
   const bandFor = (info: DayInfo | null): BandDay | null => {
     if (!info?.phase) return null;
-    const phase: Phase = info.isOvulationDay || info.isFertileWindow ? 'ovulation' : info.phase;
-    return { phase, guess: info.isPredictedPeriod };
+    // Days that have not come yet are drawn softer: they are guesses.
+    return { phase: info.phase, guess: info.date > today };
   };
 
   const info = selected ? infoFor(selected) : null;
   const note = selected ? (notes.find((n) => n.date === selected)?.note ?? null) : null;
-  const periodHere = selected ? periods.find((p) => selected >= p.startDate && selected <= (p.endDate ?? p.startDate)) : undefined;
+  const periodHere = selected ? periods.find((p) => p.startDate === selected) : undefined;
   const go = (delta: number) => setView(shiftMonth(view.year, view.month, delta));
   const act = (fn: () => void) => {
     setSelected(null);
@@ -94,6 +94,7 @@ export default function CalendarScreen() {
                       <View style={[styles.day, isToday && { borderWidth: 2, borderColor: t.text }]}>
                         <Text style={{ color: t.text, fontSize: 16, fontWeight: isToday ? '800' : '500' }}>{Number(date.slice(8))}</Text>
                       </View>
+                      {periods.some((p) => p.startDate === date) ? <Ionicons name="water" size={12} color={t.text} style={{ position: 'absolute', top: 3, left: 14 }} /> : null}
                       {hasNote ? <Ionicons name="create" size={11} color={t.text2} style={{ position: 'absolute', bottom: 4, right: 12 }} /> : null}
                     </Pressable>
                   );
@@ -111,6 +112,7 @@ export default function CalendarScreen() {
             <PhaseChip key={p} phase={p} />
           ))}
         </View>
+        <T kind="caption" muted>{S.calendar.startMarker}</T>
         <T kind="caption" muted>{S.calendar.legendNote}</T>
       </Card>
 
@@ -119,10 +121,10 @@ export default function CalendarScreen() {
           <>
             {info?.phase ? (
               <View style={{ gap: 8, alignItems: 'flex-start' }}>
+                {info.cycleDay !== null ? <T kind="label">{periodHere ? S.calendar.cycleStarts : S.calendar.dayOfCycle(info.cycleDay)}</T> : null}
                 <PhaseChip phase={info.phase} />
                 <T muted>{S.phases.meaning[info.phase]}</T>
                 {info.isOvulationDay ? <T>{S.calendar.ovulationDay}</T> : info.isFertileWindow ? <T>{S.calendar.fertileDay}</T> : null}
-                {info.isPredictedPeriod ? <T>{S.calendar.expectedPeriod}</T> : null}
                 {info.isTentative ? <T kind="caption" muted>{S.calendar.typicalNote}</T> : null}
               </View>
             ) : (
@@ -136,8 +138,7 @@ export default function CalendarScreen() {
             ) : null}
             {selected <= today ? (
               <View style={{ gap: 8 }}>
-                <Button variant="tonal" icon="water" label={S.calendar.periodStartedHere} onPress={() => act(() => openTell({ mode: 'start', date: selected }))} />
-                <Button variant="tonal" icon="checkmark-circle" label={S.calendar.periodEndedHere} onPress={() => act(() => openTell({ mode: 'end', date: selected }))} />
+                {periodHere ? null : <Button variant="tonal" icon="water" label={S.calendar.periodStartedHere} onPress={() => act(() => openTell({ mode: 'start', date: selected }))} />}
                 {periodHere ? <Button variant="tonal" icon="create-outline" label={S.calendar.changePeriod} onPress={() => act(() => openChange(periodHere.id))} /> : null}
                 <Button variant="text" icon="document-text-outline" label={note ? S.calendar.editNote : S.calendar.addNote} onPress={() => act(() => openTell({ mode: 'note', date: selected }))} />
               </View>

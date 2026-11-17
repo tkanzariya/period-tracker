@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CYCLE_RULES as rules } from '../config/cycleRules';
 import { monthGrid, shiftMonth, weekdayLabels } from './calendar';
-import { averagePeriodLength, cycleRows } from './cycles';
+import { cycleRows } from './cycles';
 import type { Period } from './types';
 
 const p = (startDate: string, endDate: string | null = null): Period => ({ id: startDate, startDate, endDate, note: null });
@@ -48,17 +48,11 @@ describe('cycleRows', () => {
     expect(rows[0].cycleDays).toBeNull();
     expect(rows[1].cycleDays).toBe(26);
     expect(rows[2].cycleDays).toBe(38);
-    expect(rows[1].periodDays).toBe(7);
-    expect(rows[0].periodDays).toBeNull();
   });
   it('tags cycles outside the usual range', () => {
     const rows = cycleRows(periods, rules);
     expect(rows[2].tag).toBe('long');
     expect(rows[1].tag).toBeNull();
     expect(rows[3].tag).toBeNull(); // 28 days
-  });
-  it('averages only periods with an end date', () => {
-    expect(averagePeriodLength(periods)).toBeCloseTo((5 + 5 + 7) / 3);
-    expect(averagePeriodLength([p('2026-10-01')])).toBeNull();
   });
 });

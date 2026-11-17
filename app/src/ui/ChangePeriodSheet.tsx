@@ -3,11 +3,11 @@ import { todayLocal, type DateStr } from '../domain/dates';
 import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from './DateField';
-import { formatRange, formatShort } from './format';
+import { formatShort } from './format';
 import { describeIssue, type IssueView } from './issueText';
-import { Button, Chip, Field, Notice, Sheet, useToast, usePopup } from './kit';
+import { Button, Field, Notice, Sheet, useToast, usePopup } from './kit';
 
-/** Change the days of a period she already told me about, or remove it (with Undo). */
+/** Change the start day of a period she already told me about, or remove it (with Undo). */
 export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | null; onClose: () => void }) {
   const { S } = useLanguage();
   const data = useData();
@@ -17,7 +17,6 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
   const period = data.periods.find((p) => p.id === periodId) ?? null;
 
   const [start, setStart] = useState<DateStr>(today);
-  const [end, setEnd] = useState<DateStr | null>(null);
   const [issue, setIssue] = useState<IssueView | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -26,7 +25,6 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
     const p = data.periods.find((x) => x.id === periodId);
     if (!p) return;
     setStart(p.startDate);
-    setEnd(p.endDate);
     setIssue(null);
     setFailed(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,7 +34,7 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
     if (!period) return;
     setIssue(null);
     setFailed(false);
-    const result = await data.changePeriod(period.id, start, end, { confirmed });
+    const result = await data.changePeriod(period.id, start, { confirmed });
     if (result.ok) {
       onClose();
       toast.show({ message: S.tell.toast.periodChanged, actionLabel: S.common.undo, onAction: () => void result.undo() });
@@ -57,7 +55,7 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
     if (!period) return;
     const yes = await popup.confirm({
       title: S.change.removeTitle,
-      message: S.change.removeBody(period.endDate ? formatRange(period.startDate, period.endDate, S) : formatShort(period.startDate, S)),
+      message: S.change.removeBody(formatShort(period.startDate, S)),
       yes: S.change.remove,
       danger: true,
     });
@@ -89,19 +87,6 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
         <>
           <Field label={S.change.started}>
             <DateField value={start} onChange={(d) => { setStart(d); setIssue(null); }} label={S.change.started} max={today} />
-          </Field>
-          <Field label={S.change.ended}>
-            {end === null ? (
-              <>
-                <Chip label={S.change.notEnded} selected />
-                <Button variant="tonal" label={S.tell.modes.end} icon="checkmark-circle" onPress={() => setEnd(start > today ? today : start)} />
-              </>
-            ) : (
-              <>
-                <DateField value={end} onChange={(d) => { setEnd(d); setIssue(null); }} label={S.change.ended} min={start} max={today} />
-                <Button variant="text" label={S.change.notEnded} onPress={() => setEnd(null)} />
-              </>
-            )}
           </Field>
           {issue ? <Notice title={issue.title} body={issue.body} /> : null}
           {failed ? <Notice title={S.tell.couldNotSave} icon="alert-circle" /> : null}

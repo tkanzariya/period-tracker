@@ -12,7 +12,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
-- Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Has it ended?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
+- Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
 - Today now starts with the answer: "Your period may start in 3 to 9 days", "Period day 2" or "4 days later than my guess".
 - Today offers to turn reminders on (once, after your first period).
 - Behind the scenes: the ad library is installed and switched off. No ads are shown yet.
@@ -28,6 +28,11 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- There is no "period ended" any more. You only tell the app when a period started; a cycle runs from one start to the next. No end dates to add.
+- The Calendar is simpler: one soft colour per part of the cycle, days that have not come yet are softer, and a drop marks the day each cycle started. Tap a day to see "Day 9 of your cycle".
+- My cycles shows each cycle as a range, for example "10 Oct - 9 Nov", and the current one as "10 Nov - Today, Day 9 so far".
+- Add earlier cycles only asks for the start day of each one.
+- The PDF report no longer has a "period days" column.
 - Tell me tabs are shorter: Started, Ended, Note.
 - The "typical cycle" sentence shows once on Today, not twice.
 - Today is tidier: the "Guesses only" line is a quiet note with an icon, and the extra "Change this period" button is gone (you can still change a period in My cycles or the Calendar).
@@ -40,6 +45,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
 
 ### Fixed
+- Adding a new period no longer turned into the "end" of the old one (this gave Day 40 and a calendar that went Bleeding, Ovulation, Bleeding, Follicular).
 - The 0.2.0 test build closed itself right after opening on a real phone (the size-shrinking step removed code the ad library needs). Fixed.
 - "Day 32" no longer wraps onto two lines inside the ring.
 - "Save a PDF report" in the browser preview printed the current screen instead of the report; it now prints the report.

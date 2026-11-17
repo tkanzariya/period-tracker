@@ -17,10 +17,11 @@ export interface CycleRules {
     maxVariationDays: number;
   };
   period: {
-    /** Assumed length when she has not logged an end date. */
+    /**
+     * There is no "period end" in the app: a cycle runs from one start to the next. This is only how many
+     * days at the start of a cycle are drawn as the Bleeding phase (an estimate). NEEDS DRASHTI REVIEW.
+     */
     assumedLengthDays: number;
-    /** A period longer than this is flagged. */
-    normalMaxDays: number;
   };
   prediction: {
     /** How many recent completed cycles feed the average. */
@@ -43,10 +44,6 @@ export interface CycleRules {
     minDaysBetweenStarts: number;
     /** A start more than this many days after (or before) another start asks "is that right?" (a missed cycle can be real). */
     longGapDays: number;
-    /** A period longer than this many days asks "is that right?". */
-    longPeriodDays: number;
-    /** A period still open after this many days is gently asked about ("did it end?"). */
-    unfinishedPeriodAfterDays: number;
   };
   ovulation: {
     /** Ovulation is estimated this many days before the next period starts. */
@@ -71,7 +68,7 @@ export interface CycleRules {
 
 export const DEFAULT_CYCLE_RULES: CycleRules = {
   cycle: { normalMinDays: 21, normalMaxDays: 35, maxVariationDays: 7 },
-  period: { assumedLengthDays: 5, normalMaxDays: 7 },
+  period: { assumedLengthDays: 5 },
   prediction: {
     cyclesToAverage: 6,
     minCyclesForPrediction: 2,
@@ -79,7 +76,7 @@ export const DEFAULT_CYCLE_RULES: CycleRules = {
     typicalCycleLengthDays: 28,
     tentativeRangeHalfWidthDays: 3,
   },
-  checks: { minDaysBetweenStarts: 15, longGapDays: 60, longPeriodDays: 14, unfinishedPeriodAfterDays: 10 },
+  checks: { minDaysBetweenStarts: 15, longGapDays: 60, },
   ovulation: { lutealPhaseDays: 14, phaseDaysBefore: 1, phaseDaysAfter: 1 },
   fertileWindow: { daysBeforeOvulation: 5, daysAfterOvulation: 1 },
   lowerFertility: { bufferDays: 2, requireRegularCycles: true },

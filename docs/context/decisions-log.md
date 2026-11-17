@@ -93,3 +93,10 @@ Last updated: 2026-11-17
 - **Lesson (add to every release):** after any new native library, install the release APK on the phone and read `adb logcat -b crash` before telling anyone it works. A build "success" and a static APK check do not show start-up crashes.
 - **Still untested on the phone:** reminders and the permission prompt, the PDF share, add-earlier-cycles.
 
+## 2026-11-18: No "period end" at all (Tirth, after testing on his phone)
+- **Decision:** the app has no period end. A cycle starts on the day a period started and ends the day before the next start. She only ever tells the app "a period started on this day". This overrides the 2026-11-06 choice to ask for bleeding days in history.
+- **Why (found on the phone):** Tirth entered a period on 10 Oct and one on 10 Nov. The big button said "Period ended" (because 10 Oct had no end), so the second entry became an END of the first: one 31-day "bleeding" period, Today said "Day 40", and the calendar showed Bleeding, Ovulation, Bleeding, Follicular. The old rule also made her add end dates before a new start. With only starts, the same data gives Day 9 and a clean Bleeding, Follicular, Ovulation, Luteal order (test `twoCycles.test.ts`).
+- **Changes:** removed the "Period ended" button, End date fields, bleeding-day chips, period-length stats and flags, "unfinished period" notice, the "Has it ended?" reminder, all end validation. The first 5 days of each cycle are still drawn as the Bleeding phase (an estimate). Old end dates stay in saved files but are ignored. Calendar: pure phases (no fertile recolouring), days that have not come yet are softer, a drop marks each cycle start, the day sheet says "Day N of your cycle". My cycles lists each cycle as a range ("10 Oct - 9 Nov", "10 Nov - Today, Day 9 so far"). PDF report loses the period-days column. 200 tests.
+- **Rejected:** keeping an optional end date (it caused this mix-up); renaming the button to "Cycle ended" (a cycle end is just the next start).
+- **Open:** Drashti to confirm 5 bleeding days and that doctors do not need period length (open question 1m).
+

@@ -1,10 +1,10 @@
 import type { CycleRules } from '../config/cycleRules';
-import { completedCycleLengths, cycleStats, periodLength, sortPeriods } from './cycles';
+import { completedCycleLengths, cycleStats, sortPeriods } from './cycles';
 import { diffDays, type DateStr } from './dates';
 import { predictNextPeriod } from './prediction';
 import type { Period } from './types';
 
-export type FlagCode = 'cycle_short' | 'cycle_long' | 'cycle_variation' | 'period_long' | 'period_late';
+export type FlagCode = 'cycle_short' | 'cycle_long' | 'cycle_variation' | 'period_late';
 
 /** A calm observation worth mentioning to a doctor. Never a diagnosis. */
 export interface IrregularityFlag {
@@ -27,13 +27,6 @@ export function getIrregularityFlags(periods: Period[], today: DateStr, rules: C
   const stats = cycleStats(sorted, rules);
   if (stats && stats.count >= rules.prediction.minCyclesForPrediction && stats.variationDays > rules.cycle.maxVariationDays) {
     flags.push({ code: 'cycle_variation', value: stats.variationDays });
-  }
-
-  // Most recent period that has an end date logged.
-  const lastEnded = [...sorted].reverse().find((p) => p.endDate !== null);
-  if (lastEnded) {
-    const length = periodLength(lastEnded);
-    if (length !== null && length > rules.period.normalMaxDays) flags.push({ code: 'period_long', value: length });
   }
 
   const prediction = predictNextPeriod(sorted, rules);

@@ -18,9 +18,8 @@ import {
 } from '../db/repository';
 import { periodsToCsv } from '../domain/backup';
 import { todayLocal, type DateStr } from '../domain/dates';
-import { findOpenPeriod } from '../domain/logging';
 import type { DailyLog, Period } from '../domain/types';
-import { checkHistory, checkNote, checkPeriodEdit, checkPeriodEnd, checkPeriodStart, type HistoryEntry, type Issue } from '../domain/validation';
+import { checkHistory, checkNote, checkPeriodEdit, checkPeriodStart, type HistoryEntry, type Issue } from '../domain/validation';
 
 export const APP_VERSION = Constants.expoConfig?.version ?? '0.1.0';
 
@@ -51,12 +50,11 @@ interface DataValue {
   markWelcomeDone(): Promise<void>;
   markTourSeen(): Promise<void>;
   periodStarted(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
-  periodEnded(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
-  /** Add several earlier cycles at once (start and the day the bleeding ended). One Undo removes them all. */
+  /** Add several earlier cycles at once (the day each started). One Undo removes them all. */
   addHistory(entries: HistoryEntry[], options?: Options): Promise<ActionResult>;
   saveNote(date: DateStr, note: string): Promise<ActionResult>;
   removeNote(date: DateStr): Promise<ActionResult>;
-  changePeriod(id: string, startDate: DateStr, endDate: DateStr | null, options?: Options): Promise<ActionResult>;
+  changePeriod(id: string, startDate: DateStr, options?: Options): Promise<ActionResult>;
   removePeriod(id: string): Promise<ActionResult>;
   backupText(): Promise<string>;
   csvText(): string;
@@ -83,7 +81,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       getSetting(db, 'welcome_done'),
       getSetting(db, 'tour_seen'),
     ]);
-    setPeriods(p);
+    // There is no "period end" any more: ignore end dates saved by older versions (they stay in the file).
+    setPeriods(p.map((x) => ({ ...x, endDate: null })));
     setNotes(n);
     setName(savedName);
     setWelcomeFlag(welcome === '1');
@@ -157,25 +156,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
         });
       },
 
-      async periodEnded(date, note, options) {
-        const issue = checkPeriodEnd(date, periods, todayLocal(), rules);
-        if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
-        const open = findOpenPeriod(date, periods);
-        if (!open) return { ok: false, issue: { severity: 'block', code: 'end_no_period', data: { date } } };
-        const before = noteOn(date);
-        return run(async () => {
-          await updatePeriod(db, open.id, { endDate: date });
-          if (note) await saveDailyNote(db, date, note);
-          return async () => {
-            await updatePeriod(db, open.id, { endDate: null });
-            if (note) {
-              if (before) await saveDailyNote(db, date, before);
-              else await deleteDailyNote(db, date);
-            }
-          };
-        });
-      },
-
       async addHistory(entries, options) {
         const found = checkHistory(entries, periods, todayLocal(), rules);
         const stop = found.find((f) => f.issue.severity === 'block') ?? (options?.confirmed ? undefined : found[0]);
@@ -183,7 +163,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return run(async () => {
           const created: string[] = [];
           for (const entry of [...entries].sort((a, b) => (a.start < b.start ? -1 : 1))) {
-            created.push((await addPeriod(db, entry.start, entry.end)).id);
+            created.push((await addPeriod(db, entry.start, null)).id);
           }
           return async () => {
             for (const id of created) await deletePeriod(db, id);
@@ -214,15 +194,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
         });
       },
 
-      async changePeriod(id, startDate, endDate, options) {
-        const issue = checkPeriodEdit(id, startDate, endDate, periods, todayLocal(), rules);
+      async changePeriod(id, startDate, options) {
+        const issue = checkPeriodEdit(id, startDate, periods, todayLocal(), rules);
         if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
         const old = periods.find((p) => p.id === id);
         if (!old) return failed;
         return run(async () => {
-          await updatePeriod(db, id, { startDate, endDate });
+          await updatePeriod(db, id, { startDate });
           return async () => {
-            await updatePeriod(db, id, { startDate: old.startDate, endDate: old.endDate });
+            await updatePeriod(db, id, { startDate: old.startDate });
           };
         });
       },

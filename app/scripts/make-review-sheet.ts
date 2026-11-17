@@ -80,14 +80,10 @@ const sections: Section[] = [
         why: 'A shorter or longer cycle is mentioned in a calm message.',
       },
       {
-        id: 'period',
-        title: 'Usual period length',
-        says: `Up to ${days(r.period.normalMaxDays)}.`,
-      },
-      {
         id: 'assumed',
-        title: 'If she forgets to say when the period ended',
-        says: `The app guesses the period lasted ${days(r.period.assumedLengthDays)}.`,
+        title: 'There is no "period ended" in the app',
+        says: `A cycle starts on the day she says a period started, and ends the day before the next one starts. The first ${days(r.period.assumedLengthDays)} of every cycle are drawn as the Bleeding part (an estimate, never asked).`,
+        why: 'Fewer questions to answer, and no mix-ups between the end of the bleeding and the end of the cycle.',
       },
       {
         id: 'variation',
@@ -132,25 +128,17 @@ const issueSample = { start: '2026-10-06', end: '2026-10-10', date: '2026-11-06'
 const issueCodes: [IssueCode, string, number?][] = [
   ['future_date', 'She picks a day that has not come yet'],
   ['start_already_logged', 'A period already starts on that day'],
-  ['start_inside_period', 'She says a period started on a day inside an earlier period'],
-  ['start_previous_unfinished', 'She says a period started while the last one has no end day'],
-  ['start_overlaps_next', 'The new start runs into a period that begins later'],
-  ['start_too_soon', 'A new period only a few days after another one started (the app asks if that is right)', 14],
+  ['start_too_soon', 'A new start only a few days after another one (the app asks if that is right)', 14],
   ['start_long_gap', 'A new start far from the others, 60+ days (a missed cycle; the app asks if that is right)', 101],
-  ['end_no_period', 'She says a period ended, but none is going on'],
-  ['end_before_start', 'The end day is before the start day'],
-  ['end_already', 'That period already has an end day'],
-  ['end_too_long', 'The period would be very long (the app asks if that is right)', 15],
-  ['overlaps', 'Changing a period so it overlaps another'],
   ['note_empty', 'She saves an empty note'],
   ['note_too_long', 'The note is too long', 500],
 ];
 sections.push({
   title: '4. Checks when she tells the app something',
-  intro: `The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than ${r.checks.minDaysBetweenStarts} days after another; asks if a start is more than ${r.checks.longGapDays} days from the other starts; asks if a period would last more than ${r.checks.longPeriodDays} days; treats a period with no end day as forgotten after ${r.checks.unfinishedPeriodAfterDays} days and asks about it on Today.`,
+  intro: `The app now stops mistakes and explains calmly, with a button for the next step. Numbers used: asks if a new period starts fewer than ${r.checks.minDaysBetweenStarts} days after another; asks if a start is more than ${r.checks.longGapDays} days from the other starts; nothing else is asked.`,
   items: issueCodes.map(([code, when, days]): Item => {
     const view = describeIssue(
-      { severity: code === 'start_too_soon' || code === 'end_too_long' ? 'confirm' : 'block', code, data: { ...issueSample, days } },
+      { severity: code === 'start_too_soon' || code === 'start_long_gap' ? 'confirm' : 'block', code, data: { ...issueSample, days } },
       en,
       r,
     );
@@ -166,12 +154,10 @@ sections.push({
   title: '5. What the Saathi says and the main button',
   intro: 'The big button changes with her situation.',
   items: [
-    { id: 'btn', title: 'The big button', says: `Before any period: "${en.today.fab.first}". While a period is going on: "${en.today.fab.end}". Otherwise: "${en.today.fab.start}".` },
+    { id: 'btn', title: 'The big button', says: `Before any period: "${en.today.fab.first}". After that: "${en.today.fab.start}". There is no "ended" button.` },
     { id: 'g-first', title: 'Saathi before any period is told', says: en.guide.askFirstPeriod('Drashti') },
     { id: 'g-in', title: 'Saathi while a period is going on', says: en.guide.periodGoingOn('Drashti') },
-    { id: 'g-unfinished', title: 'Saathi when a period was never ended', says: en.guide.unfinished('Drashti', 12) },
     { id: 'g-typical', title: 'Saathi while using a typical cycle', says: en.guide.typical('Drashti', r.prediction.typicalCycleLengthDays) },
-    { id: 'u-title', title: 'The note on Today when a period was never ended', says: `"${en.today.unfinishedTitle}" ${en.today.unfinishedBody('3 Oct')} Button: "${en.today.unfinishedAction}".` },
     { id: 'basis', title: 'How the next-period guess is explained', says: `${en.today.basisOwn(5, 31)} Or: ${en.today.basisTypical(r.prediction.typicalCycleLengthDays)}` },
   ],
 });
@@ -193,9 +179,9 @@ sections.push({
     { id: 'h-coming', title: 'Top line before the period', says: `${en.today.headline.coming(11, 17)} (or "${en.today.headline.coming(3, 3)}")` },
     { id: 'h-now', title: 'Top line inside the expected days', says: en.today.headline.anyDayNow },
     { id: 'h-late', title: 'Top line after the expected days', says: `${en.today.headline.late(4)}. ${en.today.headline.lateHelp}` },
-    { id: 'h-day', title: 'Top line during a period', says: `${en.today.headline.periodDay(2)}. If it was never ended: ${en.today.headline.unfinished(12)}` },
+    { id: 'h-day', title: 'Top line during a period', says: en.today.headline.periodDay(2) },
     { id: 'n-offer', title: 'The question that offers reminders', says: `${en.today.remindersOffer.title} ${en.today.remindersOffer.body}` },
-    ...(['coming', 'did_start', 'did_end', 'late', 'backup', 'quiet'] as const).map((k): Item => ({
+    ...(['coming', 'did_start', 'late', 'backup', 'quiet'] as const).map((k): Item => ({
       id: `n-${k}`,
       title: `Reminder: ${en.settings.reminders.kinds[k].title} (${en.settings.reminders.kinds[k].help})`,
       says: `"${en.notify.details[k].title}" ${en.notify.details[k].body}`,
@@ -219,7 +205,6 @@ const flagItems: Item[] = [
   { id: 'f-short', title: 'Cycle is short', says: flagMessage({ code: 'cycle_short', value: 19 }, r) },
   { id: 'f-long', title: 'Cycle is long', says: flagMessage({ code: 'cycle_long', value: 38 }, r) },
   { id: 'f-var', title: 'Cycles change a lot', says: flagMessage({ code: 'cycle_variation', value: 11 }, r) },
-  { id: 'f-plong', title: 'Period lasted long', says: flagMessage({ code: 'period_long', value: 9 }, r) },
   { id: 'f-late', title: 'Period is late', says: flagMessage({ code: 'period_late', value: 4 }, r) },
   { id: 'f-late-guide', title: 'What the guide says when the period is late', says: en.guide.late },
   { id: 'disclaimer', title: 'Note shown at the bottom of the Today screen', says: DISCLAIMER },

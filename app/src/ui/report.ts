@@ -1,9 +1,9 @@
 import type { CycleRules } from '../config/cycleRules';
-import { averagePeriodLength, cycleRows, cycleStats } from '../domain/cycles';
-import type { DateStr } from '../domain/dates';
+import { cycleRows, cycleStats } from '../domain/cycles';
+import { addDays, type DateStr } from '../domain/dates';
 import type { DailyLog, Period } from '../domain/types';
 import type { Strings } from '../i18n';
-import { formatLong, formatRange, formatShort } from './format';
+import { formatLong, formatShort } from './format';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -29,26 +29,23 @@ export function buildReportHtml(o: {
   const r = S.report;
   const rows = cycleRows(periods, rules);
   const stats = cycleStats(periods, rules);
-  const periodAvg = averagePeriodLength(periods);
 
   const stat = (label: string, value: string) => `<div class="stat"><div class="lab">${esc(label)}</div><div class="val">${esc(value)}</div></div>`;
   const summary = [
     stats ? stat(r.usualCycle, S.common.days(Math.round(stats.averageLength))) : '',
     stats ? stat(r.range, `${stats.shortest}–${stats.longest}`) : '',
-    periodAvg !== null ? stat(r.usualPeriod, S.common.days(Math.round(periodAvg))) : '',
     stat(r.cyclesNoted, String(periods.length)),
   ].join('');
 
   const body = rows
     .map((row) => {
-      const end = row.period.endDate ?? row.period.startDate;
-      const dates = row.period.endDate ? formatRange(row.period.startDate, end, S) : formatShort(row.period.startDate, S);
+      const dates = formatShort(row.period.startDate, S);
       const text = notes
-        .filter((n) => n.date >= row.period.startDate && n.date <= end)
+        .filter((n) => n.date >= row.period.startDate && (row.cycleDays === null || n.date < addDays(row.period.startDate, row.cycleDays)))
         .map((n) => `${formatShort(n.date, S)}: ${n.note}`)
         .join('; ');
       return (
-        `<tr><td>${esc(dates)}</td><td>${esc(row.periodDays !== null ? S.common.days(row.periodDays) : r.endNotTold)}</td>` +
+        `<tr><td>${esc(dates)}</td>` +
         `<td>${esc(row.cycleDays !== null ? S.common.days(row.cycleDays) : r.current)}</td><td>${esc(text)}</td></tr>`
       );
     })
@@ -57,7 +54,7 @@ export function buildReportHtml(o: {
   const who = name ? `${esc(r.forName(name))} · ` : '';
   const content = rows.length
     ? `<h2>${esc(r.summary)}</h2><div class="stats">${summary}</div>` +
-      `<h2>${esc(r.history)}</h2><table><tr><th>${esc(r.colPeriod)}</th><th>${esc(r.colPeriodDays)}</th><th>${esc(r.colCycle)}</th><th>${esc(r.colNote)}</th></tr>${body}</table>`
+      `<h2>${esc(r.history)}</h2><table><tr><th>${esc(r.colPeriod)}</th><th>${esc(r.colCycle)}</th><th>${esc(r.colNote)}</th></tr>${body}</table>`
     : `<p>${esc(r.empty)}</p>`;
 
   return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(r.title)}</title><style>

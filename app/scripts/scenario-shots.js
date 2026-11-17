@@ -171,15 +171,6 @@ const tapText = async (page, text) => {
     await snap(c.page, '60-problem-start-inside-period');
     await c.context.close();
 
-    // b) start a second period while one is still open
-    c = await open(browser, backup(OPEN));
-    await tap(c.page, /Period ended|पीरियड ख/);
-    await c.page.getByRole('tab', { name: /Period started|पीरियड शुरू/ }).last().click();
-    await wait(c.page);
-    await save(c.page);
-    await snap(c.page, '61-problem-previous-not-ended');
-    await c.context.close();
-
     // c) a new period only 14 days after the last start: "is that right?"
     c = await open(browser, backup(FULL));
     await tap(c.page, /Period started|पीरियड शुरू/);
@@ -191,7 +182,8 @@ const tapText = async (page, text) => {
     // d) end a period before it started: not offered a future day; empty note
     c = await open(browser, backup(FULL));
     await tap(c.page, /Period started|पीरियड शुरू/);
-    await c.page.getByRole('tab', { name: /Just a note|सिर्फ़/ }).last().click();
+    await wait(c.page, 1500);
+    await c.page.getByRole('tab', { name: /Note|नोट/ }).last().click();
     await wait(c.page);
     await save(c.page);
     await snap(c.page, '63-problem-empty-note');

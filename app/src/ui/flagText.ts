@@ -9,7 +9,6 @@ export function flagText(flag: IrregularityFlag, S: Strings, rules: CycleRules):
     case 'cycle_short': return f.cycleShort(flag.value, rules.cycle.normalMinDays, rules.cycle.normalMaxDays);
     case 'cycle_long': return f.cycleLong(flag.value, rules.cycle.normalMinDays, rules.cycle.normalMaxDays);
     case 'cycle_variation': return f.variation(flag.value);
-    case 'period_long': return f.periodLong(flag.value, rules.period.normalMaxDays);
     case 'period_late': return f.periodLate(flag.value);
   }
 }

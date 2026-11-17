@@ -1,0 +1,36 @@
+// Tirth's own case: a period started 10 Oct and the next one 10 Nov (today is 18 Nov in the sandbox).
+const { chromium } = require('playwright-core');
+const ts = '2026-10-01T10:00:00.000Z';
+const p = (id, s) => ({ id, start_date: s, end_date: null, note: null, created_at: ts, updated_at: ts, deleted_at: null });
+const data = { format: 'cycle-saathi-backup', schema_version: 2, exported_at: ts, app_version: '0.2.0', data: { periods: [p('a', '2026-10-10'), p('b', '2026-11-10')], daily_logs: [], settings: [{ key: 'display_name', value: 'Drashti', updated_at: ts }, { key: 'tour_seen', value: '1', updated_at: ts }, { key: 'notif_asked', value: '1', updated_at: ts }] } };
+(async () => {
+  const br = await chromium.launch({ executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true });
+  const pg = await (await br.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })).newPage();
+  pg.setDefaultNavigationTimeout(240000); pg.setDefaultTimeout(240000);
+  const errors = [];
+  pg.on('pageerror', (e) => errors.push(e.message));
+  await pg.goto('http://localhost:8082', { waitUntil: 'domcontentloaded' });
+  await pg.waitForFunction(() => window.__cycleSaathi);
+  await pg.evaluate((t) => window.__cycleSaathi.restore(t), JSON.stringify(data));
+  await pg.reload({ waitUntil: 'domcontentloaded' });
+  await pg.waitForFunction(() => window.__cycleSaathi);
+  await pg.waitForTimeout(3000);
+  await pg.screenshot({ path: '.tmp/u-today.png' });
+  await pg.locator('[role="tab"], a').filter({ hasText: /Calendar/ }).last().click();
+  await pg.waitForTimeout(1500);
+  await pg.getByRole('button', { name: /Month before/ }).first().click();
+  await pg.waitForTimeout(1200);
+  await pg.screenshot({ path: '.tmp/u-cal-oct.png' });
+  await pg.getByRole('button', { name: /Month after/ }).first().click();
+  await pg.waitForTimeout(1200);
+  await pg.screenshot({ path: '.tmp/u-cal-nov.png' });
+  await pg.getByRole('button', { name: /18 November/ }).first().click();
+  await pg.waitForTimeout(1000);
+  await pg.screenshot({ path: '.tmp/u-cal-day.png' });
+  await pg.keyboard.press('Escape');
+  await pg.locator('[role="tab"], a').filter({ hasText: /My cycles/ }).last().click();
+  await pg.waitForTimeout(1500);
+  await pg.screenshot({ path: '.tmp/u-cycles.png' });
+  console.log(errors.length ? 'ERRORS ' + errors.join(' | ') : 'no errors');
+  await br.close();
+})();

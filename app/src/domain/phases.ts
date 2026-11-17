@@ -19,7 +19,7 @@ export interface DayInfo {
   isPredictedPeriod: boolean;
   /** Days past the end of the predicted range with no new period logged. */
   daysLate: number;
-  /** Menstrual days that she logged are facts; everything else is an estimate. */
+  /** Every day is an estimate except the start day she told the app. */
   isEstimate: boolean;
   /**
    * The estimate comes only from a typical cycle (she has not logged enough cycles for her own
@@ -57,7 +57,8 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
 
   const current = sorted[index];
   const info = emptyInfo(date, diffDays(current.startDate, date) + 1);
-  const periodEnd = current.endDate ?? addDays(current.startDate, rules.period.assumedLengthDays - 1);
+  // No period end exists: the first few days of every cycle are the Bleeding phase (an estimate).
+  const periodEnd = addDays(current.startDate, rules.period.assumedLengthDays - 1);
   const inPeriod = date <= periodEnd;
 
   const next = sorted[index + 1];
