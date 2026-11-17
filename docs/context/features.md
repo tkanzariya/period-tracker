@@ -1,6 +1,6 @@
 # Features
 
-Last updated: 2026-10-27
+Last updated: 2026-11-17
 
 Plain-language feature plan. Priorities: **Must** = MVP can't ship without it. **Should** = right after. **Later** = parked.
 Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
@@ -93,3 +93,5 @@ Diagnosis, treatment advice, ads, social/community, selling data, accounts.
 - Periods cannot overlap or start twice; unusual but possible cases ask "Is that right?". Full list in `scenarios.md`.
 - First-run welcome (hello, privacy, name, last period) and a replayable tour; language in Settings.
 
+## Next ideas (2026-11-17)
+UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are planned in `improvement-plan.md`. Nothing there is built.

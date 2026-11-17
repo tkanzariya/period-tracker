@@ -1,6 +1,6 @@
 # Decisions Log (append-only)
 
-Last updated: 2026-11-02
+Last updated: 2026-11-17
 
 ## 2026-10-26
 - Project goal set: cycle-tracking app for Drashti, built solo by Tirth. Start with basic tracking, then improve.
@@ -70,3 +70,10 @@ Last updated: 2026-11-02
 ## 2026-11-06: Bleeding, and first-open/history rules
 - **Decisions (Tirth):** phase "Menstrual" renamed **Bleeding** (English and Hindi); keep the end-of-period day because history entry asks start date + bleeding days; first open asks only the current cycle start with rough-day chips; 60+ day gaps and starts under 15 days apart ask "Is that right?". See `scenarios.md` F1-F6.
 - **Built (same day):** welcome rough-day chips + history offer, "Earlier cycles" screen (also from My cycles), 60-day gap question (`longGapDays`), one-Undo bulk add; 217 tests. History rows always get bleeding days (default 5) so no earlier cycle is left open (an open older period would block later starts).
+
+## 2026-11-17: Direction: helpful for all women, notifications, ads later
+- **Tirth asked** for an analysis of UI and features, unique features other apps lack, notifications for engagement, and final AdMob placements (to be added later).
+- **Decided:** ad placement (banner above the tab bar on the three main screens; native in the My cycles list; interstitial only after the PDF share or saving earlier cycles, max 1 a day; rewarded "no ads for 3 days"; no app-open ad; never on forms, welcome, popups or the report). Notification set N1-N9, all on-device, max one a day, discreet by default.
+- **Changes earlier decisions:** ads and a wider audience were non-goals (`product-vision.md`); "no data leaving the device" and zero cost are affected by ads (`constraints.md`). Flagged as open question 1n; nothing built.
+- **Rejected:** app-open ads; ads that gate the doctor report or backup; personalised ads; streaks or guilt messages.
+- Full plan: `improvement-plan.md`.

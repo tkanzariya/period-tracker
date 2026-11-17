@@ -1,12 +1,12 @@
 # Constraints
 
-Last updated: 2026-10-27
+Last updated: 2026-11-17
 
 - **Budget**: zero or minimal. No paid services, no Play Store fee (Google's one-time developer fee is avoided by sideloading an APK).
 - **Platform**: Android only. Distribution via APK installed directly on Drashti's phone.
 - **Storage**: local on-device for now. Must be easy to export/import and later migrate to a cloud database.
 - **Region**: India.
-- **Privacy/legal**: deliberately deferred. Still follow sensible basics (no analytics SDKs, no data leaving the device).
+- **Privacy/legal**: deliberately deferred. Still follow sensible basics (no analytics SDKs, no data leaving the device). **Planned change (2026-11-17):** Tirth wants AdMob ads later. Ads send an advertising ID to Google, need a Play Store listing (one-time fee), a privacy policy and a consent prompt, and the in-app promise "nothing is sent anywhere" must be reworded first. Cycle data must still never leave the phone. Not accepted yet: open question 1n.
 - **Team**: Tirth solo, part-time. Drashti advises and tests.
 - **Process**: Phase 0 (foundation) must be solid before development. Features, designs and logo get planned first.
 - **Dev PC**: Windows 10, Intel i7-4770S (2013, 4 cores), 16 GB RAM, C: ~19 GB free (tight), D: ~127 GB. CPU virtualization is off in the BIOS (so no Android emulator). Builds are slow-ish by hardware; see `tech-decisions.md` for the one-click scripts.

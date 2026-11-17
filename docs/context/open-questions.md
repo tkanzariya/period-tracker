@@ -1,6 +1,6 @@
 # Open Questions
 
-Last updated: 2026-11-05
+Last updated: 2026-11-17
 
 | # | Question | Owner |
 |---|---|---|
@@ -12,6 +12,10 @@ Last updated: 2026-11-05
 | 1j | **Version numbering**: re-label the first build from v1.0.0 to v0.1.0 (test build) and keep 1.0.0 for the Play Store launch? Needs: bump `app.json` to 0.1.0 / versionCode 100, delete the published v1.0.0 tag and (by Tirth, in the GitHub web page) its release, then publish v0.1.0. Also decide later whether to pay the one-time Google Play developer fee (the project has been zero-cost). | Tirth |
 | 1k | **UX refresh is built** (see roadmap). Tirth: review the screenshots and the rules and texts in `scenarios.md` (including the open items S21-S25), then say go for push and the 0.1.0 release. Nothing is pushed or released without your go-ahead (public repo). | Tirth |
 | 1m | Drashti's wording: "Period ended" / "Did your period end?" -> "Cycle ended"? Tirth chose to keep bleeding days (history asks start + bleeding days), so the end-of-period day stays. Still to settle with Drashti: the button wording (for example "Bleeding ended"). | Tirth + Drashti |
+| 1n | **Ads**: accept what they change? (a) "nothing is sent anywhere" must be reworded, (b) Play Store listing with the one-time fee, privacy policy and consent prompt, (c) which ad categories to block. Placement itself is decided (`improvement-plan.md` section 4). | Tirth |
+| 1o | **Notifications**: OK with the list N1-N9, one a day, discreet lock-screen text by default? Health wording for Drashti. | Tirth + Drashti |
+| 1p | **Day check-in**: Drashti's symptom list, and should bleeding heaviness (pads per day) come back? Tirth parked "flow" on 2026-10-27. | Drashti + Tirth |
+| 1q | Which unique features first (date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder)? | Tirth |
 | 1l | **Drashti**: please review the health sentences that will change in the refresh (they stay NEEDS DRASHTI REVIEW) and say whether Hindi and Gujarati should come first or second. | Drashti |
 | 1i | Make the GitHub repo private? (It is public; builds and releases still work if private, but then Drashti needs a GitHub login to download a release, so a public Releases link is easier for her. Decide knowingly.) | Tirth |
 | 1g | Tirth's phone has the OLD test app "Cadence" (package dev.cadence.app) with test data. The renamed Cycle Saathi installs as a separate new app: uninstall the old Cadence app from the phone. | Tirth |
