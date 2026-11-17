@@ -12,6 +12,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- Behind the scenes: the ad library is installed and switched off. No ads are shown yet.
 - Add earlier cycles: tap "Add earlier cycles" in My cycles (or after your first period in the welcome) to enter when each cycle started and how many days the bleeding lasted.
 - A not-sure-of-the-day helper when telling the app your last period: Today, 1, 2 or 3 weeks ago.
 - A missed or very late cycle (over 60 days from your other periods) now asks "Is that right?" instead of being refused.

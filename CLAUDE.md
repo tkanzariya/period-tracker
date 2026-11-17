@@ -27,6 +27,7 @@ Full detail lives in `docs/context/`. Do not duplicate it here.
 | `docs/context/working-standards.md` | **Habits to follow on every feature** (look at screenshots, no Android dialogs, validate every action, never an empty app, etc.) |
 | `docs/context/scenarios.md` | What a user can and cannot do: every problem situation, the rule and the exact wording (Tirth decides) |
 | `docs/context/improvement-plan.md` | Planned UI fixes, new and unique features, notifications, and the decided ad placements (none built yet) |
+| `docs/context/admob-setup.md` | AdMob: the steps Tirth does on the website, and what is already wired in the app (ads are off) |
 | `docs/context/release-process.md` | Versioning policy, changelog rule, the release checklist (every release), Play Store extras |
 | `docs/context/decisions-log.md` | Dated, append-only log of every decision and why |
 | `docs/context/open-questions.md` | Unresolved questions and who owns them |

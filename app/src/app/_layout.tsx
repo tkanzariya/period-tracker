@@ -1,9 +1,10 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { startAds } from '../ads/init';
 import { migrateDatabase } from '../db/migrations';
 import { DataProvider, useData } from '../state/data';
 import { LanguageProvider } from '../state/language';
@@ -24,6 +25,9 @@ function Loading() {
 function Gate() {
   const t = useTokens();
   const { loading, welcomeDone } = useData();
+  useEffect(() => {
+    if (!loading && welcomeDone) void startAds();
+  }, [loading, welcomeDone]);
   if (loading) return <Loading />;
   if (!welcomeDone) return <Welcome />;
   return (
