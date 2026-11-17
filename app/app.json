@@ -43,12 +43,7 @@
             "useLegacyPackaging": true,
             "enableBundleCompression": true,
             "gifEnabled": false,
-            "extraProguardRules": "-keep class androidx.work.** { *; }
--keep class androidx.room.** { *; }
--keep class * extends androidx.room.RoomDatabase { *; }
--keep class androidx.startup.** { *; }
--dontwarn androidx.work.**
-"
+            "extraProguardRules": "-keep class androidx.work.** { *; }\n-keep class androidx.room.** { *; }\n-keep class * extends androidx.room.RoomDatabase { *; }\n-keep class androidx.startup.** { *; }\n-dontwarn androidx.work.**\n"
           }
         }
       ],
