@@ -85,3 +85,11 @@ Last updated: 2026-11-17
 - **Built as 0.2.0:** answer-first Today (headline, late and unfinished states, one "typical cycle" line, shorter Tell me tabs); reminders N1-N5 and N9 (planned by `domain/reminders.ts`, 11 tests; scheduled on the phone with expo-notifications; 9 am, max one a day, discreet lock-screen text by default, per-kind switches in Settings, permission asked only when she says yes on Today or turns the switch on); tapping a reminder opens the right sheet. 234 tests.
 - **Why:** the plan; Drashti and Tirth want the app to help every day, not only when she opens it.
 - **Not verified:** real notifications on a phone (the browser preview has none).
+
+## 2026-11-18: 0.2.0 crashed on the phone at start-up; fixed
+- **What happened:** the first 0.2.0 build closed itself right after opening. Phone log: `Failed to create an instance of androidx.work.impl.WorkDatabase` from `androidx.startup.InitializationProvider`. Cause: the ad library brings in Android's WorkManager (Room database), and the release size-shrinking step (R8 minify) removed code it needs.
+- **Fix:** keep rules for `androidx.work`, `androidx.room`, `androidx.startup` in `app.json` (`expo-build-properties` `extraProguardRules`). Checked on Tirth's phone (Samsung, `adb`): installs over the old app, opens, no crash, welcome and Today show. First attempt failed in the cloud because I wrote the rules with real line breaks inside the JSON; now `
+` escapes.
+- **Lesson (add to every release):** after any new native library, install the release APK on the phone and read `adb logcat -b crash` before telling anyone it works. A build "success" and a static APK check do not show start-up crashes.
+- **Still untested on the phone:** reminders and the permission prompt, the PDF share, add-earlier-cycles.
+
