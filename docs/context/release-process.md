@@ -1,6 +1,6 @@
 # Release Process
 
-Last updated: 2026-10-28
+Last updated: 2026-11-19
 
 Followed for EVERY release. The changelog is `CHANGELOG.md` at the repo root (Keep a Changelog format).
 
@@ -56,3 +56,12 @@ Followed for EVERY release. The changelog is `CHANGELOG.md` at the repo root (Ke
 - [ ] Health-app rules: medical-disclaimer wording reviewed by Drashti; no diagnosis or contraception claims.
 - [ ] Start with an internal or closed testing track before production.
 - [ ] Check the name "Cycle Saathi" for trademark and Play Store clashes.
+
+## Updating Drashti's phone without losing her data (rule, proven 2026-11-19)
+A new APK installs OVER the old app and keeps all her data when three things stay the same or go up. She never has to uninstall, export or import.
+1. **Same package id**: `com.cyclesaathi.app` (never change it).
+2. **Same signing key**: every cloud build uses the key in the GitHub secrets (certificate SHA-256 `8624de655132373b10352e1172dcaa4c310b2c2ffbd0e4b58633735b2a9e04b0`, the same on v1.0.0 and every build since). Never regenerate it or build with another key. A debug build from `expo run:android` uses a DIFFERENT key and cannot update a release install (Android would force an uninstall, which deletes the data).
+3. **A higher `versionCode`** than what is installed (`MAJOR*10000 + MINOR*100 + PATCH`; Drashti has code 1, so 100 and 200 are fine). Bump it in `app.json` for every release.
+Before giving an APK to Drashti, check on a phone that already has the previous release: `adb install -r <apk>` must say Success (not INSTALL_FAILED_UPDATE_INCOMPATIBLE or VERSION_DOWNGRADE), and `adb shell dumpsys package com.cyclesaathi.app | grep firstInstallTime` must still show the OLD install date (proof it was an update, not a fresh install). Tell Drashti: "Open the APK and tap Update". The database has migrations (`db/migrations.ts`), so data is carried over; add a migration for any schema change, never delete columns.
+Check the certificate of any APK: `apksigner verify --print-certs <apk>` and compare with the fingerprint above.
+

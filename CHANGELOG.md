@@ -46,6 +46,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - The version is now labelled 0.1.0 (the test build); 1.0.0 is kept for the public launch.
 
 ### Fixed
+- The switches in Settings are easy to see in dark mode.
 - Adding a new period no longer turned into the "end" of the old one (this gave Day 40 and a calendar that went Bleeding, Ovulation, Bleeding, Follicular).
 - The 0.2.0 test build closed itself right after opening on a real phone (the size-shrinking step removed code the ad library needs). Fixed.
 - "Day 32" no longer wraps onto two lines inside the ring.

@@ -105,3 +105,9 @@ Last updated: 2026-11-17
 - **Why test ads:** no risk of invalid traffic on the real account, and the real app is not on Google Play yet.
 - **Not verified yet:** how the ads look and behave on the phone (needs the new build installed).
 
+## 2026-11-19: Phone test of the build with ads; updates keep her data
+- **Tested on Tirth's phone (adb):** installing the new APK over the old app succeeded with no uninstall; the original install date was kept and his data (period dates, Day 9, calendar phases) was still there. Launch: no crash. Banner test ad shows above the tabs and the floating button sits above it; the native test ad loaded (Google's validator said "no implementation issues"); "Save a PDF report" opened the share sheet with `cycle-report-<date>.pdf`; the rewarded test video gave "Reward granted" and Settings then said "No ads until 22 Nov".
+- **Decision (Tirth): Drashti must be able to update in place.** Already true as long as package id, signing key and a higher versionCode are kept; recorded as a rule with a pre-release check in `release-process.md` and the key's certificate fingerprint.
+- **Small fix:** the Settings switch knob was nearly invisible in dark mode; new token `switchThumb` (white).
+- **Not yet tested on the phone:** interstitial ads (they wait 3 days after install), reminders arriving, the Hindi screens.
+

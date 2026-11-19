@@ -52,7 +52,7 @@ export default function SettingsScreen() {
   }
 
   const toggle = (value: boolean, onChange: (v: boolean) => void, label: string) => (
-    <Switch accessibilityLabel={label} value={value} onValueChange={onChange} trackColor={{ true: t.primary, false: t.control }} thumbColor={t.surface} {...({ activeThumbColor: t.surface } as object)} />
+    <Switch accessibilityLabel={label} value={value} onValueChange={onChange} trackColor={{ true: t.primary, false: t.control }} thumbColor={t.switchThumb} {...({ activeThumbColor: t.switchThumb } as object)} />
   );
 
   async function saveSheet() {

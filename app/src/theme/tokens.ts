@@ -34,6 +34,8 @@ export interface Tokens {
   /** Solid red, used ONLY for buttons that remove something (with a trash icon and the word). */
   danger: string;
   onDanger: string;
+  /** The round knob of a switch: white in both looks so it stays visible. */
+  switchThumb: string;
   /** Borders of controls (inputs, switches): at least 3:1 against the background. */
   control: string;
   phase: Record<Phase, PhaseColors>;
@@ -54,6 +56,7 @@ export const lightTokens: Tokens = {
   attentionSoft: '#FBE8D0',
   danger: '#B3261E',
   onDanger: '#FFFFFF',
+  switchThumb: '#FFFFFF',
   control: '#8C7A74',
   phase: {
     menstrual: { fg: '#A81E4B', bg: '#F9DDE6', from: '#FBE3EA', to: '#F2BFD0' },
@@ -78,6 +81,7 @@ export const darkTokens: Tokens = {
   attentionSoft: '#3B2A1B',
   danger: '#FF9A92',
   onDanger: '#3B0B07',
+  switchThumb: '#FFFFFF',
   control: '#8F7C83',
   phase: {
     menstrual: { fg: '#F2708F', bg: '#4A2330', from: '#43202C', to: '#65303F' },
