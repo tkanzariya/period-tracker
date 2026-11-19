@@ -10,8 +10,8 @@ import { loadAdsLibrary, type AdsLibrary } from './library';
 type Loaded = Awaited<ReturnType<AdsLibrary['NativeAd']['createForAdRequest']>>;
 
 /**
- * A native ad drawn like one of our cards, clearly marked "Ad" (My cycles list and Calendar). Renders
- * nothing until an ad has loaded, so there is never an empty card.
+ * A compact native ad (icon, headline, text, button) drawn like one of our cards and clearly marked
+ * "Ad", the same style as HomeHisab: no big picture. Renders nothing until an ad has loaded.
  */
 export function NativeAdCard({ kind }: { kind: 'nativeCycles' | 'nativeCalendar' }) {
   const { showAds } = useAds();
@@ -40,38 +40,35 @@ export function NativeAdCard({ kind }: { kind: 'nativeCycles' | 'nativeCalendar'
   }, [showAds, lib, kind]);
 
   if (!showAds || !lib || !ad) return null;
-  const { NativeAdView, NativeAsset, NativeAssetType, NativeMediaView } = lib;
+  const { NativeAdView, NativeAsset, NativeAssetType } = lib;
   return (
-    <NativeAdView
-      nativeAd={ad}
-      style={{ backgroundColor: t.surface, borderColor: t.line, borderWidth: 1, borderRadius: radius.card, padding: spacing.md, gap: 8 }}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-        <View style={{ backgroundColor: t.surface2, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2 }}>
-          <Text style={{ color: t.text2, fontSize: 12, fontWeight: '700' }}>{S.ads.label}</Text>
+    // The rounded border sits on a plain View: Android ignores rounded corners on the native ad view itself.
+    <View style={{ backgroundColor: t.surface, borderColor: t.line, borderWidth: 1, borderRadius: radius.card, overflow: 'hidden' }}>
+      <NativeAdView nativeAd={ad} style={{ padding: spacing.md, gap: 10 }}>
+        <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+          {ad.icon ? (
+            <NativeAsset assetType={NativeAssetType.ICON}>
+              <Image source={{ uri: ad.icon.url }} style={{ width: 44, height: 44, borderRadius: 10 }} accessibilityIgnoresInvertColors />
+            </NativeAsset>
+          ) : null}
+          <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+            <Text style={{ alignSelf: 'flex-start', color: t.text2, borderColor: t.line, borderWidth: 1, borderRadius: 4, paddingHorizontal: 5, fontSize: 11, overflow: 'hidden' }} maxFontSizeMultiplier={1.2}>{S.ads.label}</Text>
+            <NativeAsset assetType={NativeAssetType.HEADLINE}>
+              <Text numberOfLines={2} style={{ color: t.text, fontSize: 16, fontWeight: '700' }}>{ad.headline}</Text>
+            </NativeAsset>
+            {ad.body ? (
+              <NativeAsset assetType={NativeAssetType.BODY}>
+                <Text numberOfLines={2} style={{ color: t.text2, fontSize: 14 }}>{ad.body}</Text>
+              </NativeAsset>
+            ) : null}
+          </View>
         </View>
-        {ad.icon ? (
-          <NativeAsset assetType={NativeAssetType.ICON}>
-            <Image source={{ uri: ad.icon.url }} style={{ width: 36, height: 36, borderRadius: 8 }} />
+        {ad.callToAction ? (
+          <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
+            <Text style={{ textAlign: 'center', backgroundColor: t.primarySoft, color: t.primary, fontSize: 15, fontWeight: '700', borderRadius: 12, paddingVertical: 10, overflow: 'hidden' }}>{ad.callToAction}</Text>
           </NativeAsset>
         ) : null}
-        <View style={{ flex: 1 }}>
-          <NativeAsset assetType={NativeAssetType.HEADLINE}>
-            <Text numberOfLines={1} style={{ color: t.text, fontSize: 16, fontWeight: '700' }}>{ad.headline}</Text>
-          </NativeAsset>
-        </View>
-      </View>
-      <NativeMediaView style={{ width: '100%', height: 140, borderRadius: 12, overflow: 'hidden' }} />
-      {ad.body ? (
-        <NativeAsset assetType={NativeAssetType.BODY}>
-          <Text numberOfLines={2} style={{ color: t.text2, fontSize: 14 }}>{ad.body}</Text>
-        </NativeAsset>
-      ) : null}
-      {ad.callToAction ? (
-        <NativeAsset assetType={NativeAssetType.CALL_TO_ACTION}>
-          <Text style={{ color: t.primary, fontSize: 15, fontWeight: '800', paddingVertical: 8 }}>{ad.callToAction}</Text>
-        </NativeAsset>
-      ) : null}
-    </NativeAdView>
+      </NativeAdView>
+    </View>
   );
 }

@@ -111,3 +111,8 @@ Last updated: 2026-11-17
 - **Small fix:** the Settings switch knob was nearly invisible in dark mode; new token `switchThumb` (white).
 - **Not yet tested on the phone:** interstitial ads (they wait 3 days after install), reminders arriving, the Hindi screens.
 
+## 2026-11-19: Smaller banner like HomeHisab; no "no ads" reward (Tirth)
+- **Banner:** the adaptive banner was huge on the phone. Now the standard 320x50 banner with a tiny "Ad" tag and a compact native card (no big picture), copied from HomeHisab (`D:\HomeHisab\app\src\ads\AdViews.tsx`).
+- **Removed:** the rewarded video "No ads for 3 days", the Settings row, its wording and the ad-free logic. Why: Tirth does not want any way to switch ads off, it would hurt revenue. Alternative rejected: keeping it with a shorter period.
+- **Still true:** at most one full-screen ad a day, none in the first 3 days; test ads only (`USE_TEST_ADS`).
+

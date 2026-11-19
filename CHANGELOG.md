@@ -12,7 +12,7 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
-- Ads (test ads for now): a small banner above the bottom tabs, an "Ad" card in My cycles and the Calendar, and an occasional full-screen ad after saving a PDF report or earlier cycles (at most once a day, never in your first 3 days). Never while you are telling the app about a period. Settings, "No ads for 3 days" lets you watch a short video to hide ads for 3 days.
+- Ads (test ads for now): a small banner above the bottom tabs, a compact "Ad" card in My cycles and the Calendar, and an occasional full-screen ad after saving a PDF report or earlier cycles (at most once a day, never in your first 3 days). Never while you are telling the app about a period.
 - Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
 - Today now starts with the answer: "Your period may start in 3 to 9 days", "Period day 2" or "4 days later than my guess".
 - Today offers to turn reminders on (once, after your first period).

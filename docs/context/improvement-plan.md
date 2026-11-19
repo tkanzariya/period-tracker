@@ -1,6 +1,6 @@
 # Improvement plan: UI, features, notifications, ads
 
-Last updated: 2026-11-18
+Last updated: 2026-11-19
 
 Analysis asked for by Tirth on 2026-11-17. **Status: 0.2.0 built 2026-11-17 = U1, U3, U4, U8 and notifications N1 to N5 and N9 with Settings switches** (marked DONE below). Tirth agreed the order in section 6 and accepted the ad changes (section 4). Health wording and numbers are `NEEDS DRASHTI REVIEW`. Order of work is in section 6.
 
@@ -71,7 +71,7 @@ Goal: every app open gives an impression; logging a period is never slowed.
 | **Banner** (anchored adaptive) | A fixed strip **above the bottom tab bar on Today, Calendar and My cycles**, with a thin line and gap from the tabs; the floating button sits above it | Seen on every open and every tab without covering anything; one strip, refreshed about once a minute |
 | **Native** (styled as our card, labelled "Ad") | **My cycles list, after the 3rd period row** (only when she has 4 or more). Second slot, add only if needed: **Calendar, under the Colours card** | In-feed where she is reading, not acting |
 | **Interstitial** (full screen) | Only after a finished side task: **after the PDF report is shared**, **after saving earlier cycles**. Max 1 a day, none in her first 3 days | A natural pause; nothing is waiting to be typed |
-| **Rewarded** (her choice) | Settings row and an occasional Saathi card: **"Watch a short video: no ads for 3 days"**; later also to unlock extras (year review, Saathi looks) | Opt-in, gives her something real |
+| ~~Rewarded~~ | **Removed 2026-11-19 (Tirth)**: no rewarded video and no way to hide ads, because it would cut revenue | |
 | App-open ad | **Not used** | First thing a woman in pain would see; also slows opening |
 
 **Never an ad on:** welcome, first tour, the Tell me / Change period / Earlier cycles forms, popups, problem messages, the PDF, notifications. Never gate the doctor report or the backup behind an ad. Offline: the strip collapses, no empty box.

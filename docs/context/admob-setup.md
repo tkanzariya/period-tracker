@@ -1,15 +1,15 @@
 # AdMob setup: complete guide, from the app to the ad units
 
-Last updated: 2026-11-18
+Last updated: 2026-11-19
 
 Decision (Tirth, 2026-11-17): ads are accepted, including the privacy wording change and the Play Store listing. He already has an AdMob account. **For now only Google's TEST ads are used.** Placement plan: `improvement-plan.md` section 4.
 
 ## Status (2026-11-18): ads are in the app, TEST ads only
 Placements are built and every ad is Google's TEST ad (`USE_TEST_ADS = true` in `app/src/config/ads.ts`; `app.json` still has the test App ID). Your real IDs are stored in the same file (`REAL_APP_ID`, `REAL_AD_UNITS` for all six units).
-- **Banner** above the tab bar on Today, Calendar and My cycles (`ads/AdBanner.tsx`; the floating button lifts above it; the strip disappears when there is no ad).
-- **Native** card "Ad": My cycles after the 3rd row, Calendar under the Colours card (`ads/NativeAdCard.tsx`).
+- **Banner** above the tab bar on Today, Calendar and My cycles (`ads/AdBanner.tsx`): the small standard 320x50 banner with a tiny "Ad" tag, like HomeHisab (the tall adaptive banner was too big); the floating button lifts above it; the strip disappears when there is no ad.
+- **Native** card "Ad": My cycles after the 3rd row, Calendar under the Colours card (`ads/NativeAdCard.tsx`): compact (icon, headline, text, button), no big picture, like HomeHisab.
 - **Interstitial**: after the PDF is shared, and after saving earlier cycles; at most once a day, never in the first 3 days (`ads/AdsProvider.tsx`).
-- **Rewarded**: Settings, "No ads for 3 days" (hides banners and native cards for 3 days).
+- **No rewarded ads and no way to hide ads** (Tirth, 2026-11-19: it would cut revenue). The `rewarded_no_ads` unit exists in AdMob but is unused; it can be deleted there.
 - **Never** on welcome, tour, Tell me, Change period, Earlier cycles form, popups. Consent runs at start-up (`ads/init.ts`); non-personalised, PG rating.
 - Privacy wording changed in the app ("Ads come from Google and never get your cycle information").
 **To go live later:** set `USE_TEST_ADS = false`, put `REAL_APP_ID` in `app.json` (`androidAppId`), rebuild, check on your own phone (never click real ads), then Play listing, Data safety, `app-ads.txt`. Still open on the AdMob website: consent message, payments, blocking controls.
@@ -41,7 +41,7 @@ Give every unit the name in the table so reports are readable. IDs go in `REAL_A
 | 3 | `native_calendar` | Native advanced | Calendar, under the Colours card (second slot, only if needed) | Same |
 | 4 | `interstitial_after_report` | Interstitial | After the PDF report is shared | Frequency cap in code: 1 a day |
 | 5 | `interstitial_after_history` | Interstitial | After saving earlier cycles | Shares the same daily cap |
-| 6 | `rewarded_no_ads` | Rewarded | "Watch a short video: no ads for 3 days" (Settings and Saathi card) | Reward: 1 unit, name "NoAds3Days" (the app decides the 3 days) |
+| 6 | `rewarded_no_ads` | Rewarded | NOT USED (removed 2026-11-19) | Reward: 1 unit, name "NoAds3Days" (the app decides the 3 days) |
 
 Two extra units are NOT created: app-open (decided against) and rewarded-interstitial.
 
