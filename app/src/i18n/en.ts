@@ -60,9 +60,9 @@ export const en = {
     /** What the Saathi says for each phase. NEEDS DRASHTI REVIEW. */
     guide: {
       menstrual: 'Your period is here. Be kind to yourself today.',
-      follicular: 'Your body is getting ready for ovulation. Many women feel more energetic now.',
-      ovulation: 'Ovulation is likely around now. This is only my best guess.',
-      luteal: 'Your next period is getting closer. Some women feel tired or moody around now. That is normal.',
+      follicular: 'Your body is getting ready for ovulation. Some people feel more energetic around now; many notice nothing.',
+      ovulation: 'My guess is that ovulation is around now. It can be off by days or weeks.',
+      luteal: 'Your next period is getting closer. Some people feel tired or moody before a period. If it is strong or stops you doing daily things, tell a doctor.',
     } as Record<Phase, string>,
     fertileDays: 'Fertile days',
     expectedPeriod: 'Expected period',
@@ -73,7 +73,14 @@ export const en = {
     periodGoingOn: (name: string | null) => `Your period is here${name ? `, ${name}` : ''}. Be kind to yourself today.`,
     typical: (name: string | null, days: number) =>
       `${name ? `${name}, ` : ''}I do not know your own cycle yet, so I am using a typical ${days}-day cycle. Tell me about your next periods and I will learn yours.`,
-    late: 'Your period is a little late. This can happen. If you are worried, please talk to your doctor.',
+    /** Up to a week after my guess. NEEDS DRASHTI REVIEW. */
+    lateFew: 'Your period is a few days late. This can happen.',
+    /** More than a week after my guess. NEEDS DRASHTI REVIEW. */
+    lateMore: 'Your period is late. If there is any chance you are pregnant, a pregnancy test is a good next step. If it keeps being late, please talk to a doctor.',
+    /** No period told to the app for a long time. NEEDS DRASHTI REVIEW. */
+    silent: (days: number) => `I have not heard about a period for ${days} days. Did you forget to tell me about one? If not, please see a doctor.`,
+    /** When there is no phase to talk about (late, or no ovulation guess). */
+    keepLearning: 'I am learning your cycle. Tell me each time a period starts and my guesses will get better.',
     askFirstPeriod: (name: string | null) => `${name ? `Hi ${name}!` : 'Hi!'} Tell me the day your last period started. I will learn from it.`,
   },
 
@@ -90,6 +97,8 @@ export const en = {
     nameExample: 'e.g. Drashti',
     nameWhy: 'So I can say hello by name. You can change it later in Settings.',
     nameContinue: 'Continue',
+    ageTitle: 'How old are you?',
+    ageBody: 'I only use this to fit my notes to you, for example how long a cycle can be and still be common. You can change it later in Settings.',
     lastTitle: 'When did your last period start?',
     lastBody: 'Tell me the first day. A rough day is fine: you can change it later.',
     lastAction: 'Choose the day',
@@ -118,7 +127,10 @@ export const en = {
     basisTypical: (days: number) => `Based on a typical ${days}-day cycle. I will learn yours as you add periods.`,
     estimateTag: 'Estimate',
     typicalTag: 'Typical cycle',
-    ovulationAround: (date: string) => `Ovulation is likely around ${date} (a guess)`,
+    ovulationAround: (date: string) => `My guess is that ovulation is around ${date}. This can be off by days or weeks.`,
+    /** Why there is no ovulation guess for her. NEEDS DRASHTI REVIEW. */
+    noOvulationVary: 'Your cycles change from month to month, so I do not guess ovulation or fertile days.',
+    noOvulationYoung: 'When periods are new they often change from month to month, so I do not guess ovulation or fertile days.',
     fab: { first: 'Add my last period', start: 'Period started' },
     fabHelp: { first: 'Add the day your last period started', start: 'Tell me a period has started' },
     disclaimer: 'Guesses only. Not medical advice, and not birth control.',
@@ -128,7 +140,11 @@ export const en = {
       coming: (from: number, to: number) => (from === to ? `Your period may start in ${from} days` : `Your period may start in ${from} to ${to} days`),
       anyDayNow: 'Your period may start any day now',
       late: (n: number) => `${n} ${n === 1 ? 'day' : 'days'} later than my guess`,
-      lateHelp: 'This can happen. If you are worried, please talk to your doctor.',
+      lateHelpFew: 'This can happen.',
+      lateHelpMore: 'If there is any chance you are pregnant, please take a pregnancy test. If it keeps being late, please talk to a doctor.',
+      silent: (days: number) => `No period noted for ${days} days`,
+      silentHelp: 'Did a period come that I do not know about? Tell me the day it started. If not, and you are worried, please see a doctor.',
+      silentButton: 'Tell me about a period',
     },
     remindersOffer: {
       title: 'Want a gentle reminder?',
@@ -173,11 +189,12 @@ export const en = {
       no: 'No, go back',
     },
     startLongGap: {
-      title: (days: number) => `${days} days from your other periods`,
+      title: (days: number) => `${days} days from the closest period I know about`,
       body: 'A cycle can be missed or late (illness, stress, pregnancy, some medicines). Is that right?',
       yes: 'Yes, save it',
       no: 'No, go back',
     },
+    startTooOld: { title: 'That day is too long ago', body: (years: number) => `A start more than ${years} ${years === 1 ? 'year' : 'years'} ago would not help my guesses. Please pick a later day.` },
     noteEmpty: { title: 'Write something first', body: 'e.g. cramps, travelling, took medicine' },
     noteTooLong: { title: 'That note is too long', body: (max: number) => `Please keep it under ${max} letters.` },
   },
@@ -185,8 +202,10 @@ export const en = {
   /** Calm notes when something looks unusual: never a diagnosis. NEEDS DRASHTI REVIEW. */
   flags: {
     title: 'You may want to tell your doctor',
-    cycleShort: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most cycles are between ${min} and ${max} days.`,
-    cycleLong: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most cycles are between ${min} and ${max} days.`,
+    cycleShort: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most adults have cycles between ${min} and ${max} days.`,
+    cycleLong: (days: number, min: number, max: number) => `Your last cycle was ${days} days. Most adults have cycles between ${min} and ${max} days.`,
+    cycleLongYoung: (days: number, max: number) => `Your last cycle was ${days} days. When periods are new, cycles up to about ${max} days are common. If they stay this long after your first 2 to 3 years of periods, or you are worried, tell a doctor.`,
+    over40Note: 'Cycles often change in your 40s. It is still worth mentioning to a doctor.',
     variation: (days: number) => `Your cycles are not always the same length. They changed by ${days} days from the shortest to the longest.`,
     periodLate: (days: number) => `Your period is ${days} ${days === 1 ? 'day' : 'days'} later than I guessed.`,
   },
@@ -228,7 +247,7 @@ export const en = {
 
   cycles: {
     title: 'My cycles',
-    usual: 'Usual cycle',
+    usual: 'Typical cycle (middle value)',
     range: 'From–to',
     chartTitle: 'Your last cycles (days)',
     chartNote: (min: number, max: number) => `Dashed lines show ${min} and ${max} days.`,
@@ -239,6 +258,7 @@ export const en = {
     currentDay: (n: number) => `Day ${n} so far`,
     tagShort: 'Shorter than usual',
     tagLong: 'Longer than usual',
+    tagGap: 'Long gap',
     showDoctor: 'You can show this page to your doctor.',
     learning: 'These numbers become your own after a few cycles.',
   },
@@ -277,6 +297,15 @@ export const en = {
       },
       blockedTitle: 'Reminders are off on this phone',
       blockedBody: 'Please allow notifications for Cycle Saathi in your phone settings, then try again.',
+    },
+    ageGroup: {
+      title: 'Your age group',
+      help: 'So my notes fit you',
+      notSet: 'Not set',
+      sheetTitle: 'How old are you?',
+      sheetWhy: 'I only use this to fit my notes to you, for example how long a cycle can be and still be common.',
+      options: { under20: 'Under 20', adult: '20 to 39', over40: '40 and over' },
+      optionHelp: { under20: 'Periods are often not regular in the first years', adult: 'The usual guide for adults', over40: 'Cycles often change at this age' },
     },
     howTo: 'How to use Cycle Saathi',
     howToHelp: 'A quick tour with your Saathi',
@@ -332,7 +361,7 @@ export const en = {
     forName: (name: string) => `For ${name}`,
     madeOn: (date: string) => `Made on ${date}`,
     summary: 'Summary',
-    usualCycle: 'Usual cycle',
+    usualCycle: 'Typical cycle (middle value)',
     range: 'Shortest to longest',
     cyclesNoted: 'Cycles noted',
     history: 'Cycle history',

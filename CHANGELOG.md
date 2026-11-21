@@ -12,6 +12,11 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- A question "How old are you?" (under 20, 20 to 39, 40 and over; you can skip it), also in Settings. It only changes how wide "usual" is: for example cycles up to about 45 days are common in the first years of periods, and cycles often change in your 40s.
+- When a period is late the words now go further: a few days late is "this can happen"; more than a week late mentions a pregnancy test and seeing a doctor if it keeps being late.
+- After a long time with no period told (60 days; 90 for under 20 and 40 and over) Today stops showing a day number and a phase and asks "Did a period come that I do not know about?" with a button to tell it.
+- My cycles marks a very long cycle as "Long gap" and shows the cycle's label in words next to the icon.
+- A start more than a year ago is not accepted any more ("That day is too long ago").
 - Ads (test ads for now): a small banner above the bottom tabs, a compact "Ad" card in My cycles and the Calendar, and an occasional full-screen ad after saving a PDF report or earlier cycles (at most once a day, never in your first 3 days). Never while you are telling the app about a period.
 - Gentle reminders, made on your phone (nothing is sent anywhere): a heads-up before your period, "Did it start?", "Later than my guess", "Save a copy" and "Tell me about your last period". At most one a day, in the morning. The lock screen only says "A note from your Saathi" unless you choose to show details. Switch each one on or off in Settings, Reminders. Tapping a reminder opens the right screen.
 - Today now starts with the answer: "Your period may start in 3 to 9 days", "Period day 2" or "4 days later than my guess".
@@ -28,6 +33,11 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- The next-period range is never narrower than 3 days each side until you have 6 cycles (then 2), because even regular cycles vary by a few days.
+- "Typical cycle" is now the middle value of your cycles, so one very long or very short cycle does not change it. The next-period guess uses it too.
+- No ovulation or fertile-day guess for under 20 or when your cycles change by more than a week; Today says why. Other ovulation lines now say the guess can be off by days or weeks.
+- Gentler, more careful sentences: "Some people feel more energetic around now; many notice nothing", and tired or moody days now say to tell a doctor if it is strong. "Most adults have cycles between 21 and 35 days" for adults; under 20 is told that cycles up to about 45 days are common.
+- The question about a start far from your other periods now says "N days from the closest period I know about".
 - The privacy lines now say: "Your cycle information stays on this phone. There is no account. Ads come from Google and never get your cycle information."
 - There is no "period ended" any more. You only tell the app when a period started; a cycle runs from one start to the next. No end dates to add.
 - The Calendar is simpler: one soft colour per part of the cycle, days that have not come yet are softer, and a drop marks the day each cycle started. Tap a day to see "Day 9 of your cycle".

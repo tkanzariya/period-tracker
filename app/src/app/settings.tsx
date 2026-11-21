@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Switch, View } from 'react-native';
+import { AGE_GROUPS, type AgeGroup } from '../config/cycleRules';
 import { todayLocal } from '../domain/dates';
 import { STRINGS, type Language } from '../i18n';
 import { pickTextFile, saveTextFile, sharePdf } from '../platform/files';
@@ -31,6 +32,7 @@ export default function SettingsScreen() {
   const ads = useAds();
   const [langOpen, setLangOpen] = useState(false);
   const [nameOpen, setNameOpen] = useState(false);
+  const [ageOpen, setAgeOpen] = useState(false);
   const [name, setName] = useState('');
   const today = todayLocal();
 
@@ -101,6 +103,15 @@ export default function SettingsScreen() {
             setName(data.name ?? '');
             setNameOpen(true);
           }}
+        />
+        <Divider inset={56} />
+        <ListRow
+          icon="happy-outline"
+          title={S.settings.ageGroup.title}
+          subtitle={S.settings.ageGroup.help}
+          value={data.ageGroup ? S.settings.ageGroup.options[data.ageGroup] : S.settings.ageGroup.notSet}
+          chevron
+          onPress={() => setAgeOpen(true)}
         />
       </Card>
 
@@ -177,6 +188,21 @@ export default function SettingsScreen() {
       >
         {(Object.keys(STRINGS) as Language[]).map((l) => (
           <Button key={l} variant={l === language ? 'primary' : 'tonal'} icon={l === language ? 'checkmark' : undefined} label={STRINGS[l].languageName} onPress={() => void choose(l)} />
+        ))}
+      </Sheet>
+
+      <Sheet visible={ageOpen} onClose={() => setAgeOpen(false)} title={S.settings.ageGroup.sheetTitle}>
+        <T muted>{S.settings.ageGroup.sheetWhy}</T>
+        {AGE_GROUPS.map((g: AgeGroup) => (
+          <View key={g} style={{ gap: 2 }}>
+            <Button
+              variant={data.ageGroup === g ? 'primary' : 'tonal'}
+              icon={data.ageGroup === g ? 'checkmark' : undefined}
+              label={S.settings.ageGroup.options[g]}
+              onPress={() => { setAgeOpen(false); void data.saveAgeGroup(g); }}
+            />
+            <T kind="caption" muted center>{S.settings.ageGroup.optionHelp[g]}</T>
+          </View>
         ))}
       </Sheet>
 

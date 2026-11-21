@@ -41,6 +41,8 @@ export function describeIssue(issue: Issue, S: Strings, rules: CycleRules): Issu
         yes: text.startTooSoon.yes,
         no: text.startTooSoon.no,
       };
+    case 'start_too_old':
+      return { title: text.startTooOld.title, body: text.startTooOld.body(Math.round((d.days ?? 365) / 365) || 1) };
     case 'start_long_gap':
       return { title: text.startLongGap.title(d.days ?? 0), body: text.startLongGap.body, yes: text.startLongGap.yes, no: text.startLongGap.no };
     case 'note_empty':

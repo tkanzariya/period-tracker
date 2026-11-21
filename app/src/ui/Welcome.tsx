@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { AGE_GROUPS, type AgeGroup } from '../config/cycleRules';
 import { addDays, todayLocal, type DateStr } from '../domain/dates';
 import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
@@ -9,7 +10,7 @@ import { GuideAvatar } from './Guide';
 import { Button, Card, Chip, Field, Input, Screen, T } from './kit';
 import { Logo } from './Logo';
 
-type Step = 'intro' | 'name' | 'last' | 'history' | 'tour';
+type Step = 'intro' | 'name' | 'age' | 'last' | 'history' | 'tour';
 
 /**
  * First run: hello, privacy and "guesses only", her name, the start of her last period, then an offer
@@ -21,12 +22,14 @@ export function Welcome() {
   const today = todayLocal();
   const [step, setStep] = useState<Step>('intro');
   const [name, setName] = useState('');
+  const [age, setAge] = useState<AgeGroup | null>(null);
   const [last, setLast] = useState<DateStr | null>(null);
   const [date, setDate] = useState<DateStr>(addDays(today, -7));
   const [wantsHistory, setWantsHistory] = useState(false);
 
   async function finish(showTour: boolean) {
     if (name.trim()) await data.saveName(name);
+    if (age) await data.saveAgeGroup(age);
     if (last) await data.periodStarted(last, null);
     await data.markTourSeen();
     await data.markWelcomeDone();
@@ -61,8 +64,8 @@ export function Welcome() {
         onBack={() => setStep('intro')}
         footer={
           <>
-            <Button label={S.welcome.nameContinue} onPress={() => setStep('last')} disabled={!name.trim()} />
-            <Button variant="text" label={S.common.skip} onPress={() => { setName(''); setStep('last'); }} />
+            <Button label={S.welcome.nameContinue} onPress={() => setStep('age')} disabled={!name.trim()} />
+            <Button variant="text" label={S.common.skip} onPress={() => { setName(''); setStep('age'); }} />
           </>
         }
       >
@@ -77,11 +80,35 @@ export function Welcome() {
     );
   }
 
-  if (step === 'last') {
+  if (step === 'age') {
     return (
       <Screen
         back
         onBack={() => setStep('name')}
+        footer={
+          <>
+            <Button label={S.common.next} onPress={() => setStep('last')} disabled={!age} />
+            <Button variant="text" label={S.common.skip} onPress={() => { setAge(null); setStep('last'); }} />
+          </>
+        }
+      >
+        <T kind="title" center>{S.welcome.ageTitle}</T>
+        <T muted center>{S.welcome.ageBody}</T>
+        {AGE_GROUPS.map((g) => (
+          <View key={g} style={{ gap: 2 }}>
+            <Button variant={age === g ? 'primary' : 'tonal'} icon={age === g ? 'checkmark' : undefined} label={S.settings.ageGroup.options[g]} onPress={() => setAge(g)} />
+            <T kind="caption" muted center>{S.settings.ageGroup.optionHelp[g]}</T>
+          </View>
+        ))}
+      </Screen>
+    );
+  }
+
+  if (step === 'last') {
+    return (
+      <Screen
+        back
+        onBack={() => setStep('age')}
         footer={
           <>
             <Button label={S.common.next} onPress={() => { setLast(date); setStep('history'); }} />

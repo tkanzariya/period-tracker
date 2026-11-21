@@ -32,7 +32,7 @@ export function buildReportHtml(o: {
 
   const stat = (label: string, value: string) => `<div class="stat"><div class="lab">${esc(label)}</div><div class="val">${esc(value)}</div></div>`;
   const summary = [
-    stats ? stat(r.usualCycle, S.common.days(Math.round(stats.averageLength))) : '',
+    stats ? stat(r.usualCycle, S.common.days(Math.round(stats.medianLength))) : '',
     stats ? stat(r.range, `${stats.shortest}–${stats.longest}`) : '',
     stat(r.cyclesNoted, String(periods.length)),
   ].join('');

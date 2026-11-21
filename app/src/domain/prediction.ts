@@ -27,15 +27,17 @@ export function predictNextPeriod(periods: Period[], rules: CycleRules): Predict
 
   const sorted = sortPeriods(periods);
   const lastStart = sorted[sorted.length - 1].startDate;
-  const expectedStart = addDays(lastStart, Math.round(stats.averageLength));
-  const halfWidth = Math.max(rules.prediction.minRangeHalfWidthDays, Math.ceil(stats.stdDevDays));
+  // The middle value, so one very long or short cycle does not drag the guess away.
+  const expectedStart = addDays(lastStart, Math.round(stats.medianLength));
+  const minHalf = stats.count >= rules.prediction.manyCycles ? rules.prediction.minRangeHalfWidthManyDays : rules.prediction.minRangeHalfWidthDays;
+  const halfWidth = Math.max(minHalf, Math.ceil(stats.stdDevDays));
 
   return {
     expectedStart,
     earliestStart: addDays(expectedStart, -halfWidth),
     latestStart: addDays(expectedStart, halfWidth),
     basedOnCycles: stats.count,
-    averageLength: stats.averageLength,
+    averageLength: stats.medianLength,
     tentative: false,
   };
 }

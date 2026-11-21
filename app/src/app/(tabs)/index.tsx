@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { AdBanner } from '../../ads/AdBanner';
 import { todayLocal } from '../../domain/dates';
+import { canGuessOvulation, cycleStats } from '../../domain/cycles';
 import { getIrregularityFlags } from '../../domain/flags';
 import { getHeadline } from '../../domain/headline';
 import { getDayInfo } from '../../domain/phases';
@@ -40,8 +41,13 @@ export default function TodayScreen() {
     : headline.kind === 'coming' ? S.today.headline.coming(headline.fromDays, headline.toDays)
     : headline.kind === 'any_day_now' ? S.today.headline.anyDayNow
     : headline.kind === 'late' ? S.today.headline.late(headline.days)
+    : headline.kind === 'silent' ? S.today.headline.silent(headline.days)
     : null;
   const late = headline.kind === 'late';
+  const silent = headline.kind === 'silent';
+  // Why there is no ovulation guess (age group or cycles that vary a lot): said once, kindly.
+  const guessOk = canGuessOvulation(cycleStats(periods, rules), rules);
+  const noGuessNote = !guessOk && stage.kind !== 'none' && !silent ? (rules.ageGroup === 'under20' ? S.today.noOvulationYoung : S.today.noOvulationVary) : null;
   const offerReminders = stage.kind !== 'none' && !reminders.asked && !reminders.enabled;
   const doctorFlags = flags.filter((f) => f.code !== 'period_late');
 
@@ -51,18 +57,21 @@ export default function TodayScreen() {
   let guide: string;
   if (stage.kind === 'none') guide = S.guide.askFirstPeriod(name);
   else if (headline.kind === 'period_day') guide = S.guide.periodGoingOn(name);
-  else if (late) guide = S.guide.late;
+  else if (headline.kind === 'silent') guide = S.guide.silent(headline.days);
+  else if (headline.kind === 'late') guide = headline.few ? S.guide.lateFew : S.guide.lateMore;
   else if (prediction?.tentative) guide = S.guide.typical(name, rules.prediction.typicalCycleLengthDays);
-  else guide = info.phase ? S.phases.guide[info.phase] : S.guide.askFirstPeriod(name);
+  else guide = info.phase ? S.phases.guide[info.phase] : S.guide.keepLearning;
 
   return (
     <View style={{ flex: 1 }}>
       <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110} adSlot={<AdBanner onHeight={setBannerHeight} />}>
         {headlineText ? (
-          <Card tone={late ? 'attention' : 'primary'} style={{ gap: 4 }}>
+          <Card tone={late || silent ? 'attention' : 'primary'} style={{ gap: 4 }}>
             <T kind="heading">{headlineText}</T>
-            {late ? <T kind="caption" muted>{S.today.headline.lateHelp}</T> : null}
-            {prediction && headline.kind !== 'period_day' ? (
+            {headline.kind === 'late' ? <T kind="caption" muted>{headline.few ? S.today.headline.lateHelpFew : S.today.headline.lateHelpMore}</T> : null}
+            {silent ? <T kind="caption" muted>{S.today.headline.silentHelp}</T> : null}
+            {silent ? <Button small label={S.today.headline.silentButton} onPress={() => openTell({ mode: 'start' })} /> : null}
+            {prediction && headline.kind !== 'period_day' && !silent ? (
               <T kind="caption" muted>
                 {formatRange(prediction.earliestStart, prediction.latestStart, S)} · {prediction.tentative ? S.today.typicalTag : S.today.estimateTag}
               </T>
@@ -84,9 +93,9 @@ export default function TodayScreen() {
           />
         ) : null}
 
-        <GuideMessage text={guide} mood={stage.kind === 'none' ? 'wave' : late ? 'caring' : 'happy'} />
+        <GuideMessage text={guide} mood={stage.kind === 'none' ? 'wave' : late || silent ? 'caring' : 'happy'} />
 
-        {ring && info.cycleDay !== null ? (
+        {ring && info.cycleDay !== null && !silent ? (
           <Card style={{ alignItems: 'center', gap: 12, paddingVertical: 24 }}>
             <CycleRingView ring={ring} day={info.cycleDay}>
               <T kind="display" center numberOfLines={1} style={{ fontSize: 38, lineHeight: 44 }}>{S.today.dayOfCycle(info.cycleDay)}</T>
@@ -99,10 +108,11 @@ export default function TodayScreen() {
               </View>
             ) : null}
             {info.phase === 'follicular' && ovulation && today < ovulation ? <T muted center>{S.today.ovulationAround(formatShort(ovulation, S))}</T> : null}
+            {noGuessNote ? <T kind="caption" muted center>{noGuessNote}</T> : null}
           </Card>
         ) : null}
 
-        {prediction ? (
+        {prediction && !silent ? (
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <T muted>{S.today.nextTitle}</T>
@@ -116,7 +126,7 @@ export default function TodayScreen() {
         ) : null}
 
         {doctorFlags.map((flag) => (
-          <Notice key={flag.code} title={S.flags.title} body={flagText(flag, S, rules)} icon="medkit-outline" />
+          <Notice key={flag.code} title={S.flags.title} body={flagText(flag, S, rules) + (rules.ageGroup === 'over40' ? ' ' + S.flags.over40Note : '')} icon="medkit-outline" />
         ))}
 
         <Disclaimer text={S.today.disclaimer} />

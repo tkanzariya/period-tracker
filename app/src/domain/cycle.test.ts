@@ -69,8 +69,9 @@ describe('prediction', () => {
   it('predicts a range around the average for regular cycles', () => {
     const prediction = predictNextPeriod(regular, rules)!;
     expect(prediction.expectedStart).toBe('2026-10-21');
-    expect(prediction.earliestStart).toBe('2026-10-20');
-    expect(prediction.latestStart).toBe('2026-10-22');
+    // Never narrower than 3 days each side until she has many cycles (an honest range).
+    expect(prediction.earliestStart).toBe('2026-10-18');
+    expect(prediction.latestStart).toBe('2026-10-24');
     expect(prediction.basedOnCycles).toBe(3);
   });
   it('widens the range when cycles vary', () => {
@@ -135,8 +136,8 @@ describe('phases', () => {
   });
   it('flags the predicted period range and days late', () => {
     expect(getDayInfo('2026-10-21', regular, rules).isPredictedPeriod).toBe(true);
-    expect(getDayInfo('2026-10-18', regular, rules).isPredictedPeriod).toBe(false);
-    expect(getDayInfo('2026-10-25', regular, rules).daysLate).toBe(3);
+    expect(getDayInfo('2026-10-17', regular, rules).isPredictedPeriod).toBe(false);
+    expect(getDayInfo('2026-10-27', regular, rules).daysLate).toBe(3);
   });
   it('uses actual next start for past cycles', () => {
     // Cycle Jul 29 -> Aug 26: ovulation Aug 12
@@ -182,8 +183,8 @@ describe('irregularity flags', () => {
     expect(getIrregularityFlags(varied, '2026-04-02', rules).map((f) => f.code)).toContain('cycle_variation');
   });
   it('flags a late period only after the predicted range has passed', () => {
-    expect(getIrregularityFlags(regular, '2026-10-22', rules).map((f) => f.code)).not.toContain('period_late');
-    expect(getIrregularityFlags(regular, '2026-10-25', rules)).toContainEqual({ code: 'period_late', value: 3 });
+    expect(getIrregularityFlags(regular, '2026-10-24', rules).map((f) => f.code)).not.toContain('period_late');
+    expect(getIrregularityFlags(regular, '2026-10-27', rules)).toContainEqual({ code: 'period_late', value: 3 });
   });
   it('does not flag lateness once the new period is logged', () => {
     const periods = [...regular, p('2026-10-26')];

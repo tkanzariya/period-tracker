@@ -7,7 +7,7 @@ export function flagText(flag: IrregularityFlag, S: Strings, rules: CycleRules):
   const f = S.flags;
   switch (flag.code) {
     case 'cycle_short': return f.cycleShort(flag.value, rules.cycle.normalMinDays, rules.cycle.normalMaxDays);
-    case 'cycle_long': return f.cycleLong(flag.value, rules.cycle.normalMinDays, rules.cycle.normalMaxDays);
+    case 'cycle_long': return rules.ageGroup === 'under20' ? f.cycleLongYoung(flag.value, rules.cycle.normalMaxDays) : f.cycleLong(flag.value, rules.cycle.normalMinDays, rules.cycle.normalMaxDays);
     case 'cycle_variation': return f.variation(flag.value);
     case 'period_late': return f.periodLate(flag.value);
   }

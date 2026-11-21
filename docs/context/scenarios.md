@@ -1,6 +1,6 @@
 # What a user can and cannot do (problem scenarios)
 
-Last updated: 2026-11-18
+Last updated: 2026-11-21
 
 **There is no "period ended" in the app (Tirth, 2026-11-18).** A cycle starts on the day she says a period started and ends the day before the next start. The only thing she tells the app is "a period started on this day" (plus optional notes). The first 5 days of every cycle are drawn as the Bleeding phase (an estimate, never asked; `config/cycleRules.ts` `period.assumedLengthDays`, NEEDS DRASHTI REVIEW). Older end dates saved by earlier test builds stay in the backup file but are ignored.
 
@@ -24,6 +24,9 @@ Style: calm amber box inside the sheet (never red, never an Android popup), say 
 | S12 | First run, skipping name or last period | Allowed; the Saathi asks again on Today | "Hi! Tell me the day your last period started. I will learn from it." |
 | S13 | Starts told in any order | Sorted automatically | no message |
 | S14 | A period in the future when changing a start | Blocks | same as S1 |
+| S15 | Start more than a year ago (R1, Tirth 2026-11-21) | Blocks | "That day is too long ago" / "A start more than 1 year ago would not help my guesses. Please pick a later day." |
+| S16 | A period is late (M1) | Today words by days after my guess: up to 7 "a few days late, this can happen"; more than 7 mentions a pregnancy test and a doctor | see the review sheet, section C |
+| S17 | No period told for 60 days (90 under 20 and 40+) (M2) | No day number, no phase, no guess: "Did a period come that I do not know about?" with a button | "No period noted for N days" |
 
 ## First open and history (decided 2026-11-06, simplified 2026-11-18)
 | # | Situation | Decision |
@@ -37,7 +40,7 @@ Style: calm amber box inside the sheet (never red, never an Android popup), say 
 | F7 | Dates not in order | Sorted automatically. |
 
 ## Still open (Tirth to decide)
-- A start more than a year old is allowed without a question. OK?
+- A start more than a year old is not allowed (Tirth decided 2026-11-21).
 - Phone clock or time zone changes: "today" follows the phone, no warning. OK?
 - A note on a day with no period: allowed. OK?
 - Should the Bleeding days (first 5) be adjustable in Settings? Drashti to confirm 5.

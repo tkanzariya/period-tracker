@@ -22,7 +22,7 @@ describe('the Today headline', () => {
     expect(getHeadline(one, '2026-11-06', rules)).toEqual({ kind: 'any_day_now' });
   });
   it('says how many days later than the guess once the window has passed', () => {
-    expect(getHeadline(one, '2026-11-10', rules)).toEqual({ kind: 'late', days: 4 });
+    expect(getHeadline(one, '2026-11-10', rules)).toEqual({ kind: 'late', days: 4, few: true });
   });
   it('after a new start the late message goes away', () => {
     expect(getHeadline([p('2026-10-10'), p('2026-11-10')], '2026-11-18', rules).kind).toBe('coming');

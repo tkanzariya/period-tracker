@@ -11,7 +11,7 @@ import type { Period } from './types';
  *  - 'confirm': unusual but possible; the screen asks "is that right?" and she may go ahead
  * The wording for each code lives in the wording files (i18n), never here.
  */
-export type IssueCode = 'future_date' | 'start_already_logged' | 'start_too_soon' | 'start_long_gap' | 'note_empty' | 'note_too_long';
+export type IssueCode = 'future_date' | 'start_already_logged' | 'start_too_soon' | 'start_long_gap' | 'start_too_old' | 'note_empty' | 'note_too_long';
 
 export interface IssueData {
   date?: DateStr;
@@ -35,6 +35,8 @@ const confirm = (code: IssueCode, data: IssueData = {}): Issue => ({ severity: '
 /** Checks one start day against the other starts (`others` must not contain the period being checked). */
 function checkAgainst(date: DateStr, others: Period[], today: DateStr, rules: CycleRules): Issue | null {
   if (date > today) return block('future_date', { date });
+  // Far too long ago to be a real memory of a start: stop it (a typing slip such as the wrong year).
+  if (diffDays(date, today) > rules.checks.maxStartAgeDays) return block('start_too_old', { date, days: rules.checks.maxStartAgeDays });
 
   const same = others.find((p) => p.startDate === date);
   if (same) return block('start_already_logged', { periodId: same.id, start: same.startDate });

@@ -42,7 +42,7 @@ export default function MyCyclesScreen() {
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <View style={{ flex: 1 }}>
                   <T kind="caption" muted>{S.cycles.usual}</T>
-                  <T kind="heading">{S.common.days(Math.round(stats.averageLength))}</T>
+                  <T kind="heading">{S.common.days(Math.round(stats.medianLength))}</T>
                 </View>
                 <View style={{ flex: 1 }}>
                   <T kind="caption" muted>{S.cycles.range}</T>
@@ -81,11 +81,11 @@ export default function MyCyclesScreen() {
                   <ListRow
                     title={dates}
                     subtitle={row.cycleDays !== null ? S.common.days(row.cycleDays) : S.cycles.currentDay(diffDays(row.period.startDate, todayLocal()) + 1)}
-                    value={row.cycleDays === null ? S.cycles.current : undefined}
+                    value={row.cycleDays === null ? S.cycles.current : row.tag ? (row.tag === 'short' ? S.cycles.tagShort : row.tag === 'gap' ? S.cycles.tagGap : S.cycles.tagLong) : undefined}
                     accessibilityLabel={`${S.change.title}: ${dates}`}
                     onPress={() => openChange(row.period.id)}
                     chevron
-                    right={row.tag ? <Ionicons name="information-circle" size={20} color={t.attention} accessibilityLabel={row.tag === 'short' ? S.cycles.tagShort : S.cycles.tagLong} /> : undefined}
+                    right={row.tag ? <Ionicons name="information-circle" size={20} color={t.attention} accessibilityLabel={row.tag === 'short' ? S.cycles.tagShort : row.tag === 'gap' ? S.cycles.tagGap : S.cycles.tagLong} /> : undefined}
                   />
                 </View>
               );

@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import { useSQLiteContext } from 'expo-sqlite';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform } from 'react-native';
-import { DEFAULT_CYCLE_RULES, type CycleRules } from '../config/cycleRules';
+import { AGE_GROUPS, rulesForAge, type AgeGroup, type CycleRules } from '../config/cycleRules';
 import { exportBackupText, restoreBackupText, type RestoreResult } from '../db/backup';
 import {
   addPeriod,
@@ -41,12 +41,16 @@ interface DataValue {
   notes: DailyLog[];
   /** What she likes to be called; null until she tells the app. */
   name: string | null;
+  /** The rules for her age group (adult until she says otherwise). */
   rules: CycleRules;
+  /** The age group she picked; null when she has not (or skipped). */
+  ageGroup: AgeGroup | null;
   loading: boolean;
   /** The welcome (hello, privacy, name, last period) has been done, or she already uses the app. */
   welcomeDone: boolean;
   tourSeen: boolean;
   saveName(name: string): Promise<void>;
+  saveAgeGroup(group: AgeGroup | null): Promise<void>;
   markWelcomeDone(): Promise<void>;
   markTourSeen(): Promise<void>;
   periodStarted(date: DateStr, note: string | null, options?: Options): Promise<ActionResult>;
@@ -68,23 +72,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [periods, setPeriods] = useState<Period[]>([]);
   const [notes, setNotes] = useState<DailyLog[]>([]);
   const [name, setName] = useState<string | null>(null);
+  const [ageGroup, setAgeGroup] = useState<AgeGroup | null>(null);
   const [welcomeFlag, setWelcomeFlag] = useState(false);
   const [tourSeen, setTourSeen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const rules = DEFAULT_CYCLE_RULES;
+  const rules = useMemo(() => rulesForAge(ageGroup), [ageGroup]);
 
   const reload = useCallback(async () => {
-    const [p, n, savedName, welcome, tour] = await Promise.all([
+    const [p, n, savedName, welcome, tour, age] = await Promise.all([
       listPeriods(db),
       listDailyLogs(db),
       getSetting(db, 'display_name'),
       getSetting(db, 'welcome_done'),
       getSetting(db, 'tour_seen'),
+      getSetting(db, 'age_group'),
     ]);
     // There is no "period end" any more: ignore end dates saved by older versions (they stay in the file).
     setPeriods(p.map((x) => ({ ...x, endDate: null })));
     setNotes(n);
     setName(savedName);
+    setAgeGroup(AGE_GROUPS.find((g) => g === age) ?? null);
     setWelcomeFlag(welcome === '1');
     setTourSeen(tour === '1');
     setLoading(false);
@@ -122,12 +129,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
       notes,
       name,
       rules,
+      ageGroup,
       loading,
       // Anyone who already has a name or periods has long since been welcomed.
       welcomeDone: welcomeFlag || name !== null || periods.length > 0,
       tourSeen,
       async saveName(newName) {
         await setSetting(db, 'display_name', newName.trim());
+        await reload();
+      },
+      async saveAgeGroup(group) {
+        await setSetting(db, 'age_group', group ?? '');
         await reload();
       },
       async markWelcomeDone() {
@@ -224,7 +236,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return result;
       },
     };
-  }, [db, periods, notes, name, rules, loading, welcomeFlag, tourSeen, reload]);
+  }, [db, periods, notes, name, rules, ageGroup, loading, welcomeFlag, tourSeen, reload]);
 
   // Developer helper for the browser preview only: lets a test script load a backup file's text.
   useEffect(() => {

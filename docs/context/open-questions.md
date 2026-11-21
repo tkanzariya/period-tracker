@@ -23,4 +23,5 @@ Last updated: 2026-11-21
 | 6 | Should the app lock (PIN/biometric) from v1? | Tirth + Drashti |
 | 7 | Is this app for tracking only, or also contraception/fertility use? Affects wording and risk. | Drashti |
 | 1r | AdMob: real App ID, six ad unit IDs, consent message, payments done and Play listing + `app-ads.txt` (`admob-setup.md`). Test ads only until then. | Tirth |
-| 1s | **Audit findings (2026-11-21)** are items M1 to M10 in `improvements.md`. Drashti to review the health items and every threshold (the "Needs Drashti" tag); Tirth to approve or comment per item in `docs/review/improvements.html`. | Drashti + Tirth |
+| 1s | **Audit findings (2026-11-21)**: M1 to M6, M8, M9 are built in the test build (see `improvements.md`). Drashti: open `docs/review/cycle-review.html` (rebuilt with pictures and examples), mark Looks right / Needs a change, especially every "Needs your yes" box (age ranges 45 / 35, silence 60 / 90 days, "a few days late" 7 days, range 3 then 2 days, no ovulation guess under 20, middle-value cycle, new sentences). | Drashti |
+| 1t | **To discuss with Tirth:** M7 ("When to see a doctor" and heavy bleeding), F2 (patterns from her data), C1 (optional account and cloud backup: which service, cost, privacy). | Tirth |

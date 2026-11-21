@@ -1,5 +1,5 @@
 import type { CycleRules } from '../config/cycleRules';
-import { cycleStats, isRegular, sortPeriods } from './cycles';
+import { canGuessOvulation, cycleStats, isRegular, sortPeriods } from './cycles';
 import { addDays, diffDays, type DateStr } from './dates';
 import { predictWithFallback } from './prediction';
 import type { Period, Phase } from './types';
@@ -73,6 +73,19 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
   if (nextStart === null) return info;
   info.isTentative = !!prediction?.tentative && !inPeriod;
 
+  // After a long silence (no new start for many days) a phase would be made up: show none.
+  const silent = info.cycleDay !== null && info.cycleDay > rules.silence.noPhaseAfterDays;
+  // Ovulation and the phases after bleeding are only guessed when that is honest (age group, regular enough cycles).
+  const mayGuess = !silent && canGuessOvulation(cycleStats(sorted, rules), rules);
+  if (!mayGuess) {
+    if (prediction && !silent) {
+      const predictedEnd = addDays(prediction.earliestStart, rules.period.assumedLengthDays - 1 + diffDays(prediction.earliestStart, prediction.latestStart));
+      info.isPredictedPeriod = date >= prediction.earliestStart && date <= predictedEnd;
+      if (date > prediction.latestStart) info.daysLate = diffDays(prediction.latestStart, date);
+    }
+    return info;
+  }
+
   const ovulationDay = addDays(nextStart, -rules.ovulation.lutealPhaseDays);
   const ovulationStart = addDays(ovulationDay, -rules.ovulation.phaseDaysBefore);
   const ovulationEnd = addDays(ovulationDay, rules.ovulation.phaseDaysAfter);
@@ -96,7 +109,11 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
   if (prediction) {
     const predictedEnd = addDays(prediction.earliestStart, rules.period.assumedLengthDays - 1 + (diffDays(prediction.earliestStart, prediction.latestStart)));
     info.isPredictedPeriod = date >= prediction.earliestStart && date <= predictedEnd;
-    if (date > prediction.latestStart) info.daysLate = diffDays(prediction.latestStart, date);
+    if (date > prediction.latestStart) {
+      info.daysLate = diffDays(prediction.latestStart, date);
+      // Past the days I expected a period, "Luteal" would be made up: show lateness instead of a phase.
+      if (!inPeriod) info.phase = null;
+    }
   }
 
   return info;
