@@ -1,6 +1,6 @@
 # Improvements: the one list
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 This is the **only** place for planned improvements (it replaces `improvement-plan.md`, the improvement parts of `ux-standards.md` section 10, the Unreleased ideas in `roadmap.md` and `features.md`, and the to-do parts of the 2026-11-21 audit). Every item says **what is happening now** and **what we will change**.
 
@@ -98,9 +98,9 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Nothing in the app says when bleeding, pain or bleeding between periods needs a doctor. Because period end was removed on 2026-11-18, a period lasting more than 7 days cannot be noticed at all. Pads per day is still COMING SOON.
 - **Change:** A short "When to see a doctor" page (changing a pad every 1 to 2 hours, clots over 2.5 cm, bleeding between periods or after sex, bleeding over 7 days, severe pain, no period for 3 months). Then, with the day check-in (F1), a one-tap "heavy" and "bleeding longer than 7 days" check that turns into one plain line for the doctor report (merges old X4 heavy-bleeding helper). Keeps the COMING SOON promise for pads per day.
 - **Source:** audit C, D6, F1, G5; plan X4
-- **Status:** Discuss
-- **Decision:** Discuss
-- **Comment:**
+- **Status:** Later
+- **Decision:** Later
+- **Comment:** Keep for later.
 
 ### M8. Mood and energy lines sound surer than the evidence
 - **Area:** Today (phase lines), Calendar day sheet
@@ -150,7 +150,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Partly fixed (the button now sits above the ad strip). The page still has no extra bottom room, so the last card can sit under the button.
 - **Change (Tirth's decision):** no floating button any more. The main action ("Period started" / "Add my last period") becomes a round button in the centre of the bottom tab bar, like HomeHisab's. Copy HomeHisab's look after checking it on the phone.
 - **Source:** plan U2
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:** Instead of the floating button, keep it in the centre of the bottom nav bar. Check the HomeHisab app on the phone.
 
@@ -162,7 +162,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** For a new user the order is headline, "Want a gentle reminder?" card, Saathi bubble, ring. With the banner ad there is little of the answer left on the first screen.
 - **Change:** Move the reminder offer to the bottom of Today (or a one-time popup after day 2). Keep the ring and next period in view first. The ad banner stays exactly where it is (above the tab bar); only the cards move.
 - **Source:** audit A, E (Today, Ads), G7
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:** Approve, but the ad placement should not move.
 
@@ -174,7 +174,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** The colours of the ring are not explained on Today and the arcs cannot be tapped.
 - **Change:** Tap an arc to see its phase in a small popup; show the expected-period arc.
 - **Source:** plan U5
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:**
 
@@ -186,7 +186,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Recorded days and guessed days differ only by being fainter. The legend names the colours but not what they mean.
 - **Change:** Guessed days get a dashed edge and the word "guess" in the legend; the ovulation day gets a ring; tap a legend chip to read a one-line meaning (the day sheet already explains each day well and stays).
 - **Source:** plan U6; audit E (Calendar), G8
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:**
 
@@ -198,7 +198,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Months change only with the arrows; there is no quick way back to today.
 - **Change:** A "Today" chip, and swipe left or right between months.
 - **Source:** plan U7
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:**
 
@@ -210,7 +210,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** The "unusual" mark is an icon alone, and all bars are one colour.
 - **Change:** Icon plus words ("Longer than usual"); unusual bars in the amber tone; a line for her typical length; filter (last 6 / 12 cycles / all) and the trend numbers next to the chart (old UX item B6).
 - **Source:** plan U9; ux B6
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:**
 
@@ -222,7 +222,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Each earlier cycle is a tall card, and every back-dated date needs several taps in the calendar.
 - **Change:** One compact row per cycle (date plus quick chips like "3 weeks ago"), same chips as the welcome step.
 - **Source:** plan U10; audit E (Tell me / Add earlier cycles)
-- **Status:** Approved
+- **Status:** Built
 - **Decision:** Approve
 - **Comment:**
 
@@ -234,7 +234,7 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** The app has no permission list set, so Android may get extra permissions by default (internet is needed for ads, but storage and overlay are not). Not reviewed in a health-privacy app.
 - **Change:** List the permissions in the built APK, block every one not needed, and say so in the privacy text.
 - **Source:** ux A4
-- **Status:** Approved
+- **Status:** Built (check on the next phone build)
 - **Decision:** Approve
 - **Comment:**
 
@@ -262,9 +262,9 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Now:** Nothing is learned from what she records beyond cycle length.
 - **Change:** Lines such as "Cramps usually come on day 1 and 2" or "Headaches often come 2 days before your period", shown the day before they usually happen. Only after enough entries.
 - **Source:** plan F2
-- **Status:** Discuss
-- **Decision:** Discuss
-- **Comment:** Need to understand the new behaviour in detail, with an example.
+- **Status:** Later
+- **Decision:** Later
+- **Comment:** Keep for later.
 
 ### X1. "Will I have my period on...?" date checker
 - **Area:** New screen
@@ -368,11 +368,11 @@ Sources: `audit` = `docs/review/audit-usability-medical-2026-11-21.md` (kept as 
 - **Needs Drashti:** No (Tirth decides cost and privacy)
 - **Suggested for:** to be decided
 - **Now:** Backup is a file she saves and restores by hand (Settings, "Save a copy"). Nothing leaves the phone and there are no accounts.
-- **Change:** Tirth wants an optional account so she can save her data in the cloud and reconnect it on a new phone (this replaces the rejected "monthly copy to a folder"). **This changes the promise "your cycle information stays on this phone" and the zero-cost rule, so it needs a decision first:** which service (for example Google sign-in with a private backup in her own Google Drive, which costs nothing and the app's maker never sees the data, or Firebase with our own servers, which has a free tier but we would hold her health data), end-to-end encryption, and the privacy wording and Play Data safety form. Claude will bring a short comparison before any building.
+- **Change:** An optional Google sign-in so her data is saved online and comes back on a new phone (Tirth: we will build this, later; the data stays somewhere online). Still to decide before building: where exactly the data lives (her own Google Drive app folder costs nothing and we never see it; our own server would hold her health data), encryption, the privacy wording ("stays on this phone" changes), the Play Data safety form, and cost. Claude brings a short comparison first.
 - **Source:** Tirth 2026-11-21
-- **Status:** Discuss
-- **Decision:** Discuss
-- **Comment:**
+- **Status:** Later
+- **Decision:** Later
+- **Comment:** We will build this, but later. Google sign-in, and the data stays somewhere online.
 
 ---
 
@@ -492,9 +492,9 @@ Placement (banner above the tabs, native cards in My cycles and Calendar, a full
 - **Needs Drashti:** Yes (is 5 right?, question 1m)
 - **Suggested for:** later
 - **Now:** The first 5 days of every cycle are drawn as Bleeding and cannot be changed (`period.assumedLengthDays`).
-- **Change (Tirth's decision, reverses the 2026-11-18 "no period end" rule in a safe form):** keep 5 days as the default. In "Change this period" and in the Calendar day sheet she may add "Bleeding ended on..."; if she does, that length is used for the Bleeding phase and for "bleeding more than 7 days" (M7), otherwise 5. It is never asked at start, there is no "Period ended" button, and a new start is never turned into an end (the cause of the 10 Oct / 10 Nov mix-up).
+- **Change (Tirth, clarified 2026-11-21: this only marks which days were the bleeding days; nothing else changes):** 5 days stay the default. In "Change this period" she may say how many days the bleeding lasted (2 to 8, or "Not sure"). Those days are coloured as Bleeding instead of 5. It never ends the cycle (a cycle still runs from one start to the next), it is never asked at the start, and there is no "Period ended" button. A mark that makes no sense (longer than 10 days, or reaching the next start) is ignored.
 - **Source:** scn; open question 1m
-- **Status:** Approved
+- **Status:** Built, Drashti to review
 - **Decision:** Approve
 - **Comment:** Keep default 5 but give the option to add when bleeding ended. If she adds it we use that, if not we keep the default 5.
 
@@ -519,7 +519,8 @@ Placement (banner above the tabs, native cards in My cycles and Calendar, a full
 - Period end removed; cycles run start to next start (2026-11-18).
 - Ads built with test ads: banner, native cards, full-screen after PDF share and after saving earlier cycles; rewarded "no ads" removed (2026-11-19).
 - Decisions of 2026-11-21 recorded for 36 items (see `decisions-log.md`).
-- Built 2026-11-21 (test build, not released): M1 to M6, M8, M9 (late, silence, age group, ovulation, range, typical cycle, wording), R1 (no start older than a year), and the improved review sheet (M10).
+- Built 2026-11-21 (second batch): U2 (round "Tell me" button in the middle of the bottom bar, with Settings in the bar; no floating button or gear), U12 (reminder offer moved below the answer; ad banner stays where it was), U5 (tap a ring colour to read it; the expected-period arc), U6 and U7 (Calendar: dashed edge for guesses, ring on ovulation day, tap a colour in the key, "Back to today", swipe between months), U9 (My cycles: Last 6 / 12 / All, amber bars, typical line), U10 (Earlier cycles: compact rows and "weeks ago" chips), R4 (mark how many days the bleeding lasted), U13 (unneeded Android permissions blocked; needs the next build to check).
+- Built 2026-11-21 (first batch, test build, not released): M1 to M6, M8, M9 (late, silence, age group, ovulation, range, typical cycle, wording), R1 (no start older than a year), and the improved review sheet (M10).
 - In-place updates keep her data (same package, same signing key, higher versionCode).
 
 ## Rejected (do not re-propose without a new reason)

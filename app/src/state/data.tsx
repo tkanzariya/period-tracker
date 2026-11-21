@@ -17,7 +17,8 @@ import {
   updatePeriod,
 } from '../db/repository';
 import { periodsToCsv } from '../domain/backup';
-import { todayLocal, type DateStr } from '../domain/dates';
+import { cleanBleedingMarks } from '../domain/cycles';
+import { addDays, diffDays, todayLocal, type DateStr } from '../domain/dates';
 import type { DailyLog, Period } from '../domain/types';
 import { checkHistory, checkNote, checkPeriodEdit, checkPeriodStart, type HistoryEntry, type Issue } from '../domain/validation';
 
@@ -58,7 +59,8 @@ interface DataValue {
   addHistory(entries: HistoryEntry[], options?: Options): Promise<ActionResult>;
   saveNote(date: DateStr, note: string): Promise<ActionResult>;
   removeNote(date: DateStr): Promise<ActionResult>;
-  changePeriod(id: string, startDate: DateStr, options?: Options): Promise<ActionResult>;
+  /** `bleedingDays`: how long the bleeding lasted (optional mark); null or left out = not marked (5 days are drawn). */
+  changePeriod(id: string, startDate: DateStr, options?: Options & { bleedingDays?: number | null }): Promise<ActionResult>;
   removePeriod(id: string): Promise<ActionResult>;
   backupText(): Promise<string>;
   csvText(): string;
@@ -87,8 +89,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       getSetting(db, 'tour_seen'),
       getSetting(db, 'age_group'),
     ]);
-    // There is no "period end" any more: ignore end dates saved by older versions (they stay in the file).
-    setPeriods(p.map((x) => ({ ...x, endDate: null })));
+    // There is no "period end": a saved end date is only a mark of how many days the bleeding lasted, and is
+    // ignored when it makes no sense (too long, or reaching the next period, as older test builds could save).
+    setPeriods(cleanBleedingMarks(p, rulesForAge(null)));
     setNotes(n);
     setName(savedName);
     setAgeGroup(AGE_GROUPS.find((g) => g === age) ?? null);
@@ -211,10 +214,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (issue && (issue.severity === 'block' || !options?.confirmed)) return { ok: false, issue };
         const old = periods.find((p) => p.id === id);
         if (!old) return failed;
+        const days = options?.bleedingDays;
+        const endDate = days === undefined ? (old.endDate ? addDays(startDate, diffDays(old.startDate, old.endDate)) : null) : days ? addDays(startDate, days - 1) : null;
         return run(async () => {
-          await updatePeriod(db, id, { startDate });
+          await updatePeriod(db, id, { startDate, endDate });
           return async () => {
-            await updatePeriod(db, id, { startDate: old.startDate });
+            await updatePeriod(db, id, { startDate: old.startDate, endDate: old.endDate });
           };
         });
       },

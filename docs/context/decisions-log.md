@@ -1,6 +1,6 @@
 # Decisions Log (append-only)
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 ## 2026-10-26
 - Project goal set: cycle-tracking app for Drashti, built solo by Tirth. Start with basic tracking, then improve.
@@ -133,4 +133,9 @@ Last updated: 2026-11-21
 - **Built the same day (test build, not released):** age question (Welcome and Settings) and `rulesForAge`; late wording by days (a few days / more than a week, pregnancy test mentioned); after 60 days (90 for under 20 and 40+) with no period told, no day number or phase and a "did it come?" card; no ovulation, fertile days or phases after bleeding for under 20 or cycles varying more than 7 days (said on Today); next-period range at least 3 days each side until 6 cycles (then 2); typical cycle is the median and also drives the prediction; "Long gap" mark in My cycles; softer mood and ovulation sentences; start older than 1 year blocked. 222 tests. The review sheet `docs/review/cycle-review.html` was rebuilt with pictures, worked examples and source links.
 - **Why built before Drashti's review:** every number is marked NEEDS DRASHTI REVIEW and the build is only for her to test; nothing is released publicly without her yes.
 - **Not built yet:** U2 centre button and the other screen items, F1 check-in and everything else approved; M7 and F2 await discussion; C1 awaits a decision.
+
+## 2026-11-21 (later): Tirth's answers on M7, F2, R4, C1; screens batch built
+- **Decisions:** M7 "When to see a doctor" and heavy bleeding: Later. F2 patterns: Later. C1 optional cloud save: we will build it later, with Google sign-in and the data kept online (still to decide where, cost and privacy wording). R4 is not a change to cycles: it only marks which days were the bleeding days (5 by default, her own number if she gives it); this replaces my earlier wording that called it a partial return of the period end.
+- **Built:** U2 round "Tell me" button in the middle of the bottom bar (Today, Calendar, Tell me, My cycles, Settings), copied from HomeHisab's bar; no floating button or gear. U12 reminder offer moved below the answer, ad strip unchanged. U5 tap a ring colour, plus the expected-period arc. U6/U7 Calendar dashed guesses, ovulation ring, key taps, Back to today, swipe. U9 My cycles filter, amber bars, typical line. U10 Earlier cycles compact rows and weeks-ago chips. R4 bleeding-days mark (stored in the old end-date field and ignored when nonsensical). U13 unneeded permissions blocked in `app.json` (not yet checked in a built APK). 227 tests; screenshots checked in the browser preview.
+- **Not verified:** the new bar and screens on the phone; the permission change in a real build; swipe on a touch screen.
 

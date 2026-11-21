@@ -52,7 +52,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
 <body>
 <div class="wrap">
 <h1>Cycle Saathi: improvements</h1>
-<p class="note">Built from <code>docs/context/improvements.md</code> (2026-11-21). Nothing here is built until you approve it.</p>
+<p class="note">Built from <code>docs/context/improvements.md</code> (2026-11-22). Nothing here is built until you approve it.</p>
 <div class="how">
   <p><b>How to use:</b> for each item read <i>Happening now</i> and <i>What we will change</i>, then pick one:</p>
   <p><b>Approve</b> = build it (items marked "Needs Drashti" wait for her yes first) · <b>Later</b> = keep on the list · <b>Reject</b> = drop it · <b>Discuss</b> = talk before building. Add a comment if you want. Your picks are saved in this browser while you work. When done press <b>Copy my decisions</b> and paste it to Claude.</p>
@@ -207,7 +207,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M6"></textarea>
 </article>
-<article class="item" data-id="M7" data-prio="high" data-status="discuss">
+<article class="item" data-id="M7" data-prio="high" data-status="later">
   <header>
     <span class="id">M7</span>
     <h3>&quot;When to see a doctor&quot;, and a heavy or long bleeding check</h3>
@@ -217,7 +217,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">New page, Settings &gt; Good to know, day check-in</span>
     <span class="chip">0.3.0 (the page); the check-in goes with F1</span>
     <span class="chip drashti">Needs Drashti</span>
-    <span class="chip status">Discuss</span>
+    <span class="chip status">Later</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Nothing in the app says when bleeding, pain or bleeding between periods needs a doctor. Because period end was removed on 2026-11-18, a period lasting more than 7 days cannot be noticed at all. Pads per day is still COMING SOON.</p></div>
@@ -225,10 +225,10 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </div>
   <p class="src">Source: audit C, D6, F1, G5; plan X4</p>
   <fieldset class="choices" aria-label="Your decision for M7">
-    <label class="opt o-approve"><input type="radio" name="d-M7" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M7" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M7" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M7" value="Discuss" checked><span>Discuss</span></label>
+    <label class="opt o-approve"><input type="radio" name="d-M7" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M7" value="Later" checked><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M7" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M7" value="Discuss"><span>Discuss</span></label>
     <button type="button" class="clear" data-clear="M7">Clear</button>
   </fieldset>
-  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M7"></textarea>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M7">Keep for later.</textarea>
 </article>
 <article class="item" data-id="M8" data-prio="medium" data-status="built, drashti to review">
   <header>
@@ -299,7 +299,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M10">Draft a simple doc for her to review that is easy to understand, maybe use examples/diagrams. Do not make a separate doc; improve the same doc.</textarea>
 </article></section><section><h2>B. Screens: what to fix</h2>
-<article class="item" data-id="U2" data-prio="medium" data-status="approved">
+<article class="item" data-id="U2" data-prio="medium" data-status="built">
   <header>
     <span class="id">U2</span>
     <h3>The floating button covers the next-period card</h3>
@@ -309,7 +309,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Today</span>
     <span class="chip">0.3.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Partly fixed (the button now sits above the ad strip). The page still has no extra bottom room, so the last card can sit under the button.</p></div>
@@ -322,7 +322,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U2">Instead of the floating button, keep it in the centre of the bottom nav bar. Check the HomeHisab app on the phone.</textarea>
 </article>
-<article class="item" data-id="U12" data-prio="medium" data-status="approved">
+<article class="item" data-id="U12" data-prio="medium" data-status="built">
   <header>
     <span class="id">U12</span>
     <h3>Today: the answer should come first, with no cards in the way</h3>
@@ -332,7 +332,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Today</span>
     <span class="chip">0.3.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>For a new user the order is headline, &quot;Want a gentle reminder?&quot; card, Saathi bubble, ring. With the banner ad there is little of the answer left on the first screen.</p></div>
@@ -345,7 +345,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U12">Approve, but the ad placement should not move.</textarea>
 </article>
-<article class="item" data-id="U5" data-prio="nice" data-status="approved">
+<article class="item" data-id="U5" data-prio="nice" data-status="built">
   <header>
     <span class="id">U5</span>
     <h3>Tap a ring arc to read what it means</h3>
@@ -355,7 +355,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Today ring</span>
     <span class="chip">0.4.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>The colours of the ring are not explained on Today and the arcs cannot be tapped.</p></div>
@@ -368,7 +368,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U5"></textarea>
 </article>
-<article class="item" data-id="U6" data-prio="medium" data-status="approved">
+<article class="item" data-id="U6" data-prio="medium" data-status="built">
   <header>
     <span class="id">U6</span>
     <h3>Calendar: make guesses look different from facts</h3>
@@ -378,7 +378,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Calendar</span>
     <span class="chip">0.3.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Recorded days and guessed days differ only by being fainter. The legend names the colours but not what they mean.</p></div>
@@ -391,7 +391,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U6"></textarea>
 </article>
-<article class="item" data-id="U7" data-prio="nice" data-status="approved">
+<article class="item" data-id="U7" data-prio="nice" data-status="built">
   <header>
     <span class="id">U7</span>
     <h3>Calendar: back to today, swipe between months</h3>
@@ -401,7 +401,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Calendar</span>
     <span class="chip">0.4.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Months change only with the arrows; there is no quick way back to today.</p></div>
@@ -414,7 +414,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U7"></textarea>
 </article>
-<article class="item" data-id="U9" data-prio="medium" data-status="approved">
+<article class="item" data-id="U9" data-prio="medium" data-status="built">
   <header>
     <span class="id">U9</span>
     <h3>My cycles: say &quot;longer than usual&quot; in words</h3>
@@ -424,7 +424,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">My cycles</span>
     <span class="chip">0.3.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>The &quot;unusual&quot; mark is an icon alone, and all bars are one colour.</p></div>
@@ -437,7 +437,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U9"></textarea>
 </article>
-<article class="item" data-id="U10" data-prio="nice" data-status="approved">
+<article class="item" data-id="U10" data-prio="nice" data-status="built">
   <header>
     <span class="id">U10</span>
     <h3>Earlier cycles: compact rows and &quot;weeks ago&quot; chips</h3>
@@ -447,7 +447,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Add earlier cycles</span>
     <span class="chip">0.4.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Each earlier cycle is a tall card, and every back-dated date needs several taps in the calendar.</p></div>
@@ -460,7 +460,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U10"></textarea>
 </article>
-<article class="item" data-id="U13" data-prio="medium" data-status="approved">
+<article class="item" data-id="U13" data-prio="medium" data-status="built (check on the next phone build)">
   <header>
     <span class="id">U13</span>
     <h3>Block permissions the app does not need</h3>
@@ -470,7 +470,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Android build (`app.json`)</span>
     <span class="chip">0.3.0</span>
     
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built (check on the next phone build)</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>The app has no permission list set, so Android may get extra permissions by default (internet is needed for ads, but storage and overlay are not). Not reviewed in a health-privacy app.</p></div>
@@ -506,7 +506,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for F1"></textarea>
 </article>
-<article class="item" data-id="F2" data-prio="medium" data-status="discuss">
+<article class="item" data-id="F2" data-prio="medium" data-status="later">
   <header>
     <span class="id">F2</span>
     <h3>Patterns from her own data</h3>
@@ -516,7 +516,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Today</span>
     <span class="chip">0.3.0 (needs F1 data first)</span>
     <span class="chip drashti">Needs Drashti</span>
-    <span class="chip status">Discuss</span>
+    <span class="chip status">Later</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Nothing is learned from what she records beyond cycle length.</p></div>
@@ -524,10 +524,10 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </div>
   <p class="src">Source: plan F2</p>
   <fieldset class="choices" aria-label="Your decision for F2">
-    <label class="opt o-approve"><input type="radio" name="d-F2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-F2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-F2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-F2" value="Discuss" checked><span>Discuss</span></label>
+    <label class="opt o-approve"><input type="radio" name="d-F2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-F2" value="Later" checked><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-F2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-F2" value="Discuss"><span>Discuss</span></label>
     <button type="button" class="clear" data-clear="F2">Clear</button>
   </fieldset>
-  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for F2">Need to understand the new behaviour in detail, with an example.</textarea>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for F2">Keep for later.</textarea>
 </article>
 <article class="item" data-id="X1" data-prio="medium" data-status="approved">
   <header>
@@ -713,7 +713,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for L2"></textarea>
 </article>
-<article class="item" data-id="C1" data-prio="medium" data-status="discuss">
+<article class="item" data-id="C1" data-prio="medium" data-status="later">
   <header>
     <span class="id">C1</span>
     <h3>Optional account and cloud backup</h3>
@@ -723,18 +723,18 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Settings, backup</span>
     <span class="chip">to be decided</span>
     
-    <span class="chip status">Discuss</span>
+    <span class="chip status">Later</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>Backup is a file she saves and restores by hand (Settings, &quot;Save a copy&quot;). Nothing leaves the phone and there are no accounts.</p></div>
-    <div><h4>What we will change</h4><p>Tirth wants an optional account so she can save her data in the cloud and reconnect it on a new phone (this replaces the rejected &quot;monthly copy to a folder&quot;). <b>This changes the promise &quot;your cycle information stays on this phone&quot; and the zero-cost rule, so it needs a decision first:</b> which service (for example Google sign-in with a private backup in her own Google Drive, which costs nothing and the app's maker never sees the data, or Firebase with our own servers, which has a free tier but we would hold her health data), end-to-end encryption, and the privacy wording and Play Data safety form. Claude will bring a short comparison before any building.</p></div>
+    <div><h4>What we will change</h4><p>An optional Google sign-in so her data is saved online and comes back on a new phone (Tirth: we will build this, later; the data stays somewhere online). Still to decide before building: where exactly the data lives (her own Google Drive app folder costs nothing and we never see it; our own server would hold her health data), encryption, the privacy wording (&quot;stays on this phone&quot; changes), the Play Data safety form, and cost. Claude brings a short comparison first.</p></div>
   </div>
   <p class="src">Source: Tirth 2026-11-21</p>
   <fieldset class="choices" aria-label="Your decision for C1">
-    <label class="opt o-approve"><input type="radio" name="d-C1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-C1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-C1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-C1" value="Discuss" checked><span>Discuss</span></label>
+    <label class="opt o-approve"><input type="radio" name="d-C1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-C1" value="Later" checked><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-C1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-C1" value="Discuss"><span>Discuss</span></label>
     <button type="button" class="clear" data-clear="C1">Clear</button>
   </fieldset>
-  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for C1"></textarea>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for C1">We will build this, but later. Google sign-in, and the data stays somewhere online.</textarea>
 </article></section><section><h2>D. Notifications (all on the phone, no server, no cost; max one a day, 9 in the morning, discreet lock-screen text)</h2><p class="note">Already built in 0.2.0: coming soon (N1), did it start (N2), later than my guess (N4), keep a copy (N5), we miss your data (N9). The &quot;did it end&quot; reminder (N3) was removed with the period end. Real lock-screen text has not been seen on a phone yet.</p>
 <article class="item" data-id="N6" data-prio="nice" data-status="approved">
   <header>
@@ -920,7 +920,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R3"></textarea>
 </article>
-<article class="item" data-id="R4" data-prio="nice" data-status="approved">
+<article class="item" data-id="R4" data-prio="nice" data-status="built, drashti to review">
   <header>
     <span class="id">R4</span>
     <h3>Change the number of Bleeding days (5) in Settings</h3>
@@ -930,7 +930,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <span class="chip">Settings, phases</span>
     <span class="chip">later</span>
     <span class="chip drashti">Needs Drashti</span>
-    <span class="chip status">Approved</span>
+    <span class="chip status">Built, Drashti to review</span>
   </p>
   <div class="two">
     <div><h4>Happening now</h4><p>The first 5 days of every cycle are drawn as Bleeding and cannot be changed (<code>period.assumedLengthDays</code>).</p></div>
@@ -965,7 +965,7 @@ textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px 
     <button type="button" class="clear" data-clear="R5">Clear</button>
   </fieldset>
   <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R5">Default Monday. The app follows the phone's theme.</textarea>
-</article></section><section class="plain"><h2>Done (history, one line each)</h2><p class="li">Today answer first with a late/overdue headline, one &quot;typical cycle&quot; line, shorter Tell me tabs (U1, U3, U4, U8; 0.2.0).</p><p class="li">Reminders N1, N2, N4, N5, N9 with Settings switches, discreet text, 9 am, max one a day (0.2.0).</p><p class="li">Own popups and a toast with Undo instead of Android dialogs; keyboard no longer hides Save; typed English and Hindi wording (ux A1, A2, A3, A5); Settings hub, three tabs, welcome and tour (ux B1 to B5, B7, B8).</p><p class="li">Period end removed; cycles run start to next start (2026-11-18).</p><p class="li">Ads built with test ads: banner, native cards, full-screen after PDF share and after saving earlier cycles; rewarded &quot;no ads&quot; removed (2026-11-19).</p><p class="li">Decisions of 2026-11-21 recorded for 36 items (see <code>decisions-log.md</code>).</p><p class="li">Built 2026-11-21 (test build, not released): M1 to M6, M8, M9 (late, silence, age group, ovulation, range, typical cycle, wording), R1 (no start older than a year), and the improved review sheet (M10).</p><p class="li">In-place updates keep her data (same package, same signing key, higher versionCode).</p></section><section class="plain"><h2>Rejected (do not re-propose without a new reason)</h2><p>Finishing the accessibility checks (TalkBack, small phones, Hindi spoken labels; Tirth 2026-11-21); more languages and read-aloud (Tirth 2026-11-21); the monthly copy to a folder (replaced by C1); App-open ads; ads that gate the report or backup; personalised ads; rewarded &quot;No ads for 3 days&quot;; streaks or guilt messages; a theme toggle; a &quot;Period ended&quot; button or optional end date; renaming it to &quot;Cycle ended&quot;; popups for common undoable actions.</p></section>
+</article></section><section class="plain"><h2>Done (history, one line each)</h2><p class="li">Today answer first with a late/overdue headline, one &quot;typical cycle&quot; line, shorter Tell me tabs (U1, U3, U4, U8; 0.2.0).</p><p class="li">Reminders N1, N2, N4, N5, N9 with Settings switches, discreet text, 9 am, max one a day (0.2.0).</p><p class="li">Own popups and a toast with Undo instead of Android dialogs; keyboard no longer hides Save; typed English and Hindi wording (ux A1, A2, A3, A5); Settings hub, three tabs, welcome and tour (ux B1 to B5, B7, B8).</p><p class="li">Period end removed; cycles run start to next start (2026-11-18).</p><p class="li">Ads built with test ads: banner, native cards, full-screen after PDF share and after saving earlier cycles; rewarded &quot;no ads&quot; removed (2026-11-19).</p><p class="li">Decisions of 2026-11-21 recorded for 36 items (see <code>decisions-log.md</code>).</p><p class="li">Built 2026-11-21 (second batch): U2 (round &quot;Tell me&quot; button in the middle of the bottom bar, with Settings in the bar; no floating button or gear), U12 (reminder offer moved below the answer; ad banner stays where it was), U5 (tap a ring colour to read it; the expected-period arc), U6 and U7 (Calendar: dashed edge for guesses, ring on ovulation day, tap a colour in the key, &quot;Back to today&quot;, swipe between months), U9 (My cycles: Last 6 / 12 / All, amber bars, typical line), U10 (Earlier cycles: compact rows and &quot;weeks ago&quot; chips), R4 (mark how many days the bleeding lasted), U13 (unneeded Android permissions blocked; needs the next build to check).</p><p class="li">Built 2026-11-21 (first batch, test build, not released): M1 to M6, M8, M9 (late, silence, age group, ovulation, range, typical cycle, wording), R1 (no start older than a year), and the improved review sheet (M10).</p><p class="li">In-place updates keep her data (same package, same signing key, higher versionCode).</p></section><section class="plain"><h2>Rejected (do not re-propose without a new reason)</h2><p>Finishing the accessibility checks (TalkBack, small phones, Hindi spoken labels; Tirth 2026-11-21); more languages and read-aloud (Tirth 2026-11-21); the monthly copy to a folder (replaced by C1); App-open ads; ads that gate the report or backup; personalised ads; rewarded &quot;No ads for 3 days&quot;; streaks or guilt messages; a theme toggle; a &quot;Period ended&quot; button or optional end date; renaming it to &quot;Cycle ended&quot;; popups for common undoable actions.</p></section>
 </div>
 <div id="toast" role="status"></div>
 <script>

@@ -1,5 +1,5 @@
 import type { CycleRules } from '../config/cycleRules';
-import { canGuessOvulation, cycleStats, isRegular, sortPeriods } from './cycles';
+import { bleedingLength, canGuessOvulation, cycleStats, isRegular, sortPeriods } from './cycles';
 import { addDays, diffDays, type DateStr } from './dates';
 import { predictWithFallback } from './prediction';
 import type { Period, Phase } from './types';
@@ -58,7 +58,7 @@ export function getDayInfo(date: DateStr, periods: Period[], rules: CycleRules):
   const current = sorted[index];
   const info = emptyInfo(date, diffDays(current.startDate, date) + 1);
   // No period end exists: the first few days of every cycle are the Bleeding phase (an estimate).
-  const periodEnd = addDays(current.startDate, rules.period.assumedLengthDays - 1);
+  const periodEnd = addDays(current.startDate, bleedingLength(current, rules) - 1);
   const inPeriod = date <= periodEnd;
 
   const next = sorted[index + 1];

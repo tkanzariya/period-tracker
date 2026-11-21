@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 **Current phase: Phase 0 — Foundation & Planning**
 
@@ -57,7 +57,8 @@ Last updated: 2026-11-21
 - [x] 2026-11-21: phone audit written (`docs/review/audit-usability-medical-2026-11-21.md`); its findings are items M1 to M10 in `improvements.md`
 - [x] Tirth decided on 36 items (2026-11-21)
 - [x] 0.3.0 first batch built (not released): age question, late and long-silence handling, honest ranges, typical cycle, softer sentences, no ancient dates, rebuilt review sheet
-- [ ] 0.3.0 next: U2 centre button in the tab bar, U12 Today order, U6/U7/U9/U10/U5, U13 permissions, R4 optional bleeding-ended date, L2 year view, X2 track record, F1 check-in
+- [x] 0.3.0 screens batch built (not released): round Tell me button in the bar, Today order, Calendar guesses and swipe, ring taps, My cycles filter, Earlier cycles, bleeding-days mark, permissions blocked
+- [ ] 0.3.0 next: L2 year view, X2 track record, F1 check-in (+ N7), then a cloud build and phone test; later: X1, X5, X8, X10, N6, N8, N10
 - [ ] Drashti reviews the health items (marked "Needs Drashti") before they ship
 
 ## Phase 1 — MVP basic tracking

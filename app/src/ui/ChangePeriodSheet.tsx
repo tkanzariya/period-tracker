@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { periodLength } from '../domain/cycles';
 import { todayLocal, type DateStr } from '../domain/dates';
 import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from './DateField';
 import { formatShort } from './format';
 import { describeIssue, type IssueView } from './issueText';
-import { Button, Field, Notice, Sheet, useToast, usePopup } from './kit';
+import { Button, Chip, Field, Notice, Sheet, T, useToast, usePopup } from './kit';
 
 /** Change the start day of a period she already told me about, or remove it (with Undo). */
 export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | null; onClose: () => void }) {
@@ -17,6 +19,7 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
   const period = data.periods.find((p) => p.id === periodId) ?? null;
 
   const [start, setStart] = useState<DateStr>(today);
+  const [bleeding, setBleeding] = useState<number | null>(null);
   const [issue, setIssue] = useState<IssueView | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -25,6 +28,7 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
     const p = data.periods.find((x) => x.id === periodId);
     if (!p) return;
     setStart(p.startDate);
+    setBleeding(periodLength(p));
     setIssue(null);
     setFailed(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,7 +38,7 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
     if (!period) return;
     setIssue(null);
     setFailed(false);
-    const result = await data.changePeriod(period.id, start, { confirmed });
+    const result = await data.changePeriod(period.id, start, { confirmed, bleedingDays: bleeding });
     if (result.ok) {
       onClose();
       toast.show({ message: S.tell.toast.periodChanged, actionLabel: S.common.undo, onAction: () => void result.undo() });
@@ -87,6 +91,14 @@ export function ChangePeriodSheet({ periodId, onClose }: { periodId: string | nu
         <>
           <Field label={S.change.started}>
             <DateField value={start} onChange={(d) => { setStart(d); setIssue(null); }} label={S.change.started} max={today} />
+          </Field>
+          <Field label={S.change.bleedingLabel} hint={S.change.bleedingHelp}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              <Chip label={S.change.bleedingNone} selected={bleeding === null} onPress={() => setBleeding(null)} />
+              {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <Chip key={n} label={S.change.bleedingDays(n)} selected={bleeding === n} onPress={() => setBleeding(n)} />
+              ))}
+            </View>
           </Field>
           {issue ? <Notice title={issue.title} body={issue.body} /> : null}
           {failed ? <Notice title={S.tell.couldNotSave} icon="alert-circle" /> : null}

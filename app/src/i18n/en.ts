@@ -46,7 +46,7 @@ export const en = {
 
   ads: { label: 'Ad' },
 
-  nav: { today: 'Today', calendar: 'Calendar', cycles: 'My cycles' },
+  nav: { today: 'Today', calendar: 'Calendar', cycles: 'My cycles', tell: 'Tell me' },
 
   phases: {
     names: { menstrual: 'Bleeding', follicular: 'Follicular', ovulation: 'Ovulation', luteal: 'Luteal' } as Record<Phase, string>,
@@ -127,6 +127,8 @@ export const en = {
     basisTypical: (days: number) => `Based on a typical ${days}-day cycle. I will learn yours as you add periods.`,
     estimateTag: 'Estimate',
     typicalTag: 'Typical cycle',
+    ringTap: 'Tap a colour in the ring to read what it means.',
+    expectedArc: 'The days my guess says your next period may start.',
     ovulationAround: (date: string) => `My guess is that ovulation is around ${date}. This can be off by days or weeks.`,
     /** Why there is no ovulation guess for her. NEEDS DRASHTI REVIEW. */
     noOvulationVary: 'Your cycles change from month to month, so I do not guess ovulation or fertile days.',
@@ -214,6 +216,10 @@ export const en = {
     title: 'Calendar',
     legendTitle: 'Colours',
     startMarker: 'The drop marks the day a new cycle started.',
+    legendTap: 'Tap a colour to read what it means.',
+    guessLegend: 'A dashed edge means a guess about days that have not come yet.',
+    ovulationRingLegend: 'A ring around a day marks the day ovulation is likely (a guess).',
+    todayChip: 'Back to today',
     legendNote: 'Colours are a guess from a typical cycle until I learn yours.',
     dayNoData: 'I do not have information for this day yet.',
     dayFuture: 'This day has not come yet.',
@@ -239,6 +245,7 @@ export const en = {
     started: 'It started on',
     addAnother: 'Add another cycle',
     removeRow: 'Remove this row',
+    weeksAgo: (n: number) => `${n} weeks ago`,
     save: (n: number) => `Save ${n} ${n === 1 ? 'cycle' : 'cycles'}`,
     toast: (n: number) => `Saved ${n} ${n === 1 ? 'cycle' : 'cycles'}`,
     addButton: 'Add earlier cycles',
@@ -250,7 +257,9 @@ export const en = {
     usual: 'Typical cycle (middle value)',
     range: 'From–to',
     chartTitle: 'Your last cycles (days)',
-    chartNote: (min: number, max: number) => `Dashed lines show ${min} and ${max} days.`,
+    chartNote: (min: number, max: number) => `Dashed lines show ${min} and ${max} days. Amber bars are outside that.`,
+    filters: { last6: 'Last 6', last12: 'Last 12', all: 'All' },
+    typicalLine: (n: number) => `Typical: ${n} days`,
     emptyTitle: 'Nothing here yet',
     emptyBody: 'When you tell me about your periods, they will show up here, with how long each cycle was.',
     cycleWas: (n: number) => `Cycle ${n} days`,
@@ -268,6 +277,11 @@ export const en = {
     started: 'It started on',
     save: 'Save changes',
     remove: 'Remove this period',
+    /** Optional: only colours the Bleeding days; it never changes the cycle. NEEDS DRASHTI REVIEW. */
+    bleedingLabel: 'How many days did the bleeding last? (optional)',
+    bleedingHelp: 'If you do not say, I colour 5 days as Bleeding. This never changes your cycle.',
+    bleedingNone: 'Not sure',
+    bleedingDays: (n: number) => `${n} ${n === 1 ? 'day' : 'days'}`,
     removeTitle: 'Remove this period?',
     removeBody: (range: string) => `${range} will be taken out of your cycles. You can undo this right after.`,
     gone: 'This period is no longer here.',
@@ -378,7 +392,7 @@ export const en = {
     steps: [
       { title: 'Hello, I am your Saathi', body: 'I will show you around in a minute. Everything stays on your phone, and nothing here is advice. It is only guesses to help you understand your body.' },
       { title: 'Today', body: 'This is home. The ring shows where you are in your cycle, and the colours are the parts of your cycle. Under it you see when your next period may come.' },
-      { title: 'The big button', body: 'Tap it on the day your period starts. A new cycle begins that day, and the one before ends. You can also add a note, or tell me about an earlier day.' },
+      { title: 'The round button', body: 'Tap the round button in the middle of the bottom bar on the day your period starts. A new cycle begins that day, and the one before ends. You can also add a note, or tell me about an earlier day.' },
       { title: 'Calendar', body: 'Every day has a colour for its part of the cycle. Tap a day to see more, change a period, or write a note.' },
       { title: 'My cycles', body: 'See how long each cycle was. You can show this page to your doctor.' },
       { title: 'Keep your information safe', body: 'In Settings, save a copy of your information, and bring it back on a new phone. You can see this tour again there, and change the language.' },

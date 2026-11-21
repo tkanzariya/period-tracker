@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { AdBanner } from '../../ads/AdBanner';
 import { NativeAdCard } from '../../ads/NativeAdCard';
@@ -7,12 +8,11 @@ import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
 import { useSheets } from '../../state/sheets';
 import { useTokens } from '../../theme/useTokens';
-import { GearButton } from '../../ui/chrome';
 import { addDays, diffDays, todayLocal } from '../../domain/dates';
 import { formatRange, formatShort } from '../../ui/format';
 import { GuideMessage } from '../../ui/Guide';
 import { router } from 'expo-router';
-import { Button, Card, Divider, ListRow, Screen, T } from '../../ui/kit';
+import { Button, Card, Chip, Divider, ListRow, Screen, T } from '../../ui/kit';
 
 const BAR_AREA = 110;
 
@@ -24,12 +24,15 @@ export default function MyCyclesScreen() {
 
   const rows = cycleRows(periods, rules);
   const stats = cycleStats(periods, rules);
-  const lengths = completedCycleLengths(periods).slice(-6);
+  const [show, setShow] = useState<6 | 12 | 0>(6);
+  const all = completedCycleLengths(periods);
+  const lengths = show === 0 ? all : all.slice(-show);
   const chartMax = Math.max(rules.cycle.normalMaxDays + 5, ...lengths);
+  const outside = (days: number) => days < rules.cycle.normalMinDays || days > rules.cycle.normalMaxDays;
   const heightOf = (days: number) => (days / chartMax) * BAR_AREA;
 
   return (
-    <Screen title={S.cycles.title} actions={<GearButton />} adSlot={<AdBanner />}>
+    <Screen title={S.cycles.title} adSlot={<AdBanner />}>
       {loading ? null : rows.length === 0 ? (
         <>
           <GuideMessage text={S.cycles.emptyBody} />
@@ -51,17 +54,25 @@ export default function MyCyclesScreen() {
               </View>
               <View>
                 <T kind="label">{S.cycles.chartTitle}</T>
+                {all.length > 6 ? (
+                  <View style={{ flexDirection: 'row', gap: 8, paddingTop: 8 }}>
+                    {([[6, S.cycles.filters.last6], [12, S.cycles.filters.last12], [0, S.cycles.filters.all]] as const).map(([n, label]) => (
+                      <Chip key={n} label={label} selected={show === n} onPress={() => setShow(n)} />
+                    ))}
+                  </View>
+                ) : null}
                 <View style={{ height: BAR_AREA + 22, flexDirection: 'row', alignItems: 'flex-end', gap: 8, paddingTop: 22 }}>
                   <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: heightOf(rules.cycle.normalMinDays), borderTopWidth: 1, borderStyle: 'dashed', borderColor: t.text2 }} />
                   <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: heightOf(rules.cycle.normalMaxDays), borderTopWidth: 1, borderStyle: 'dashed', borderColor: t.text2 }} />
+                  <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: heightOf(Math.round(stats.medianLength)), borderTopWidth: 2, borderColor: t.primary }} />
                   {lengths.map((days, i) => (
                     <View key={i} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
                       <T kind="caption">{days}</T>
-                      <View style={{ width: '100%', height: heightOf(days), backgroundColor: t.primary, borderTopLeftRadius: 6, borderTopRightRadius: 6, opacity: 0.9 }} />
+                      <View style={{ width: '100%', height: heightOf(days), backgroundColor: outside(days) ? t.attention : t.primary, borderTopLeftRadius: 6, borderTopRightRadius: 6, opacity: 0.9 }} />
                     </View>
                   ))}
                 </View>
-                <T kind="caption" muted>{S.cycles.chartNote(rules.cycle.normalMinDays, rules.cycle.normalMaxDays)}</T>
+                <T kind="caption" muted>{S.cycles.chartNote(rules.cycle.normalMinDays, rules.cycle.normalMaxDays)} {S.cycles.typicalLine(Math.round(stats.medianLength))}</T>
               </View>
             </Card>
           ) : (

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
 import { AdBanner } from '../../ads/AdBanner';
 import { NativeAdCard } from '../../ads/NativeAdCard';
 import { WEEK_STARTS_ON } from '../../config/display';
@@ -13,7 +13,6 @@ import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
 import { useSheets } from '../../state/sheets';
 import { useTokens } from '../../theme/useTokens';
-import { GearButton } from '../../ui/chrome';
 import { formatLong, formatMonthYear } from '../../ui/format';
 import { Button, Card, IconButton, PhaseChip, Screen, Sheet, T } from '../../ui/kit';
 import type { BandDay } from '../../ui/bandRuns';
@@ -31,6 +30,7 @@ export default function CalendarScreen() {
   const now = new Date(parseDate(today));
   const [view, setView] = useState({ year: now.getUTCFullYear(), month: now.getUTCMonth() });
   const [selected, setSelected] = useState<DateStr | null>(null);
+  const [legendPhase, setLegendPhase] = useState<Phase | null>(null);
 
   const weeks = useMemo(() => monthGrid(view.year, view.month, WEEK_STARTS_ON), [view]);
   const prediction = useMemo(() => predictWithFallback(periods, rules), [periods, rules]);
@@ -53,21 +53,45 @@ export default function CalendarScreen() {
   const info = selected ? infoFor(selected) : null;
   const note = selected ? (notes.find((n) => n.date === selected)?.note ?? null) : null;
   const periodHere = selected ? periods.find((p) => p.startDate === selected) : undefined;
-  const go = (delta: number) => setView(shiftMonth(view.year, view.month, delta));
+  const go = (delta: number) => setView((v) => shiftMonth(v.year, v.month, delta));
+  const goRef = useRef(go);
+  goRef.current = go;
+  const isThisMonth = view.year === now.getUTCFullYear() && view.month === now.getUTCMonth();
+  // Swipe left or right on the month to change it (plain touch events: they work on the phone and in the browser).
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const swipe = {
+    onTouchStart: (e: GestureResponderEvent) => {
+      touchStart.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+    },
+    onTouchEnd: (e: GestureResponderEvent) => {
+      const from = touchStart.current;
+      touchStart.current = null;
+      if (!from) return;
+      const dx = e.nativeEvent.pageX - from.x;
+      const dy = e.nativeEvent.pageY - from.y;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) goRef.current(dx < 0 ? 1 : -1);
+    },
+  };
   const act = (fn: () => void) => {
     setSelected(null);
     fn();
   };
 
   return (
-    <Screen title={S.calendar.title} actions={<GearButton />} adSlot={<AdBanner />}>
+    <Screen title={S.calendar.title} adSlot={<AdBanner />}>
       <View style={styles.monthRow}>
         <IconButton icon="chevron-back" label={S.dates.previousMonth} onPress={() => go(-1)} color={t.primary} size={28} />
         <T kind="heading">{formatMonthYear(view.year, view.month, S)}</T>
         <IconButton icon="chevron-forward" label={S.dates.nextMonth} onPress={() => go(1)} color={t.primary} size={28} />
       </View>
 
-      <View>
+      {isThisMonth ? null : (
+        <View style={{ alignItems: 'center' }}>
+          <Button small variant="tonal" icon="today-outline" label={S.calendar.todayChip} onPress={() => setView({ year: now.getUTCFullYear(), month: now.getUTCMonth() })} />
+        </View>
+      )}
+
+      <View {...swipe}>
         <View style={{ flexDirection: 'row' }}>
           {initials.map((d, i) => (
             <T key={i} kind="caption" muted center style={{ flex: 1, paddingBottom: 4 }}>{d}</T>
@@ -84,6 +108,7 @@ export default function CalendarScreen() {
                   const isToday = date === today;
                   const isSelected = date === selected;
                   const hasNote = notes.some((n) => n.date === date);
+                  const ovulation = infoFor(date)?.isOvulationDay ?? false;
                   return (
                     <Pressable
                       key={di}
@@ -93,7 +118,7 @@ export default function CalendarScreen() {
                       onPress={() => setSelected(date)}
                       style={styles.cell}
                     >
-                      <View style={[styles.day, isToday && { borderWidth: 2, borderColor: t.text }]}>
+                      <View style={[styles.day, ovulation && { borderWidth: 2, borderColor: t.phase.ovulation.fg }, isToday && { borderWidth: 2, borderColor: t.text }]}>
                         <Text style={{ color: t.text, fontSize: 16, fontWeight: isToday ? '800' : '500' }}>{Number(date.slice(8))}</Text>
                       </View>
                       {periods.some((p) => p.startDate === date) ? <Ionicons name="water" size={12} color={t.text} style={{ position: 'absolute', top: 3, left: 14 }} /> : null}
@@ -111,10 +136,15 @@ export default function CalendarScreen() {
         <T kind="label">{S.calendar.legendTitle}</T>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {PHASES.map((p) => (
-            <PhaseChip key={p} phase={p} />
+            <Pressable key={p} accessibilityRole="button" accessibilityLabel={`${S.phases.names[p]}: ${S.phases.meaning[p]}`} onPress={() => setLegendPhase(legendPhase === p ? null : p)}>
+              <PhaseChip phase={p} />
+            </Pressable>
           ))}
         </View>
+        {legendPhase ? <T>{S.phases.meaning[legendPhase]}</T> : <T kind="caption" muted>{S.calendar.legendTap}</T>}
         <T kind="caption" muted>{S.calendar.startMarker}</T>
+        <T kind="caption" muted>{S.calendar.guessLegend}</T>
+        <T kind="caption" muted>{S.calendar.ovulationRingLegend}</T>
         <T kind="caption" muted>{S.calendar.legendNote}</T>
       </Card>
 

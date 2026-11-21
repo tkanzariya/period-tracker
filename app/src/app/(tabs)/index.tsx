@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 import { AdBanner } from '../../ads/AdBanner';
 import { todayLocal } from '../../domain/dates';
@@ -13,21 +12,19 @@ import { useData } from '../../state/data';
 import { useLanguage } from '../../state/language';
 import { useReminders } from '../../state/reminders';
 import { useSheets } from '../../state/sheets';
-import { GearButton } from '../../ui/chrome';
 import { CycleRingView } from '../../ui/CycleRing';
 import { flagText } from '../../ui/flagText';
 import { formatLong, formatRange, formatShort } from '../../ui/format';
 import { GuideMessage } from '../../ui/Guide';
-import { Button, Card, Disclaimer, Fab, Notice, PhaseChip, Screen, T, useHideOnScroll } from '../../ui/kit';
+import { Button, Card, Disclaimer, Notice, PhaseChip, Screen, T, usePopup } from '../../ui/kit';
 
 export default function TodayScreen() {
   const { S } = useLanguage();
   const { periods, rules, name } = useData();
   const { openTell } = useSheets();
-  const fab = useHideOnScroll();
+  const popup = usePopup();
   const reminders = useReminders();
   const today = todayLocal();
-  const [bannerHeight, setBannerHeight] = useState(0);
 
   const stage = getStage(periods, today);
   const info = getDayInfo(today, periods, rules);
@@ -51,9 +48,6 @@ export default function TodayScreen() {
   const offerReminders = stage.kind !== 'none' && !reminders.asked && !reminders.enabled;
   const doctorFlags = flags.filter((f) => f.code !== 'period_late');
 
-  const fabLabel = stage.kind === 'none' ? S.today.fab.first : S.today.fab.start;
-  const fabHint = stage.kind === 'none' ? S.today.fabHelp.first : S.today.fabHelp.start;
-
   let guide: string;
   if (stage.kind === 'none') guide = S.guide.askFirstPeriod(name);
   else if (headline.kind === 'period_day') guide = S.guide.periodGoingOn(name);
@@ -64,7 +58,7 @@ export default function TodayScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} actions={<GearButton />} onScroll={fab.onScroll} bottomSpace={110} adSlot={<AdBanner onHeight={setBannerHeight} />}>
+      <Screen title={S.today.greeting(name)} subtitle={formatLong(today, S)} adSlot={<AdBanner />}>
         {headlineText ? (
           <Card tone={late || silent ? 'attention' : 'primary'} style={{ gap: 4 }}>
             <T kind="heading">{headlineText}</T>
@@ -79,25 +73,16 @@ export default function TodayScreen() {
           </Card>
         ) : null}
 
-        {offerReminders ? (
-          <Notice
-            icon="notifications-outline"
-            title={S.today.remindersOffer.title}
-            body={S.today.remindersOffer.body}
-            actions={
-              <>
-                <Button small label={S.today.remindersOffer.yes} onPress={() => void reminders.setEnabled(true).then(() => reminders.markAsked())} />
-                <Button small variant="text" label={S.today.remindersOffer.no} onPress={() => void reminders.markAsked()} />
-              </>
-            }
-          />
-        ) : null}
-
         <GuideMessage text={guide} mood={stage.kind === 'none' ? 'wave' : late || silent ? 'caring' : 'happy'} />
 
         {ring && info.cycleDay !== null && !silent ? (
           <Card style={{ alignItems: 'center', gap: 12, paddingVertical: 24 }}>
-            <CycleRingView ring={ring} day={info.cycleDay}>
+            <CycleRingView
+              ring={ring}
+              day={info.cycleDay}
+              onPhase={(phase) => void popup.info({ title: S.phases.names[phase], message: S.phases.meaning[phase] })}
+              onExpected={() => void popup.info({ title: S.phases.expectedPeriod, message: S.today.expectedArc })}
+            >
               <T kind="display" center numberOfLines={1} style={{ fontSize: 38, lineHeight: 44 }}>{S.today.dayOfCycle(info.cycleDay)}</T>
               <T muted center>{S.today.ofYourCycle}</T>
             </CycleRingView>
@@ -108,6 +93,7 @@ export default function TodayScreen() {
               </View>
             ) : null}
             {info.phase === 'follicular' && ovulation && today < ovulation ? <T muted center>{S.today.ovulationAround(formatShort(ovulation, S))}</T> : null}
+            <T kind="caption" muted center>{S.today.ringTap}</T>
             {noGuessNote ? <T kind="caption" muted center>{noGuessNote}</T> : null}
           </Card>
         ) : null}
@@ -129,9 +115,22 @@ export default function TodayScreen() {
           <Notice key={flag.code} title={S.flags.title} body={flagText(flag, S, rules) + (rules.ageGroup === 'over40' ? ' ' + S.flags.over40Note : '')} icon="medkit-outline" />
         ))}
 
+        {offerReminders ? (
+          <Notice
+            icon="notifications-outline"
+            title={S.today.remindersOffer.title}
+            body={S.today.remindersOffer.body}
+            actions={
+              <>
+                <Button small label={S.today.remindersOffer.yes} onPress={() => void reminders.setEnabled(true).then(() => reminders.markAsked())} />
+                <Button small variant="text" label={S.today.remindersOffer.no} onPress={() => void reminders.markAsked()} />
+              </>
+            }
+          />
+        ) : null}
+
         <Disclaimer text={S.today.disclaimer} />
       </Screen>
-      <Fab lift={bannerHeight} label={fabLabel} hint={fabHint} icon="water" visible={fab.visible} onPress={() => openTell({ mode: 'start' })} />
     </View>
   );
 }

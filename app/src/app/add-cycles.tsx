@@ -8,7 +8,8 @@ import { useData } from '../state/data';
 import { useLanguage } from '../state/language';
 import { DateField } from '../ui/DateField';
 import { describeIssue } from '../ui/issueText';
-import { Button, Card, Field, Notice, Screen, T, usePopup, useToast } from '../ui/kit';
+import { View } from 'react-native';
+import { Button, Card, Chip, Notice, Screen, T, usePopup, useToast } from '../ui/kit';
 
 interface Row {
   key: number;
@@ -89,12 +90,17 @@ export default function AddCyclesScreen() {
         const view = problem ? describeIssue(problem.issue, S, data.rules) : null;
         return (
           <Card key={row.key}>
-            <T kind="label">{S.history.cycleN(i + 1)}</T>
-            <Field label={S.history.started}>
-              <DateField value={row.start} onChange={(d) => update(row.key, { start: d })} label={S.history.started} max={today} />
-            </Field>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <T kind="label">{S.history.cycleN(i + 1)}</T>
+              {rows.length > 1 ? <Button small variant="text" label={S.history.removeRow} icon="close" onPress={() => setRows((all) => all.filter((r) => r.key !== row.key))} /> : null}
+            </View>
+            <DateField value={row.start} onChange={(d) => update(row.key, { start: d })} label={S.history.started} max={today} />
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {[4, 8, 12, 16].map((w) => (
+                <Chip key={w} label={S.history.weeksAgo(w)} selected={row.start === addDays(today, -7 * w)} onPress={() => update(row.key, { start: addDays(today, -7 * w) })} />
+              ))}
+            </View>
             {view && problem ? <Notice title={S.history.problemIn(i + 1, view.title)} body={view.body} /> : null}
-            {rows.length > 1 ? <Button small variant="text" label={S.history.removeRow} icon="close" onPress={() => setRows((all) => all.filter((r) => r.key !== row.key))} /> : null}
           </Card>
         );
       })}

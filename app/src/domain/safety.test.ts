@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AGE_GROUPS, DEFAULT_CYCLE_RULES, rulesForAge } from '../config/cycleRules';
-import { canGuessOvulation, completedCycleLengths, cycleRows, cycleStats } from './cycles';
+import { bleedingLength, canGuessOvulation, cleanBleedingMarks, completedCycleLengths, cycleRows, cycleStats } from './cycles';
 import { addDays } from './dates';
 import { getHeadline } from './headline';
 import { getDayInfo } from './phases';
@@ -157,5 +157,31 @@ describe('no made-up phase once a period is late (M2)', () => {
     expect(getDayInfo('2026-11-03', one, adult).phase).toBe('luteal');
     expect(getDayInfo('2026-11-12', one, adult).phase).toBeNull();
     expect(getDayInfo('2026-11-12', one, adult).daysLate).toBeGreaterThan(0);
+  });
+});
+
+describe('marking the bleeding days (R4)', () => {
+  const rules = adult;
+  const marked = (start: string, end: string | null): Period => ({ id: start, startDate: start, endDate: end, note: null });
+  it('uses 5 days unless she marked how long the bleeding lasted', () => {
+    expect(bleedingLength(p('2026-11-01'), rules)).toBe(5);
+    expect(bleedingLength(marked('2026-11-01', '2026-11-07'), rules)).toBe(7);
+  });
+  it('colours the marked days as Bleeding, and only those', () => {
+    const periods = [marked('2026-11-01', '2026-11-07')];
+    expect(getDayInfo('2026-11-07', periods, rules).phase).toBe('menstrual');
+    expect(getDayInfo('2026-11-08', periods, rules).phase).not.toBe('menstrual');
+    expect(getHeadline(periods, '2026-11-07', rules)).toEqual({ kind: 'period_day', day: 7 });
+  });
+  it('a mark never ends the cycle: the next start still decides the cycle length', () => {
+    const periods = [marked('2026-10-10', '2026-10-15'), p('2026-11-10')];
+    expect(completedCycleLengths(periods)).toEqual([31]);
+  });
+  it('ignores a mark that makes no sense (older builds could save an end equal to the next start)', () => {
+    const cleaned = cleanBleedingMarks([marked('2026-10-10', '2026-11-10'), p('2026-11-10')], rules);
+    expect(cleaned[0].endDate).toBeNull();
+    expect(cleanBleedingMarks([marked('2026-10-10', '2026-10-12')], rules)[0].endDate).toBe('2026-10-12');
+    expect(cleanBleedingMarks([marked('2026-10-10', '2026-10-01')], rules)[0].endDate).toBeNull();
+    expect(cleanBleedingMarks([marked('2026-10-10', '2026-10-25')], rules)[0].endDate).toBeNull();
   });
 });

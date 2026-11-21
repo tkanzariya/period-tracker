@@ -21,6 +21,25 @@ export function periodLength(period: Period): number | null {
   return period.endDate ? diffDays(period.startDate, period.endDate) + 1 : null;
 }
 
+/**
+ * How many days at the start of a cycle are drawn as Bleeding: the days she marked (optional, Tirth
+ * 2026-11-21: it only marks the bleeding days, it never ends the cycle) or the default of 5.
+ */
+export function bleedingLength(period: Period, rules: CycleRules): number {
+  const marked = periodLength(period);
+  return marked !== null && marked >= 1 && marked <= rules.period.maxBleedingDays ? marked : rules.period.assumedLengthDays;
+}
+
+/** Keeps a bleeding mark only when it makes sense: not before the start, not too long, and before the next start. */
+export function cleanBleedingMarks(periods: Period[], rules: CycleRules): Period[] {
+  const sorted = sortPeriods(periods);
+  return sorted.map((p, i) => {
+    const next = sorted[i + 1];
+    const ok = p.endDate !== null && p.endDate >= p.startDate && diffDays(p.startDate, p.endDate) + 1 <= rules.period.maxBleedingDays && (!next || p.endDate < next.startDate);
+    return ok ? p : { ...p, endDate: null };
+  });
+}
+
 export interface CycleRow {
   period: Period;
   /** Days from this period's start to the next one's; null for the latest (still going). */

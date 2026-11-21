@@ -18,6 +18,8 @@ export interface CycleRing {
   segments: RingSegment[];
   /** Drawn from a typical cycle, not from her own pattern yet. */
   tentative: boolean;
+  /** The part of my next-period guess that falls inside this ring (1-based days), or null. */
+  expected: { startDay: number; endDay: number } | null;
 }
 
 /**
@@ -42,5 +44,7 @@ export function currentCycleRing(periods: Period[], rules: CycleRules): CycleRin
     if (last && last.phase === phase && last.endDay === day - 1) last.endDay = day;
     else segments.push({ phase, startDay: day, endDay: day });
   }
-  return { length, segments, tentative: prediction.tentative };
+  const from = diffDays(latest.startDate, prediction.earliestStart) + 1;
+  const expected = from <= length ? { startDay: Math.max(from, 1), endDay: length } : null;
+  return { length, segments, tentative: prediction.tentative, expected };
 }

@@ -34,6 +34,8 @@ export interface CycleRules {
      * days at the start of a cycle are drawn as the Bleeding phase (an estimate). NEEDS DRASHTI REVIEW.
      */
     assumedLengthDays: number;
+    /** She may mark how many days the bleeding lasted (it only colours the Bleeding days). A mark longer than this is ignored. */
+    maxBleedingDays: number;
   };
   prediction: {
     /** How many recent completed cycles feed the average. */
@@ -100,7 +102,7 @@ export interface CycleRules {
 export const DEFAULT_CYCLE_RULES: CycleRules = {
   ageGroup: 'adult',
   cycle: { normalMinDays: 21, normalMaxDays: 35, maxVariationDays: 7 },
-  period: { assumedLengthDays: 5 },
+  period: { assumedLengthDays: 5, maxBleedingDays: 10 },
   prediction: {
     cyclesToAverage: 6,
     minCyclesForPrediction: 2,

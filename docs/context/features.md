@@ -1,6 +1,6 @@
 # Features
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 Plain-language feature plan. Priorities: **Must** = MVP can't ship without it. **Should** = right after. **Later** = parked.
 Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
@@ -97,6 +97,10 @@ Diagnosis, treatment advice, ads, social/community, selling data, accounts.
 - She may say her age group (under 20, 20 to 39, 40 and over); skipping means 20 to 39. It changes: how long a cycle can be before the "tell a doctor" note (45 days under 20), whether ovulation and fertile days are guessed (not under 20, not when cycles vary by more than 7 days), and how long the app keeps showing a day number and phase without a new period (60 days, 90 under 20 and 40+).
 - Late period: up to 7 days "this can happen"; more than 7 days mentions a pregnancy test and a doctor. After the silence limit the app asks "Did a period come?" and shows no day or phase.
 - Next-period range: at least 3 days each side until 6 cycles, then 2. "Typical cycle" is the middle value. Start dates older than 1 year are not accepted.
+
+## Bottom bar and bleeding days (built 2026-11-21)
+- Bottom bar: Today, Calendar, a round "Tell me" button in the middle (starts a period; "Add my last period" before the first one), My cycles, Settings. Nothing floats over the cards or the ad strip above the bar.
+- She may mark how many days the bleeding lasted (Change this period). It only colours those days as Bleeding (5 if she does not say) and never changes the cycle.
 
 ## Next ideas (2026-11-17)
 UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are tracked in `improvements.md` (the one list, with Tirth's approvals). Built in 0.2.0: Today answer-first headline, reminders (before the period, did it start, has it ended, later than my guess, save a copy, missing you). **COMING SOON: bleeding heaviness (pads per day)** with the day check-in; do not forget (Tirth 2026-11-17).

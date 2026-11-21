@@ -12,6 +12,12 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 ## [Unreleased]
 
 ### Added
+- A round "Tell me" button in the middle of the bottom bar (with Settings in the bar), instead of a floating button that could cover your cards.
+- Tap a colour in the Today ring to read what it means. A thin outer arc shows the days my guess says your next period may start.
+- Calendar: guesses have a dashed edge, the likely ovulation day has a ring, tap a colour in the key to read it, a "Back to today" button, and swipe left or right to change month.
+- My cycles: choose Last 6, Last 12 or All; cycles outside the usual range are amber; a line shows your typical cycle.
+- Earlier cycles: tighter rows with "4, 8, 12, 16 weeks ago" buttons.
+- In Change this period you can say how many days the bleeding lasted (optional). Those days are coloured as Bleeding; it never changes your cycle.
 - A question "How old are you?" (under 20, 20 to 39, 40 and over; you can skip it), also in Settings. It only changes how wide "usual" is: for example cycles up to about 45 days are common in the first years of periods, and cycles often change in your 40s.
 - When a period is late the words now go further: a few days late is "this can happen"; more than a week late mentions a pregnancy test and seeing a doctor if it keeps being late.
 - After a long time with no period told (60 days; 90 for under 20 and 40 and over) Today stops showing a day number and a phase and asks "Did a period come that I do not know about?" with a button to tell it.
@@ -33,6 +39,8 @@ Group them under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Undo after every save and every removal.
 
 ### Changed
+- The "Want a gentle reminder?" question now sits below the answer on Today instead of above it. The ad strip stays where it was.
+- The Android app asks for fewer permissions (unneeded ones are blocked; takes effect in the next build).
 - The next-period range is never narrower than 3 days each side until you have 6 cycles (then 2), because even regular cycles vary by a few days.
 - "Typical cycle" is now the middle value of your cycles, so one very long or very short cycle does not change it. The next-period guess uses it too.
 - No ovulation or fertile-day guess for under 20 or when your cycles change by more than a week; Today says why. Other ovulation lines now say the guess can be off by days or weeks.

@@ -34,7 +34,8 @@ export function PhaseBands({ days, height, id }: { days: (BandDay | null)[]; hei
               height={height - 8}
               rx={(height - 8) / 2.4}
               fill={`url(#${id}-${i})`}
-              opacity={r.guess ? 0.6 : 1}
+              opacity={r.guess ? 0.7 : 1}
+              {...(r.guess ? { stroke: t.phase[r.phase].fg, strokeWidth: 1.5, strokeDasharray: '5 4' } : {})}
             />
           ))}
         </Svg>

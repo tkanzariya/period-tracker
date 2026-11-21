@@ -200,46 +200,6 @@ export function Button({ label, onPress, variant = 'primary', icon, disabled, st
   );
 }
 
-/** Slides the floating button away while the page scrolls down, back when scrolling up. */
-export function useHideOnScroll() {
-  const [visible, setVisible] = useState(true);
-  const last = useRef(0);
-  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = e.nativeEvent.contentOffset.y;
-    const dy = y - last.current;
-    last.current = y;
-    if (y < 40 || dy < -6) setVisible(true);
-    else if (dy > 6) setVisible(false);
-  }, []);
-  return { visible, onScroll };
-}
-
-/** The extended floating button (Android pattern). Its words change with the situation. */
-export function Fab({ label, icon, onPress, visible = true, hint, lift = 0 }: { label: string; icon: IconName; onPress: () => void; visible?: boolean; hint?: string; lift?: number }) {
-  const t = useTokens();
-  const shown = useRef(new Animated.Value(1)).current;
-  useEffect(() => {
-    Animated.timing(shown, { toValue: visible ? 1 : 0, duration: 180, useNativeDriver: true }).start();
-  }, [visible, shown]);
-  return (
-    <Animated.View
-      pointerEvents={visible ? 'box-none' : 'none'}
-      style={[styles.fab, { bottom: spacing.lg + lift, opacity: shown, transform: [{ translateY: shown.interpolate({ inputRange: [0, 1], outputRange: [90, 0] }) }] }]}
-    >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityHint={hint}
-        onPress={onPress}
-        style={({ pressed }) => [styles.fabInner, { backgroundColor: t.primary, opacity: pressed ? 0.88 : 1 }]}
-      >
-        <Ionicons name={icon} size={24} color={t.onPrimary} />
-        <Text style={[styles.buttonText, { color: t.onPrimary, fontSize: 17 }]}>{label}</Text>
-      </Pressable>
-    </Animated.View>
-  );
-}
-
 // ---------- choices -------------------------------------------------------------------------
 export function Chip({ label, selected, onPress, icon, style }: { label: string; selected?: boolean; onPress?: () => void; icon?: IconName; style?: StyleProp<ViewStyle> }) {
   const t = useTokens();
@@ -484,8 +444,6 @@ const styles = StyleSheet.create({
   button: { minHeight: 54, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 22, paddingVertical: 10 },
   buttonSmall: { minHeight: MIN_TARGET, paddingHorizontal: spacing.lg, borderRadius: 24 },
   buttonText: { fontSize: 16, fontWeight: '700', textAlign: 'center' },
-  fab: { position: 'absolute', right: spacing.lg, elevation: 6 },
-  fabInner: { minHeight: 58, borderRadius: radius.card, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', gap: 8 },
   chip: { minHeight: MIN_TARGET - 4, borderRadius: 24, borderWidth: 1, paddingHorizontal: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: 6 },
   segment: { flexDirection: 'row', borderRadius: 16, padding: 4, gap: 4 },
   segmentItem: { flex: 1, minHeight: MIN_TARGET, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 4, paddingHorizontal: 4 },

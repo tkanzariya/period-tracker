@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Svg, { Circle, Defs, G, LinearGradient, Stop } from 'react-native-svg';
+import type { Phase } from '../domain/types';
 import type { CycleRing as CycleRingData } from '../domain/ring';
 import { mix } from '../theme/mix';
 import { useTokens } from '../theme/useTokens';
@@ -11,11 +12,12 @@ const R = (SIZE - STROKE) / 2 - 8;
 const C = 2 * Math.PI * R;
 const GAP = 3; // visible gap between phases, in px
 
+
 /**
  * The cycle drawn as a ring: one soft gradient arc per phase, each in its own colour, and a marker
  * for today. Before her first period there is no ring (the screen shows the welcome instead).
  */
-export function CycleRingView({ ring, day, children }: { ring: CycleRingData; day: number | null; children: ReactNode }) {
+export function CycleRingView({ ring, day, children, onPhase, onExpected }: { ring: CycleRingData; day: number | null; children: ReactNode; onPhase?: (phase: Phase) => void; onExpected?: () => void }) {
   const t = useTokens();
   const center = SIZE / 2;
 
@@ -66,9 +68,44 @@ export function CycleRingView({ ring, day, children }: { ring: CycleRingData; da
             );
           })}
         </G>
+        {ring.expected ? (
+          <G transform={`rotate(-90 ${center} ${center})`}>
+            <Circle
+              cx={center}
+              cy={center}
+              r={R + STROKE / 2 + 5}
+              stroke={t.primary}
+              strokeWidth={5}
+              strokeLinecap="round"
+              fill="none"
+              strokeDasharray={`${Math.max(((ring.expected.endDay - ring.expected.startDay + 1) / ring.length) * 2 * Math.PI * (R + STROKE / 2 + 5) - 4, 2)} ${2 * Math.PI * (R + STROKE / 2 + 5)}`}
+              strokeDashoffset={-(((ring.expected.startDay - 1) / ring.length) * 2 * Math.PI * (R + STROKE / 2 + 5))}
+            />
+          </G>
+        ) : null}
         {marker ? <Circle cx={marker.x} cy={marker.y} r={STROKE / 2 + 3} fill={t.background} stroke={t.text} strokeWidth={3} /> : null}
       </Svg>
       <View style={{ alignItems: 'center', paddingHorizontal: 30 }}>{children}</View>
+      {onPhase || onExpected ? (
+        <Pressable
+          accessible={false}
+          style={{ position: 'absolute', left: 0, top: 0, width: SIZE, height: SIZE }}
+          onPress={(e) => {
+            // Which part of the ring was touched? Work it out from the angle and the distance from the middle.
+            const x = e.nativeEvent.locationX - center;
+            const y = e.nativeEvent.locationY - center;
+            const dist = Math.hypot(x, y);
+            const turn = (Math.atan2(y, x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
+            const day = Math.floor((turn / (2 * Math.PI)) * ring.length) + 1;
+            if (dist >= R - STROKE / 2 - 4 && dist <= R + STROKE / 2 + 4) {
+              const seg = ring.segments.find((g) => day >= g.startDay && day <= g.endDay);
+              if (seg) onPhase?.(seg.phase);
+            } else if (dist > R + STROKE / 2 + 4 && dist <= R + STROKE / 2 + 16 && ring.expected && day >= ring.expected.startDay && day <= ring.expected.endDay) {
+              onExpected?.();
+            }
+          }}
+        />
+      ) : null}
     </View>
   );
 }
