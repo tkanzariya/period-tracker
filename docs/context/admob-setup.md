@@ -1,8 +1,8 @@
 # AdMob setup: complete guide, from the app to the ad units
 
-Last updated: 2026-11-19
+Last updated: 2026-11-21
 
-Decision (Tirth, 2026-11-17): ads are accepted, including the privacy wording change and the Play Store listing. He already has an AdMob account. **For now only Google's TEST ads are used.** Placement plan: `improvement-plan.md` section 4.
+Decision (Tirth, 2026-11-17): ads are accepted, including the privacy wording change and the Play Store listing. He already has an AdMob account. **For now only Google's TEST ads are used.** Placements are in the list below (and the open item G1 in `improvements.md`).
 
 ## Status (2026-11-18): ads are in the app, TEST ads only
 Placements are built and every ad is Google's TEST ad (`USE_TEST_ADS = true` in `app/src/config/ads.ts`; `app.json` still has the test App ID). Your real IDs are stored in the same file (`REAL_APP_ID`, `REAL_AD_UNITS` for all six units).

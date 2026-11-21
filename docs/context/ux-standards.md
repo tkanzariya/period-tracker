@@ -73,33 +73,5 @@ Soft rounded cards (20dp, hairline border), roomy spacing (16dp margins, 4dp gri
 | Privacy | No internet permission; nothing sent anywhere | Same: health data never leaves the phone |
 | Sensitive wording | Money: "over what was planned" | Health: anything clinical is marked NEEDS DRASHTI REVIEW |
 
-## 10. Cycle Saathi: audit of the app as released (2026-11-02) and the refresh plan
-Method: read the code of every screen (`app/src/app`, `ui/`, `ui/copy.ts`, `ui/dialog.ts`) and compared it with sections 1-8. The app is already close on tone, tokens, the guide, icons and plain wording; the gaps are in feedback, forms, structure and a few quality bugs.
-
-### A. Quality and correctness (do first; small, safe, no change to health logic)
-| # | Finding | Evidence | Fix |
-|---|---|---|---|
-| A1 | The Save button can sit behind the phone keyboard on Android | `log.tsx` uses `KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}`; Android 15/16 edge-to-edge no longer resizes the window (HomeHisab hit exactly this on the same Samsung phone on 2026-11-01) | `behavior="padding"` on every form screen (Log, Change this period, Settings name); verify on the phone with the keyboard open |
-| A2 | Eight Android system dialogs | `ui/dialog.ts` wraps `Alert.alert`; used 8 times (backup saved/restored/problems, cannot save, remove note, delete period) | Replace with the app's own popup + toast (section 4); keep the same wording but shorter; the browser preview also gets real popups instead of `window.alert/confirm` |
-| A3 | No Undo although `design.md` requires every destructive action to be undoable | Removing a note or a period only asks first | Toast with Undo after remove/save (soft delete already exists in the repository) |
-| A4 | Permissions never reviewed in a health-privacy app | `app.json` has no `blockedPermissions`; Expo adds INTERNET, SYSTEM_ALERT_WINDOW and storage permissions by default | Run `aapt2 dump permissions` on the released APK; block everything not needed (target: VIBRATE only, as in HomeHisab) and say so in the privacy text |
-| A5 | Wording is one file of constants (`copy.ts`), not translatable | `STR.*` constants and functions in a single language | Move to typed `strings/en.ts` + `hi.ts` (+ `gu.ts` later) with a parity test; "Saathi" is a Hindi/Gujarati word, so these two languages are the natural next ones |
-
-### B. Clarity and ease of use (the refresh)
-| # | Finding | Standard | Change |
-|---|---|---|---|
-| B1 | Today: the main actions ("My period started/ended", "Add a note") sit at the bottom of a long scroll under the ring, prediction card, flags and a disclaimer paragraph | 1, 3, 9 | Floating **Tell me** button always visible; answer first (day + phase + next period range), flags below, disclaimer shortened to one muted line (the full text lives in About and the first-run welcome) |
-| B2 | Today shows up to five stacked cards and a paragraph of small print: too much reading | 3 | One hero card (ring + "Day 12 of your cycle" + phase chip with its one-line meaning), one "Next period" card with the range, optional doctor card; nothing else |
-| B3 | Tell me screen: three large radio cards, two day chips, a stepper, a free note and a generic "Save" | 2, 5 | A bottom sheet: segmented choice (Started / Ended / Note), day chips + calendar date, note field with example ("e.g. cramps, travelling, took medicine"), button that says the outcome ("Save: period started today"), Undo toast after |
-| B4 | Settings is a tab and a flat page of three cards (name field takes a whole card) | 3 | Gear at the top right of each tab; grouped hub: About you (name), Language, Appearance (Theme, Week start), Your information (backup, spreadsheet, restore), Reminders (later), About; each row icon + title + current value |
-| B5 | Four tabs, one of them Settings | 3 | Three tabs: Today, Calendar, My cycles (+ gear) |
-| B6 | "My cycles" has a bar chart but no filter and no summary trend | 3 | Date/size filter (last 6 / 12 cycles / all), period length trend, usual range band kept; numbers next to the chart |
-| B7 | Name and disclaimer are mixed into the first Today screen | 1, 6 | A short welcome: what the app does + the disclaimer, then name, then "tell me your last period"; each step has an example and a reason ("so I can call you by name") |
-| B8 | Empty/first-run states depend on the guide only | 1, 5 | Keep the guide, add the one next action as a visible button |
-| B9 | Accessibility not yet re-checked at 200% text and in dark mode after the plain-language rewrite | 6, 8 | Run the verification list in section 8 for every changed screen |
-
-### C. Process for the refresh
-1. **Drashti reviews every health-related sentence that changes** (they stay marked NEEDS DRASHTI REVIEW until she confirms); the cycle maths in `domain/` is not touched.
-2. Build in the order A (quality) then B1-B5 (Today, Tell me, Settings, navigation) then B6-B9, one commit per step, each with a changelog line.
-3. Cloud build + guarded phone test (section 8) before each release; the release follows `release-process.md` in full.
-4. Nothing is pushed or released without Tirth's go-ahead (the repository is public).
+## 10. Cycle Saathi: refresh plan (moved)
+The audit of the released app (2026-11-02) and its refresh plan (A1 to A5, B1 to B9) were mostly built in the UX refresh (own popups and Undo, keyboard fix, typed wording, Settings hub, three tabs, welcome and tour). What is still open from it (permission review, My cycles filter and trend, 200% text and TalkBack checks) is now tracked in `improvements.md` (items U13, U9, U11). Process kept: Drashti reviews every changed health sentence; each change gets a changelog line; check every UI change on a screenshot and on the phone (section 8); nothing is pushed or released without Tirth's go-ahead.

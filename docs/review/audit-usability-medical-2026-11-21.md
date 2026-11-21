@@ -1,5 +1,7 @@
 # Cycle Saathi: usability, medical accuracy and safety audit
 
+> **This is the evidence report (a dated record).** The action items from sections D to G are now tracked, with Tirth's approvals, in `docs/context/improvements.md` (items M1 to M10, U6, U9 to U13, X6 and others). Do not keep a second to-do list here.
+
 Date: 2026-11-21. Build tested: 0.2.0 (the 21 Nov build with test ads) on Tirth's phone (1080x2340, Android), English and Hindi, light/dark not compared.
 
 ## How this was done, and the limits

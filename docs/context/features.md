@@ -1,6 +1,6 @@
 # Features
 
-Last updated: 2026-11-18
+Last updated: 2026-11-21
 
 Plain-language feature plan. Priorities: **Must** = MVP can't ship without it. **Should** = right after. **Later** = parked.
 Anything clinical is `NEEDS DRASHTI REVIEW` until she signs off.
@@ -94,7 +94,7 @@ Diagnosis, treatment advice, ads, social/community, selling data, accounts.
 - First-run welcome (hello, privacy, name, last period) and a replayable tour; language in Settings.
 
 ## Next ideas (2026-11-17)
-UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are planned in `improvement-plan.md`. Built in 0.2.0: Today answer-first headline, reminders (before the period, did it start, has it ended, later than my guess, save a copy, missing you). **COMING SOON: bleeding heaviness (pads per day)** with the day check-in; do not forget (Tirth 2026-11-17).
+UI fixes, new features (day check-in, date checker, guess track record, doctor pack, irregular mode, app lock, supplies reminder), notifications and ad placement are tracked in `improvements.md` (the one list, with Tirth's approvals). Built in 0.2.0: Today answer-first headline, reminders (before the period, did it start, has it ended, later than my guess, save a copy, missing you). **COMING SOON: bleeding heaviness (pads per day)** with the day check-in; do not forget (Tirth 2026-11-17).
 
 ## No period end (2026-11-18)
 There is no "period ended" button or end date. She only says "a period started on this day". A cycle runs from one start to the next; the first 5 days are drawn as Bleeding (an estimate). Bleeding heaviness (pads per day) stays COMING SOON with the day check-in, as a per-day check-in, not as a period end.

@@ -120,3 +120,10 @@ Last updated: 2026-11-21
 - Tested first-run, four personas and two edge cases (stale/short cycles) with real taps on the 0.2.0 build, Hindi and 200% text; medical points checked against NHS, ACOG, FIGO (secondary summary), STRAW+10, Bull 2019, Wilcox 1995, a 2024 luteal-phase study. Report: `docs/review/audit-usability-medical-2026-11-21.md`.
 - Main findings: late/missed-period text contradicts itself and never mentions pregnancy; phases and "Day 205" shown after months without an entry; age-blind 21-35 flag alarms teens; ovulation guesses for irregular cycles; +/-1 day window too narrow; no heavy-bleeding or pain safety guidance (period length was deliberately removed on 2026-11-18, so prolonged bleeding cannot be detected).
 - Phone was changed for testing (data cleared, screen timeout) and fully restored; Tirth's two periods and reminders switch re-added.
+
+## 2026-11-21: One improvements list, with approvals (Tirth)
+- **Asked:** improvement ideas lay in several files; merge them into one, remove the redundant ones, let Tirth approve or comment per item, and give each item "what is happening now" and "what we will change".
+- **Done:** `docs/context/improvements.md` is now the only list (about 40 items: audit findings, UI fixes, new features, notifications, ads go-live, small rules). `docs/review/improvements.html` is generated from it (`node scripts/make-improvements-sheet.js`) so Tirth can pick Approve / Later / Reject / Discuss, add comments and copy them back. `improvement-plan.md` was deleted (its earlier mentions above point to this file now); the old UX plan in `ux-standards.md` section 10 and the roadmap lists were reduced to pointers; the audit report stays as dated evidence.
+- **Note:** no file named `improvement-ideas.md` existed in the repo; the audit report and `improvement-plan.md` were the improvement files found.
+- **Rule from now:** only approved items are built; health items also wait for Drashti.
+

@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cycle Saathi: improvements</title>
+<style>
+:root{--bg:#fbf7f6;--card:#fff;--ink:#2a2226;--mute:#6b5f65;--line:#e8dde0;--brand:#b4425f;--ok:#2f7d5b;--warn:#a8650b;--no:#a33a3a;--q:#4a5fa8;--chip:#f3ebed}
+@media (prefers-color-scheme:dark){:root{--bg:#1d171a;--card:#272024;--ink:#f3eaed;--mute:#b9aab0;--line:#3b3237;--brand:#e58aa3;--ok:#6fcf9f;--warn:#e9b361;--no:#f08a8a;--q:#9db0f2;--chip:#33292e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.2em 0}
+h2{font-size:1.2rem;margin:1.6em 0 .4em;border-bottom:2px solid var(--line);padding-bottom:.2em}
+h3{font-size:1.05rem;margin:0}
+h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);margin:.2em 0}
+p{margin:.3em 0}
+code{background:var(--chip);padding:0 .25em;border-radius:4px;font-size:.92em}
+.how{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar .count{color:var(--mute);font-size:.9rem;margin-right:auto}
+button,select{font:inherit;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+button.primary{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+.item header{display:flex;gap:10px;align-items:baseline}
+.id{font-weight:700;color:var(--brand);min-width:2.6em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:.4em 0}
+.chip{background:var(--chip);border-radius:999px;padding:1px 10px;font-size:.8rem}
+.chip.drashti{outline:1px solid var(--warn);color:var(--warn)}
+.chip.prio-critical{background:var(--no);color:#fff}
+.chip.prio-high{outline:1px solid var(--no);color:var(--no)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.src{color:var(--mute);font-size:.85rem}
+.choices{border:0;padding:0;margin:.6em 0 .4em;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.opt span{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;border:2px solid var(--line);font-weight:600}
+.opt input:focus-visible+span{outline:3px solid var(--q)}
+.o-approve input:checked+span{background:var(--ok);border-color:var(--ok);color:#fff}
+.o-later input:checked+span{background:var(--warn);border-color:var(--warn);color:#fff}
+.o-reject input:checked+span{background:var(--no);border-color:var(--no);color:#fff}
+.o-discuss input:checked+span{background:var(--q);border-color:var(--q);color:#fff}
+textarea{width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.plain p.li:before{content:"• "}
+.note{color:var(--mute)}
+.item.hidden{display:none}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Cycle Saathi: improvements</h1>
+<p class="note">Built from <code>docs/context/improvements.md</code> (2026-11-21). Nothing here is built until you approve it.</p>
+<div class="how">
+  <p><b>How to use:</b> for each item read <i>Happening now</i> and <i>What we will change</i>, then pick one:</p>
+  <p><b>Approve</b> = build it (items marked "Needs Drashti" wait for her yes first) · <b>Later</b> = keep on the list · <b>Reject</b> = drop it · <b>Discuss</b> = talk before building. Add a comment if you want. Your picks are saved in this browser while you work. When done press <b>Copy my decisions</b> and paste it to Claude.</p>
+</div>
+<div class="bar">
+  <span class="count" id="count"></span>
+  <select id="filter" aria-label="Show">
+    <option value="all">Show all</option>
+    <option value="undecided">Not decided yet</option>
+    <option value="critical">Critical</option>
+    <option value="high">High</option>
+    <option value="drashti">Needs Drashti</option>
+  </select>
+  <button class="primary" id="copy">Copy my decisions</button>
+</div>
+<section><h2>A. Safety and medical accuracy (found by the audit; Drashti must review the wording and numbers)</h2>
+<article class="item" data-id="M1" data-prio="critical" data-status="open">
+  <header>
+    <span class="id">M1</span>
+    <h3>A late or missed period is explained badly</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-critical">Critical</span>
+    <span class="chip">Today, reminders</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>After 79 or 173 days with no new period, Today says &quot;Your period is a little late. This can happen&quot; and, next to it, &quot;79 days later than my guess&quot;. It never mentions pregnancy, so someone could be falsely reassured.</p></div>
+    <div><h4>What we will change</h4><p>Wording by lateness: up to 7 days &quot;a few days late, this can happen&quot;; after 7 days &quot;late. If there is any chance you are pregnant, a pregnancy test is a good next step. If it keeps being late, please talk to a doctor&quot;; after 60 days &quot;I have not heard about a period for N days. Did you forget to log one? If not, please see a doctor&quot;. Includes the calm &quot;Is my period late?&quot; list of common reasons (old idea F3). No diagnosis.</p></div>
+  </div>
+  <p class="src">Source: audit D1, G1; plan F3</p>
+  <fieldset class="choices" aria-label="Your decision for M1">
+    <label class="opt o-approve"><input type="radio" name="d-M1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M1"></textarea>
+</article>
+<article class="item" data-id="M2" data-prio="critical" data-status="open">
+  <header>
+    <span class="id">M2</span>
+    <h3>Phase and &quot;Day N&quot; shown after a long silence</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-critical">Critical</span>
+    <span class="chip">Today, Calendar</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>If nothing is recorded for months, Today shows &quot;Day 205 of your cycle&quot; and the Luteal phase, which is made up.</p></div>
+    <div><h4>What we will change</h4><p>After about 60 days with no new start, stop showing the cycle day and phase. Show &quot;No period recorded for N days. Did it come?&quot; with one button to record it. The Calendar stops drawing phases beyond that point.</p></div>
+  </div>
+  <p class="src">Source: audit D2, E (Today), G2</p>
+  <fieldset class="choices" aria-label="Your decision for M2">
+    <label class="opt o-approve"><input type="radio" name="d-M2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M2"></textarea>
+</article>
+<article class="item" data-id="M3" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M3</span>
+    <h3>Teenagers and women over 40 get the same &quot;tell your doctor&quot; flag</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">Today, My cycles, flags</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>A 42-day cycle is flagged &quot;You may want to tell your doctor&quot; for everyone, but cycles up to about 45 days are common in the first years of periods. Women in their 40s get the same flag with no explanation that cycles often change then.</p></div>
+    <div><h4>What we will change</h4><p>Ask once &quot;How old are you?&quot; (under 20 / 20 to 39 / 40 and over, no exact age). Under 20: the normal range is wider for the first years and the wording says so. 40 and over: one calm line &quot;Cycles often change in your 40s&quot;, the doctor prompt stays. Also say &quot;most adults' cycles are 21 to 35 days&quot; instead of &quot;most cycles&quot;. This also covers the old &quot;life stages&quot; idea.</p></div>
+  </div>
+  <p class="src">Source: audit C, D3, F3, G3; plan &quot;Later: life stages&quot;</p>
+  <fieldset class="choices" aria-label="Your decision for M3">
+    <label class="opt o-approve"><input type="radio" name="d-M3" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M3" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M3" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M3" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M3">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M3"></textarea>
+</article>
+<article class="item" data-id="M4" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M4</span>
+    <h3>Ovulation guessed for irregular and teenage cycles</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">Today, Calendar</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>&quot;Ovulation is likely around 28 Nov (a guess)&quot; appears even when cycles vary from 24 to 48 days, in a country where calendar apps are sometimes used to avoid pregnancy.</p></div>
+    <div><h4>What we will change</h4><p>Hide the ovulation and fertile-day guess when her cycles vary by more than 7 days, or for under-20s. Otherwise say &quot;My guess is ovulation is around 28 Nov. This can be off by days or weeks.&quot; The &quot;not birth control&quot; line stays.</p></div>
+  </div>
+  <p class="src">Source: audit C, D4, E wording</p>
+  <fieldset class="choices" aria-label="Your decision for M4">
+    <label class="opt o-approve"><input type="radio" name="d-M4" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M4" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M4" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M4" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M4">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M4"></textarea>
+</article>
+<article class="item" data-id="M5" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M5</span>
+    <h3>The next-period window is too narrow for regular users</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">Prediction</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>With four identical cycles the window is only 1 day each side, so a regular user can be surprised by a period a few days early or late.</p></div>
+    <div><h4>What we will change</h4><p>Never narrower than 3 days each side until she has 6 or more cycles (the number is NEEDS DRASHTI REVIEW).</p></div>
+  </div>
+  <p class="src">Source: audit C, D5, G4</p>
+  <fieldset class="choices" aria-label="Your decision for M5">
+    <label class="opt o-approve"><input type="radio" name="d-M5" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M5" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M5" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M5" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M5">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M5"></textarea>
+</article>
+<article class="item" data-id="M6" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M6</span>
+    <h3>One odd cycle ruins the &quot;usual cycle&quot;</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">My cycles</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>After one 99-day gap, My cycles says &quot;Usual cycle 35 days, from 18 to 99&quot;.</p></div>
+    <div><h4>What we will change</h4><p>Use the middle value (median) as &quot;Typical cycle&quot; and show a very long or short cycle as &quot;long gap&quot; on its own, not inside the average.</p></div>
+  </div>
+  <p class="src">Source: audit C, E (My cycles), G6</p>
+  <fieldset class="choices" aria-label="Your decision for M6">
+    <label class="opt o-approve"><input type="radio" name="d-M6" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M6" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M6" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M6" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M6">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M6"></textarea>
+</article>
+<article class="item" data-id="M7" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M7</span>
+    <h3>&quot;When to see a doctor&quot;, and a heavy or long bleeding check</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">New page, Settings &gt; Good to know, day check-in</span>
+    <span class="chip">0.3.0 (the page); the check-in goes with F1</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Nothing in the app says when bleeding, pain or bleeding between periods needs a doctor. Because period end was removed on 2026-11-18, a period lasting more than 7 days cannot be noticed at all. Pads per day is still COMING SOON.</p></div>
+    <div><h4>What we will change</h4><p>A short &quot;When to see a doctor&quot; page (changing a pad every 1 to 2 hours, clots over 2.5 cm, bleeding between periods or after sex, bleeding over 7 days, severe pain, no period for 3 months). Then, with the day check-in (F1), a one-tap &quot;heavy&quot; and &quot;bleeding longer than 7 days&quot; check that turns into one plain line for the doctor report (merges old X4 heavy-bleeding helper). Keeps the COMING SOON promise for pads per day.</p></div>
+  </div>
+  <p class="src">Source: audit C, D6, F1, G5; plan X4</p>
+  <fieldset class="choices" aria-label="Your decision for M7">
+    <label class="opt o-approve"><input type="radio" name="d-M7" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M7" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M7" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M7" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M7">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M7"></textarea>
+</article>
+<article class="item" data-id="M8" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">M8</span>
+    <h3>Mood and energy lines sound surer than the evidence</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Today (phase lines), Calendar day sheet</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>&quot;Many women feel more energetic now&quot; and &quot;Some women feel tired or moody around now. That is normal.&quot; The second can dismiss strong premenstrual symptoms.</p></div>
+    <div><h4>What we will change</h4><p>&quot;Some people feel more energetic around now; many notice nothing.&quot; and &quot;Some people feel tired or moody before a period. If it is strong or stops you doing daily things, tell a doctor.&quot;</p></div>
+  </div>
+  <p class="src">Source: audit C, D7, E wording</p>
+  <fieldset class="choices" aria-label="Your decision for M8">
+    <label class="opt o-approve"><input type="radio" name="d-M8" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M8" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M8" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M8" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M8">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M8"></textarea>
+</article>
+<article class="item" data-id="M9" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">M9</span>
+    <h3>Unclear and robotic sentences in the &quot;Is that right?&quot; and range text</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Add/Change period sheets, My cycles</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>&quot;99 days from your other periods&quot; (whose days?), &quot;173 days later than my guess&quot; (sounds like an error).</p></div>
+    <div><h4>What we will change</h4><p>&quot;99 days since your last period started&quot; and &quot;No period recorded for 173 days&quot;. Hindi follows.</p></div>
+  </div>
+  <p class="src">Source: audit E wording</p>
+  <fieldset class="choices" aria-label="Your decision for M9">
+    <label class="opt o-approve"><input type="radio" name="d-M9" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M9" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M9" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M9" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M9">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M9"></textarea>
+</article>
+<article class="item" data-id="M10" data-prio="high" data-status="open">
+  <header>
+    <span class="id">M10</span>
+    <h3>Check every health number with Drashti and the original papers</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High (before any public release)</span>
+    <span class="chip">All cycle rules (`config/cycleRules.ts`)</span>
+    <span class="chip">before 0.3.0 ships to anyone but Drashti</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The 21 to 35 range, 7-day variation, 15-day and 60-day questions, 5 bleeding days, 28-day typical and the plus or minus 3 days are all unreviewed. The exact FIGO age bands for the 7 or 9-day rule could not be confirmed from the original paper; the 21 to 45 day teen range comes from secondary summaries.</p></div>
+    <div><h4>What we will change</h4><p>Drashti goes through the review sheet (<code>docs/review/cycle-review.html</code>) and this list; Claude opens the FIGO (Munro 2018) and ACOG (Committee Opinion 651) papers and records the exact figures. Nothing is called approved until she signs it.</p></div>
+  </div>
+  <p class="src">Source: audit C, H4; open questions 1, 4</p>
+  <fieldset class="choices" aria-label="Your decision for M10">
+    <label class="opt o-approve"><input type="radio" name="d-M10" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-M10" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-M10" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-M10" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="M10">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for M10"></textarea>
+</article></section><section><h2>B. Screens: what to fix</h2>
+<article class="item" data-id="U2" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U2</span>
+    <h3>The floating button covers the next-period card</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Today</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Partly fixed (the button now sits above the ad strip). The page still has no extra bottom room, so the last card can sit under the button.</p></div>
+    <div><h4>What we will change</h4><p>Add bottom space on every tab; the button shrinks to an icon while scrolling.</p></div>
+  </div>
+  <p class="src">Source: plan U2</p>
+  <fieldset class="choices" aria-label="Your decision for U2">
+    <label class="opt o-approve"><input type="radio" name="d-U2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U2"></textarea>
+</article>
+<article class="item" data-id="U12" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U12</span>
+    <h3>Today: the answer should come first, with no cards in the way</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Today</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>For a new user the order is headline, &quot;Want a gentle reminder?&quot; card, Saathi bubble, ring. With the banner ad there is little of the answer left on the first screen.</p></div>
+    <div><h4>What we will change</h4><p>Move the reminder offer to the bottom of Today (or a one-time popup after day 2). Keep the ring and next period in view first. Keep ads off the first screen of Today for brand-new users.</p></div>
+  </div>
+  <p class="src">Source: audit A, E (Today, Ads), G7</p>
+  <fieldset class="choices" aria-label="Your decision for U12">
+    <label class="opt o-approve"><input type="radio" name="d-U12" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U12" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U12" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U12" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U12">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U12"></textarea>
+</article>
+<article class="item" data-id="U5" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">U5</span>
+    <h3>Tap a ring arc to read what it means</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Today ring</span>
+    <span class="chip">0.4.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The colours of the ring are not explained on Today and the arcs cannot be tapped.</p></div>
+    <div><h4>What we will change</h4><p>Tap an arc to see its phase in a small popup; show the expected-period arc.</p></div>
+  </div>
+  <p class="src">Source: plan U5</p>
+  <fieldset class="choices" aria-label="Your decision for U5">
+    <label class="opt o-approve"><input type="radio" name="d-U5" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U5" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U5" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U5" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U5">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U5"></textarea>
+</article>
+<article class="item" data-id="U6" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U6</span>
+    <h3>Calendar: make guesses look different from facts</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Calendar</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Recorded days and guessed days differ only by being fainter. The legend names the colours but not what they mean.</p></div>
+    <div><h4>What we will change</h4><p>Guessed days get a dashed edge and the word &quot;guess&quot; in the legend; the ovulation day gets a ring; tap a legend chip to read a one-line meaning (the day sheet already explains each day well and stays).</p></div>
+  </div>
+  <p class="src">Source: plan U6; audit E (Calendar), G8</p>
+  <fieldset class="choices" aria-label="Your decision for U6">
+    <label class="opt o-approve"><input type="radio" name="d-U6" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U6" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U6" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U6" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U6">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U6"></textarea>
+</article>
+<article class="item" data-id="U7" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">U7</span>
+    <h3>Calendar: back to today, swipe between months</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Calendar</span>
+    <span class="chip">0.4.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Months change only with the arrows; there is no quick way back to today.</p></div>
+    <div><h4>What we will change</h4><p>A &quot;Today&quot; chip, and swipe left or right between months.</p></div>
+  </div>
+  <p class="src">Source: plan U7</p>
+  <fieldset class="choices" aria-label="Your decision for U7">
+    <label class="opt o-approve"><input type="radio" name="d-U7" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U7" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U7" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U7" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U7">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U7"></textarea>
+</article>
+<article class="item" data-id="U9" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U9</span>
+    <h3>My cycles: say &quot;longer than usual&quot; in words</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">My cycles</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The &quot;unusual&quot; mark is an icon alone, and all bars are one colour.</p></div>
+    <div><h4>What we will change</h4><p>Icon plus words (&quot;Longer than usual&quot;); unusual bars in the amber tone; a line for her typical length; filter (last 6 / 12 cycles / all) and the trend numbers next to the chart (old UX item B6).</p></div>
+  </div>
+  <p class="src">Source: plan U9; ux B6</p>
+  <fieldset class="choices" aria-label="Your decision for U9">
+    <label class="opt o-approve"><input type="radio" name="d-U9" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U9" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U9" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U9" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U9">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U9"></textarea>
+</article>
+<article class="item" data-id="U10" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">U10</span>
+    <h3>Earlier cycles: compact rows and &quot;weeks ago&quot; chips</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Add earlier cycles</span>
+    <span class="chip">0.4.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Each earlier cycle is a tall card, and every back-dated date needs several taps in the calendar.</p></div>
+    <div><h4>What we will change</h4><p>One compact row per cycle (date plus quick chips like &quot;3 weeks ago&quot;), same chips as the welcome step.</p></div>
+  </div>
+  <p class="src">Source: plan U10; audit E (Tell me / Add earlier cycles)</p>
+  <fieldset class="choices" aria-label="Your decision for U10">
+    <label class="opt o-approve"><input type="radio" name="d-U10" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U10" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U10" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U10" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U10">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U10"></textarea>
+</article>
+<article class="item" data-id="U11" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U11</span>
+    <h3>Finish the accessibility checks</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Whole app</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>200% text size was checked on the phone (fine). Not checked: TalkBack (screen reader), small phones. In Hindi the Saathi picture's spoken label stays in English.</p></div>
+    <div><h4>What we will change</h4><p>Test with TalkBack on the phone, translate the spoken labels (Hindi), check a small-screen size, record the results.</p></div>
+  </div>
+  <p class="src">Source: plan U11; audit B, E (Hindi mode), G9</p>
+  <fieldset class="choices" aria-label="Your decision for U11">
+    <label class="opt o-approve"><input type="radio" name="d-U11" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U11" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U11" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U11" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U11">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U11"></textarea>
+</article>
+<article class="item" data-id="U13" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">U13</span>
+    <h3>Block permissions the app does not need</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Android build (`app.json`)</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The app has no permission list set, so Android may get extra permissions by default (internet is needed for ads, but storage and overlay are not). Not reviewed in a health-privacy app.</p></div>
+    <div><h4>What we will change</h4><p>List the permissions in the built APK, block every one not needed, and say so in the privacy text.</p></div>
+  </div>
+  <p class="src">Source: ux A4</p>
+  <fieldset class="choices" aria-label="Your decision for U13">
+    <label class="opt o-approve"><input type="radio" name="d-U13" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-U13" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-U13" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-U13" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="U13">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for U13"></textarea>
+</article></section><section><h2>C. New features</h2>
+<article class="item" data-id="F1" data-prio="high" data-status="open">
+  <header>
+    <span class="id">F1</span>
+    <h3>One-tap day check-in (pain, mood, symptoms)</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High</span>
+    <span class="chip">Today, Calendar day sheet</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>She can only write a free-text note for a day. There is no quick way to say how a day was, which is why other apps are opened daily and this one is not. Bleeding heaviness / pads per day is <b>COMING SOON</b> (Tirth, 2026-11-17, keep on the list).</p></div>
+    <div><h4>What we will change</h4><p>Icons, no typing: pain (none, some, strong), mood, and 6 to 8 symptoms from Drashti's list (cramps, headache, back pain, bloating, tender breasts, tired, acne, spotting); heaviness joins when Drashti agrees. Feeds F2, M7 and the doctor pack (X3).</p></div>
+  </div>
+  <p class="src">Source: plan F1; open question 1p</p>
+  <fieldset class="choices" aria-label="Your decision for F1">
+    <label class="opt o-approve"><input type="radio" name="d-F1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-F1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-F1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-F1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="F1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for F1"></textarea>
+</article>
+<article class="item" data-id="F2" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">F2</span>
+    <h3>Patterns from her own data</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Today</span>
+    <span class="chip">0.3.0 (needs F1 data first)</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Nothing is learned from what she records beyond cycle length.</p></div>
+    <div><h4>What we will change</h4><p>Lines such as &quot;Cramps usually come on day 1 and 2&quot; or &quot;Headaches often come 2 days before your period&quot;, shown the day before they usually happen. Only after enough entries.</p></div>
+  </div>
+  <p class="src">Source: plan F2</p>
+  <fieldset class="choices" aria-label="Your decision for F2">
+    <label class="opt o-approve"><input type="radio" name="d-F2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-F2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-F2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-F2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="F2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for F2"></textarea>
+</article>
+<article class="item" data-id="X1" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">X1</span>
+    <h3>&quot;Will I have my period on...?&quot; date checker</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">New screen</span>
+    <span class="chip">0.4.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>A common real question (wedding, trip, puja, exam) has no answer in the app; other apps show one fake date months ahead.</p></div>
+    <div><h4>What we will change</h4><p>She picks a date; the app says Likely / Possible / Unlikely with the honest range, getting less sure the further away it is. Never suggests medicine to move a period.</p></div>
+  </div>
+  <p class="src">Source: plan X1</p>
+  <fieldset class="choices" aria-label="Your decision for X1">
+    <label class="opt o-approve"><input type="radio" name="d-X1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X1"></textarea>
+</article>
+<article class="item" data-id="X2" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">X2</span>
+    <h3>The app shows how good its guesses were</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">My cycles</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The app never says whether its past guesses were right.</p></div>
+    <div><h4>What we will change</h4><p>&quot;My last 3 guesses: on time, 1 day early, 2 days late.&quot; No popular app does this; it fits our &quot;honest guesses&quot; rule and builds trust.</p></div>
+  </div>
+  <p class="src">Source: plan X2</p>
+  <fieldset class="choices" aria-label="Your decision for X2">
+    <label class="opt o-approve"><input type="radio" name="d-X2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X2"></textarea>
+</article>
+<article class="item" data-id="X3" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">X3</span>
+    <h3>Doctor visit pack</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">PDF report</span>
+    <span class="chip">1.0.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The PDF shows the summary, the cycle table and the disclaimer only. It is in the app's language (Hindi users get a Hindi report).</p></div>
+    <div><h4>What we will change</h4><p>Add symptoms and pain per cycle, unusual cycles marked, a &quot;questions I want to ask&quot; box, and always write the report in English (doctors read English).</p></div>
+  </div>
+  <p class="src">Source: plan X3; open question 5</p>
+  <fieldset class="choices" aria-label="Your decision for X3">
+    <label class="opt o-approve"><input type="radio" name="d-X3" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X3" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X3" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X3" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X3">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X3"></textarea>
+</article>
+<article class="item" data-id="X5" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">X5</span>
+    <h3>Irregular-cycle mode</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Today, prediction</span>
+    <span class="chip">0.4.0 (partly covered by M2, M4, M5)</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>For women whose cycles vary a lot (PCOS, after a baby, near menopause, teen years) the app still shows a next-period window and a phase, which looks surer than it is.</p></div>
+    <div><h4>What we will change</h4><p>When cycles vary a lot, stop showing a sure-looking window; say &quot;your cycles vary, so anytime between...&quot; and count the days since the last period instead.</p></div>
+  </div>
+  <p class="src">Source: plan X5; audit A (persona C, D)</p>
+  <fieldset class="choices" aria-label="Your decision for X5">
+    <label class="opt o-approve"><input type="radio" name="d-X5" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X5" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X5" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X5" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X5">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X5"></textarea>
+</article>
+<article class="item" data-id="X6" data-prio="high" data-status="open">
+  <header>
+    <span class="id">X6</span>
+    <h3>Privacy on a shared phone: app lock, delete everything, discreet name</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-high">High (audit) / question 6 asks if it is for v1</span>
+    <span class="chip">Settings</span>
+    <span class="chip">0.4.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>No PIN or fingerprint lock, no &quot;Delete all my information&quot;, and the app name shows on the home screen. Reminders are already discreet on the lock screen by default.</p></div>
+    <div><h4>What we will change</h4><p>App lock (PIN or fingerprint), a &quot;Delete all my information&quot; button with a clear confirmation, an optional plain app name and icon.</p></div>
+  </div>
+  <p class="src">Source: plan X6; audit E (Settings), F4, G10; open question 6</p>
+  <fieldset class="choices" aria-label="Your decision for X6">
+    <label class="opt o-approve"><input type="radio" name="d-X6" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X6" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X6" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X6" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X6">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X6"></textarea>
+</article>
+<article class="item" data-id="X8" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">X8</span>
+    <h3>Share a picture card without an account</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Today</span>
+    <span class="chip">later</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>She can only share the PDF or the backup file.</p></div>
+    <div><h4>What we will change</h4><p>A picture card (&quot;next period likely 12 to 18 Dec&quot;) she can send on WhatsApp to a partner or mother. No sign-up, no server; she chooses whether to show the date.</p></div>
+  </div>
+  <p class="src">Source: plan X8</p>
+  <fieldset class="choices" aria-label="Your decision for X8">
+    <label class="opt o-approve"><input type="radio" name="d-X8" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X8" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X8" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X8" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X8">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X8"></textarea>
+</article>
+<article class="item" data-id="X9" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">X9</span>
+    <h3>More languages, icon-first, read-aloud</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Whole app</span>
+    <span class="chip">1.0.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>English and Hindi only. Hindi has not been checked by a Hindi speaker other than Claude.</p></div>
+    <div><h4>What we will change</h4><p>Gujarati next, then others (open question 1l: before or after Hindi review?); the Saathi can read a message aloud for women who read little.</p></div>
+  </div>
+  <p class="src">Source: plan X9; ux A5</p>
+  <fieldset class="choices" aria-label="Your decision for X9">
+    <label class="opt o-approve"><input type="radio" name="d-X9" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X9" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X9" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X9" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X9">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X9"></textarea>
+</article>
+<article class="item" data-id="X10" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">X10</span>
+    <h3>Home-screen widget</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Android widget</span>
+    <span class="chip">later</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>She must open the app to see the next period.</p></div>
+    <div><h4>What we will change</h4><p>&quot;Day 12, period in about 16 days&quot;, with a discreet version that does not say &quot;period&quot;.</p></div>
+  </div>
+  <p class="src">Source: plan X10</p>
+  <fieldset class="choices" aria-label="Your decision for X10">
+    <label class="opt o-approve"><input type="radio" name="d-X10" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-X10" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-X10" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-X10" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="X10">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for X10"></textarea>
+</article>
+<article class="item" data-id="L1" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">L1</span>
+    <h3>Automatic monthly copy to a folder she picks</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Backup</span>
+    <span class="chip">later</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Backup is manual (Settings, &quot;Save a copy&quot;) with a monthly reminder to do it.</p></div>
+    <div><h4>What we will change</h4><p>She picks a folder once (for example a Google Drive folder on her phone) and the app saves a copy there each month on its own.</p></div>
+  </div>
+  <p class="src">Source: plan &quot;Later&quot;</p>
+  <fieldset class="choices" aria-label="Your decision for L1">
+    <label class="opt o-approve"><input type="radio" name="d-L1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-L1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-L1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-L1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="L1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for L1"></textarea>
+</article>
+<article class="item" data-id="L2" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">L2</span>
+    <h3>Year view</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Calendar or My cycles</span>
+    <span class="chip">later</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>She can see one month at a time or the list of cycles.</p></div>
+    <div><h4>What we will change</h4><p>One screen showing the whole year with each period marked.</p></div>
+  </div>
+  <p class="src">Source: plan &quot;Later&quot;</p>
+  <fieldset class="choices" aria-label="Your decision for L2">
+    <label class="opt o-approve"><input type="radio" name="d-L2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-L2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-L2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-L2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="L2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for L2"></textarea>
+</article></section><section><h2>D. Notifications (all on the phone, no server, no cost; max one a day, 9 in the morning, discreet lock-screen text)</h2><p class="note">Already built in 0.2.0: coming soon (N1), did it start (N2), later than my guess (N4), keep a copy (N5), we miss your data (N9). The &quot;did it end&quot; reminder (N3) was removed with the period end. Real lock-screen text has not been seen on a phone yet.</p>
+<article class="item" data-id="N6" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">N6</span>
+    <h3>Supplies reminder</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Reminders</span>
+    <span class="chip">0.4.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Nothing reminds her to have supplies ready.</p></div>
+    <div><h4>What we will change</h4><p>5 days before the window: &quot;Period likely next week. Do you have what you need?&quot; Off by default, own switch in Settings.</p></div>
+  </div>
+  <p class="src">Source: plan N6, X7</p>
+  <fieldset class="choices" aria-label="Your decision for N6">
+    <label class="opt o-approve"><input type="radio" name="d-N6" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-N6" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-N6" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-N6" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="N6">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for N6"></textarea>
+</article>
+<article class="item" data-id="N7" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">N7</span>
+    <h3>Evening check-in</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Reminders</span>
+    <span class="chip">0.3.0 (needs F1)</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>No daily reminder.</p></div>
+    <div><h4>What we will change</h4><p>&quot;How are you feeling today?&quot; at the time she chooses, only during her period and the week before. Off by default.</p></div>
+  </div>
+  <p class="src">Source: plan N7</p>
+  <fieldset class="choices" aria-label="Your decision for N7">
+    <label class="opt o-approve"><input type="radio" name="d-N7" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-N7" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-N7" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-N7" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="N7">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for N7"></textarea>
+</article>
+<article class="item" data-id="N8" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">N8</span>
+    <h3>Fertile days</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Reminders</span>
+    <span class="chip">later (only if M4 allows it)</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Not built.</p></div>
+    <div><h4>What we will change</h4><p>&quot;Your fertile days are likely starting (a guess).&quot; Off by default, never shown for irregular cycles, never birth-control advice. Needs Drashti's view on open question 7 (tracking only, or fertility too?).</p></div>
+  </div>
+  <p class="src">Source: plan N8; open question 7</p>
+  <fieldset class="choices" aria-label="Your decision for N8">
+    <label class="opt o-approve"><input type="radio" name="d-N8" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-N8" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-N8" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-N8" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="N8">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for N8"></textarea>
+</article>
+<article class="item" data-id="N10" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">N10</span>
+    <h3>Check the real notification on a phone</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Reminders</span>
+    <span class="chip">0.3.0</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The audit confirmed reminders get scheduled for 9:00, but the wording on a real lock screen has not been seen.</p></div>
+    <div><h4>What we will change</h4><p>Let one fire on Tirth's phone and check the discreet and detailed text; ask Drashti about 9 am.</p></div>
+  </div>
+  <p class="src">Source: audit &quot;not verified&quot;; open question 1o</p>
+  <fieldset class="choices" aria-label="Your decision for N10">
+    <label class="opt o-approve"><input type="radio" name="d-N10" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-N10" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-N10" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-N10" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="N10">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for N10"></textarea>
+</article></section><section><h2>E. Ads and going public</h2><p class="note">Placement (banner above the tabs, native cards in My cycles and Calendar, a full-screen ad at most once a day after the PDF share or saving earlier cycles, none in the first 3 days, none on forms or the welcome, no app-open ad, no rewarded ad) is decided and built with Google <b>test</b> ads. The steps Tirth does on the AdMob website are in <code>admob-setup.md</code>.</p>
+<article class="item" data-id="G1" data-prio="medium" data-status="open">
+  <header>
+    <span class="id">G1</span>
+    <h3>Go live with real ads</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-medium">Medium</span>
+    <span class="chip">Ads, Play Store</span>
+    <span class="chip">1.0.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p><code>USE_TEST_ADS</code> is on in every build; your real IDs are stored but unused. The app is not on Google Play, which AdMob needs to serve real ads. Privacy policy page, Data safety form, health-apps declaration, <code>app-ads.txt</code> and the one-time developer fee are not done.</p></div>
+    <div><h4>What we will change</h4><p>Do the website steps in <code>admob-setup.md</code> (consent message, payments, blocked ad categories; decide with Drashti about pregnancy and fertility products), publish the Play listing, then switch to real IDs in a separate release.</p></div>
+  </div>
+  <p class="src">Source: plan section 4; <code>admob-setup.md</code>; open question 1r</p>
+  <fieldset class="choices" aria-label="Your decision for G1">
+    <label class="opt o-approve"><input type="radio" name="d-G1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-G1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-G1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-G1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="G1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for G1"></textarea>
+</article></section><section><h2>F. Small rules for Tirth to settle (from <code>scenarios.md</code>)</h2>
+<article class="item" data-id="R1" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">R1</span>
+    <h3>A period start more than a year old</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Adding a period</span>
+    <span class="chip">any</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Allowed without a question.</p></div>
+    <div><h4>What we will change</h4><p>Keep as is (recommended), or ask &quot;Is that right?&quot; for dates over a year old.</p></div>
+  </div>
+  <p class="src">Source: scn</p>
+  <fieldset class="choices" aria-label="Your decision for R1">
+    <label class="opt o-approve"><input type="radio" name="d-R1" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-R1" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-R1" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-R1" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="R1">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R1"></textarea>
+</article>
+<article class="item" data-id="R2" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">R2</span>
+    <h3>The phone's date or time zone changes</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Whole app</span>
+    <span class="chip">any</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>&quot;Today&quot; follows the phone with no warning.</p></div>
+    <div><h4>What we will change</h4><p>Keep as is (recommended).</p></div>
+  </div>
+  <p class="src">Source: scn</p>
+  <fieldset class="choices" aria-label="Your decision for R2">
+    <label class="opt o-approve"><input type="radio" name="d-R2" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-R2" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-R2" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-R2" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="R2">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R2"></textarea>
+</article>
+<article class="item" data-id="R3" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">R3</span>
+    <h3>A note on a day with no period</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Notes</span>
+    <span class="chip">any</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Allowed.</p></div>
+    <div><h4>What we will change</h4><p>Keep as is (recommended).</p></div>
+  </div>
+  <p class="src">Source: scn</p>
+  <fieldset class="choices" aria-label="Your decision for R3">
+    <label class="opt o-approve"><input type="radio" name="d-R3" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-R3" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-R3" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-R3" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="R3">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R3"></textarea>
+</article>
+<article class="item" data-id="R4" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">R4</span>
+    <h3>Change the number of Bleeding days (5) in Settings</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Settings, phases</span>
+    <span class="chip">later</span>
+    <span class="chip drashti">Needs Drashti</span>
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>The first 5 days of every cycle are drawn as Bleeding and cannot be changed (<code>period.assumedLengthDays</code>).</p></div>
+    <div><h4>What we will change</h4><p>Either keep 5 (recommended until Drashti says otherwise) or add a choice in Settings.</p></div>
+  </div>
+  <p class="src">Source: scn; open question 1m</p>
+  <fieldset class="choices" aria-label="Your decision for R4">
+    <label class="opt o-approve"><input type="radio" name="d-R4" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-R4" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-R4" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-R4" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="R4">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R4"></textarea>
+</article>
+<article class="item" data-id="R5" data-prio="nice" data-status="open">
+  <header>
+    <span class="id">R5</span>
+    <h3>Week starts on Monday or Sunday</h3>
+  </header>
+  <p class="chips">
+    <span class="chip prio-nice">Nice to have</span>
+    <span class="chip">Calendar, Settings</span>
+    <span class="chip">0.3.0</span>
+    
+    <span class="chip status">Open</span>
+  </p>
+  <div class="two">
+    <div><h4>Happening now</h4><p>Monday, fixed (<code>config/display.ts</code>).</p></div>
+    <div><h4>What we will change</h4><p>A choice in Settings, or keep Monday. (A theme choice was rejected: the app follows the phone's light or dark setting.)</p></div>
+  </div>
+  <p class="src">Source: open question 1e</p>
+  <fieldset class="choices" aria-label="Your decision for R5">
+    <label class="opt o-approve"><input type="radio" name="d-R5" value="Approve"><span>Approve</span></label><label class="opt o-later"><input type="radio" name="d-R5" value="Later"><span>Later</span></label><label class="opt o-reject"><input type="radio" name="d-R5" value="Reject"><span>Reject</span></label><label class="opt o-discuss"><input type="radio" name="d-R5" value="Discuss"><span>Discuss</span></label>
+    <button type="button" class="clear" data-clear="R5">Clear</button>
+  </fieldset>
+  <textarea rows="2" placeholder="Your comment (optional), e.g. &quot;yes but only for under 20s&quot;" aria-label="Comment for R5"></textarea>
+</article></section><section class="plain"><h2>Done (history, one line each)</h2><p class="li">Today answer first with a late/overdue headline, one &quot;typical cycle&quot; line, shorter Tell me tabs (U1, U3, U4, U8; 0.2.0).</p><p class="li">Reminders N1, N2, N4, N5, N9 with Settings switches, discreet text, 9 am, max one a day (0.2.0).</p><p class="li">Own popups and a toast with Undo instead of Android dialogs; keyboard no longer hides Save; typed English and Hindi wording (ux A1, A2, A3, A5); Settings hub, three tabs, welcome and tour (ux B1 to B5, B7, B8).</p><p class="li">Period end removed; cycles run start to next start (2026-11-18).</p><p class="li">Ads built with test ads: banner, native cards, full-screen after PDF share and after saving earlier cycles; rewarded &quot;no ads&quot; removed (2026-11-19).</p><p class="li">In-place updates keep her data (same package, same signing key, higher versionCode).</p></section><section class="plain"><h2>Rejected (do not re-propose without a new reason)</h2><p>App-open ads; ads that gate the report or backup; personalised ads; rewarded &quot;No ads for 3 days&quot;; streaks or guilt messages; a theme toggle; a &quot;Period ended&quot; button or optional end date; renaming it to &quot;Cycle ended&quot;; popups for common undoable actions.</p></section>
+</div>
+<div id="toast" role="status"></div>
+<script>
+const KEY='cs-improvements-v1';
+const items=[...document.querySelectorAll('.item')];
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const state=(art)=>{
+  const id=art.dataset.id;
+  const r=art.querySelector('input:checked');
+  return {id,title:art.querySelector('h3').textContent,decision:r?r.value:'',comment:art.querySelector('textarea').value.trim()};
+};
+items.forEach(art=>{
+  const id=art.dataset.id,s=saved[id];
+  if(s){
+    if(s.decision){const r=art.querySelector('input[value="'+s.decision+'"]');if(r)r.checked=true}
+    if(s.comment!==undefined&&s.comment!==''){art.querySelector('textarea').value=s.comment}
+  }
+});
+function persist(){
+  const o={};items.forEach(a=>{const s=state(a);o[s.id]={decision:s.decision,comment:s.comment}});
+  try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+  refresh();
+}
+function refresh(){
+  const f=document.getElementById('filter').value;
+  let done=0;
+  items.forEach(a=>{
+    const s=state(a);if(s.decision)done++;
+    let show=true;
+    if(f==='undecided')show=!s.decision;
+    else if(f==='critical'||f==='high')show=a.dataset.prio===f;
+    else if(f==='drashti')show=!!a.querySelector('.drashti');
+    a.classList.toggle('hidden',!show);
+  });
+  document.getElementById('count').textContent=done+' of '+items.length+' decided';
+}
+document.addEventListener('change',e=>{if(e.target.matches('input[type=radio]')||e.target.id==='filter')persist()});
+document.addEventListener('input',e=>{if(e.target.matches('textarea'))persist()});
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-clear]');
+  if(c){const a=c.closest('.item');a.querySelectorAll('input').forEach(i=>i.checked=false);persist()}
+});
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2500)}
+document.getElementById('copy').addEventListener('click',async()=>{
+  const rows=items.map(state).filter(s=>s.decision||s.comment);
+  if(!rows.length){toast('Nothing to copy yet: pick a decision first');return}
+  const d=new Date().toISOString().slice(0,10);
+  const text='Improvement decisions ('+d+')\n'+rows.map(s=>s.id+' '+s.title+': '+(s.decision||'(no decision)')+(s.comment?' - '+s.comment:'')).join('\n');
+  try{await navigator.clipboard.writeText(text);toast('Copied '+rows.length+' decisions. Paste them to Claude.')}
+  catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('Copied '+rows.length+' decisions. Paste them to Claude.')}
+});
+refresh();
+</script>
+</body>
+</html>

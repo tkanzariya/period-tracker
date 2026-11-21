@@ -1,6 +1,6 @@
 # Product Vision
 
-Last updated: 2026-11-17
+Last updated: 2026-11-21
 
 ## The idea
 A period/cycle tracking app that collects cycle data, learns the user's pattern, predicts the next cycle, and adapts to irregularities. Over time it produces useful insights and AI suggestions, and a medical-history record the user can share with doctors.
@@ -10,7 +10,7 @@ Drashti is a nurse and sees gaps in existing apps (to be documented in `research
 
 ## Target user
 - Now: Drashti (first user, clinical reviewer).
-- Next (Tirth, 2026-11-17): women in India in general. The app should be easy, really helpful during periods, and have a few things other apps do not do or do badly (see `improvement-plan.md`).
+- Next (Tirth, 2026-11-17): women in India in general. The app should be easy, really helpful during periods, and have a few things other apps do not do or do badly (see `improvements.md`).
 
 ## Principles
 1. **Honest predictions**: show ranges and confidence, widen for irregular cycles; never fake precision.
@@ -21,7 +21,7 @@ Drashti is a nurse and sees gaps in existing apps (to be documented in `research
 
 ## Non-goals (for now)
 - Diagnosis or medical advice.
-- Social features. (Ads are no longer a non-goal: **accepted by Tirth 2026-11-17**. AdMob ads, test ads only for now; setup in `admob-setup.md`, placement in `improvement-plan.md` section 4; not shown yet.)
+- Social features. (Ads are no longer a non-goal: **accepted by Tirth 2026-11-17**. AdMob ads, test ads only for now; setup in `admob-setup.md`, placement in `admob-setup.md`; not shown yet.)
 - iOS, web, cloud accounts, sync (planned later, not now).
 - Public release / app store listing: not yet, but ads will need it (open question 1n).
 - Privacy-law compliance work (deferred until a public release is considered).

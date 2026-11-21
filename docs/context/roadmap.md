@@ -52,13 +52,11 @@ Last updated: 2026-11-21
 - [ ] Tirth reviews `scenarios.md` and the screenshots; Drashti reviews health wording
 - [ ] Push, then re-label v1.0.0 as v0.1.0 and release (`release-process.md`)
 
-## Improvement plan (written 2026-11-17; 0.2.0 built, awaiting a phone test)
-- [x] 0.2.0: Today answer-first (U1, U3, U4, U8), reminders N1-N5 + N9 with Settings switches, AdMob library wired with test ids (off)
-- [x] 2026-11-18: period end removed after Tirth's phone test (start-only cycles; clean phases; calendar and My cycles simplified)
-- [x] 2026-11-21: phone audit written (`docs/review/audit-usability-medical-2026-11-21.md`); its Critical/High fixes are proposed for 0.3.0 (open question 1s)
-- [ ] 0.3.0: day check-in (+ bleeding heaviness COMING SOON), patterns, guess track record
-- [ ] 0.4.0: date checker, irregular mode, app lock
-See `improvement-plan.md` section 6: 0.2.0 Today answer-first + notifications; 0.3.0 day check-in, patterns, guess track record; 0.4.0 date checker, irregular mode, app lock; 1.0.0 doctor pack, Gujarati, ads.
+## Improvements (the list lives in `improvements.md`)
+- [x] 0.2.0 built: Today answer-first, reminders, ads with test ids; period end removed 2026-11-18 (see the Done list in `improvements.md`)
+- [x] 2026-11-21: phone audit written (`docs/review/audit-usability-medical-2026-11-21.md`); its findings are items M1 to M10 in `improvements.md`
+- [ ] Tirth approves or comments on each item (`docs/review/improvements.html`); approved items are built in the suggested versions (0.3.0, 0.4.0, 1.0.0)
+- [ ] Drashti reviews the health items (marked "Needs Drashti") before they ship
 
 ## Phase 1 — MVP basic tracking
 Log period start/end and flow, calendar + history, derived cycle stats, next-cycle range prediction, cycle phases (ovulation/fertile window estimates), irregularity flags, edit/delete, JSON/CSV export + import.
@@ -71,10 +69,3 @@ PDF/CSV medical-history export designed with Drashti.
 
 ## Phase 4 — Insights, AI, cloud
 Pattern insights, AI summaries (Claude API; has a cost, decide later), optional cloud backup/sync.
-
-## UX refresh (proposed 2026-11-02, scope awaiting Tirth's go-ahead)
-Apply `ux-standards.md` (shared with HomeHisab). Plan and audit: `ux-standards.md` section 10.
-- [ ] A: keyboard no longer hides Save; own popup + Undo toast instead of Android dialogs; review and block unneeded permissions; typed English/Hindi wording files
-- [ ] B1-B5: Today (answer first, floating Tell me), Tell me sheet, Settings hub behind a gear, three tabs
-- [ ] B6-B9: My cycles filters and trend, first-run welcome, empty states, 200% text and dark-mode check
-- [ ] Drashti reviews the changed health wording; release through `release-process.md`
