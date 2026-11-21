@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-11-18
+Last updated: 2026-11-21
 
 **Current phase: Phase 0 — Foundation & Planning**
 
@@ -55,6 +55,7 @@ Last updated: 2026-11-18
 ## Improvement plan (written 2026-11-17; 0.2.0 built, awaiting a phone test)
 - [x] 0.2.0: Today answer-first (U1, U3, U4, U8), reminders N1-N5 + N9 with Settings switches, AdMob library wired with test ids (off)
 - [x] 2026-11-18: period end removed after Tirth's phone test (start-only cycles; clean phases; calendar and My cycles simplified)
+- [x] 2026-11-21: phone audit written (`docs/review/audit-usability-medical-2026-11-21.md`); its Critical/High fixes are proposed for 0.3.0 (open question 1s)
 - [ ] 0.3.0: day check-in (+ bleeding heaviness COMING SOON), patterns, guess track record
 - [ ] 0.4.0: date checker, irregular mode, app lock
 See `improvement-plan.md` section 6: 0.2.0 Today answer-first + notifications; 0.3.0 day check-in, patterns, guess track record; 0.4.0 date checker, irregular mode, app lock; 1.0.0 doctor pack, Gujarati, ads.

@@ -1,6 +1,6 @@
 # Open Questions
 
-Last updated: 2026-11-18
+Last updated: 2026-11-21
 
 | # | Question | Owner |
 |---|---|---|
@@ -23,3 +23,4 @@ Last updated: 2026-11-18
 | 6 | Should the app lock (PIN/biometric) from v1? | Tirth + Drashti |
 | 7 | Is this app for tracking only, or also contraception/fertility use? Affects wording and risk. | Drashti |
 | 1r | AdMob: real App ID, six ad unit IDs, consent message, payments done and Play listing + `app-ads.txt` (`admob-setup.md`). Test ads only until then. | Tirth |
+| 1s | **Audit findings (2026-11-21)**: `docs/review/audit-usability-medical-2026-11-21.md`. Drashti to review the Critical and High items (late/missed period wording, age-aware flags, +/-3 day minimum window, "when to see a doctor", heavy-bleeding check-in) and every threshold. Tirth to decide what goes into 0.3.0. | Drashti + Tirth |

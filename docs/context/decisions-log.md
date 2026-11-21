@@ -1,6 +1,6 @@
 # Decisions Log (append-only)
 
-Last updated: 2026-11-17
+Last updated: 2026-11-21
 
 ## 2026-10-26
 - Project goal set: cycle-tracking app for Drashti, built solo by Tirth. Start with basic tracking, then improve.
@@ -116,3 +116,7 @@ Last updated: 2026-11-17
 - **Removed:** the rewarded video "No ads for 3 days", the Settings row, its wording and the ad-free logic. Why: Tirth does not want any way to switch ads off, it would hurt revenue. Alternative rejected: keeping it with a shorter period.
 - **Still true:** at most one full-screen ad a day, none in the first 3 days; test ads only (`USE_TEST_ADS`).
 
+## 2026-11-21: Independent-style audit run on Tirth's phone
+- Tested first-run, four personas and two edge cases (stale/short cycles) with real taps on the 0.2.0 build, Hindi and 200% text; medical points checked against NHS, ACOG, FIGO (secondary summary), STRAW+10, Bull 2019, Wilcox 1995, a 2024 luteal-phase study. Report: `docs/review/audit-usability-medical-2026-11-21.md`.
+- Main findings: late/missed-period text contradicts itself and never mentions pregnancy; phases and "Day 205" shown after months without an entry; age-blind 21-35 flag alarms teens; ovulation guesses for irregular cycles; +/-1 day window too narrow; no heavy-bleeding or pain safety guidance (period length was deliberately removed on 2026-11-18, so prolonged bleeding cannot be detected).
+- Phone was changed for testing (data cleared, screen timeout) and fully restored; Tirth's two periods and reminders switch re-added.

@@ -1,6 +1,6 @@
 # UX and Wording Standards (shared by Tirth's apps)
 
-Last updated: 2026-11-04
+Last updated: 2026-11-21
 Applies to: HomeHisab and Cycle Saathi. **Keep the two copies in sync**: the core (sections 1-8) is identical in both repos (`docs/context/ux-standards.md`); section 9 is each app's own adaptation. These rules came out of HomeHisab's first phone test (2026-11-02), where Tirth called the first UI "blocky, generic, too much reading", and from the industry guides he asked us to compare with (Material 3, Android accessibility and quality guidelines, and the habits of the leading budgeting and tracking apps). Ease of use and clarity are the reason someone picks our apps over the market, so they are requirements, not polish.
 
 ## 1. Principles
@@ -36,7 +36,7 @@ Applies to: HomeHisab and Cycle Saathi. **Keep the two copies in sync**: the cor
 
 ## 4. Feedback, errors, dialogs
 - **No Android system dialogs (`Alert.alert`) anywhere.** Use the app's own popup: icon, short title, one muted sentence, big stacked buttons (primary first, tonal, then text).
-- **Toast with Undo** after add, pay, skip, delete (6 s), shown at the **top right, just under the header** (never at the bottom, where the Add button is). Delete is confirmed with a popup that states the effect first.
+- **Toast with Undo** after add, pay, skip, delete (6 s), shown at the **top right, just under the header** (never at the bottom, where the Add button is). It slides out to the right when its time is up and can be **swiped away** (either side) before that; a tap on Undo still works. Delete is confirmed with a popup that states the effect first.
 - **Delete and remove buttons are solid red** (the `danger` colour, white text, a trash icon and the word). Red is used for nothing else; errors and warnings stay amber.
 - Errors are inline cards in the amber "attention" tone (never red: red means "this deletes something"), plus the next step.
 - Backups, restores and other file actions use the system share sheet / picker (unavoidable) but report the outcome in our own wording.
